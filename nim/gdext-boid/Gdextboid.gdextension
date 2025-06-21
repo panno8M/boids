@@ -1,0 +1,16 @@
+[configuration]
+
+entry_symbol = "init_library"
+compatibility_minimum = 4.4
+reloadable = true
+
+[libraries]
+
+windows.debug = "res://./nim/gdext-boid/lib/Gdextboid.windows.debug.dll"
+windows.release = "res://./nim/gdext-boid/lib/Gdextboid.windows.release.dll"
+linux.debug = "res://./nim/gdext-boid/lib/libGdextboid.linux.debug.so"
+linux.release = "res://./nim/gdext-boid/lib/libGdextboid.linux.release.so"
+macos.debug = "res://./nim/gdext-boid/lib/libGdextboid.macos.debug.dylib"
+macos.release = "res://./nim/gdext-boid/lib/libGdextboid.macos.release.dylib"
+web.debug = "res://./nim/gdext-boid/lib/libGdextboid.web.debug.wasm"
+web.release = "res://./nim/gdext-boid/lib/libGdextboid.web.release.wasm"

@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=3 uid="uid://bpwugrpfc2agh"]
+
+[ext_resource type="Script" uid="uid://cygsnmisi4ro8" path="res://main.gd" id="1_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://yahhp4q7qkrl" path="res://fish.tscn" id="1_ig7tw"]
+
+[sub_resource type="Curve3D" id="Curve3D_h2yge"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, -21.21, 0, 0, 21.21, 30, 0, 0, 15, 0, 0, -15, 0, 0, 0, 0, 30, 0, 0, 15, 0, 0, -15, -30, 0, 0, -15, 0, 0, 15, 0, 0, 0, 0, -30),
+"tilts": PackedFloat32Array(0, 0, 0, 0)
+}
+point_count = 4
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_0xm2m")
+
+[node name="BoidController3D" type="BoidController3D" parent="." node_paths=PackedStringArray("leader")]
+leader = NodePath("../Path3D/PathFollow3D/Node3D")
+auto_instantiate_blueprint = ExtResource("1_ig7tw")
+auto_instantiate_range = 30.0
+auto_instantiate_count = 50
+transform = Transform3D(0.999997, 0, 0, 0, 1, 0, 0, 0, 0.999997, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 40, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Camera3D"]
+light_energy = 0.5
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 8.29765, 0)
+light_energy = 16.0
+light_volumetric_fog_energy = 4.556
+spot_range = 8.71233
+spot_angle = 37.6681
+
+[node name="Path3D" type="Path3D" parent="."]
+curve = SubResource("Curve3D_h2yge")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
+transform = Transform3D(-0.999852, 0, -8.74099e-08, 0, 1, 0, 8.74099e-08, 0, -0.999852, 30, 0, 0)
+
+[node name="Node3D" parent="Path3D/PathFollow3D" instance=ExtResource("1_ig7tw")]
