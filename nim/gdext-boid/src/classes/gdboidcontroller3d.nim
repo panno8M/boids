@@ -1,22 +1,20 @@
 import gdext
 import gdext/classes/[gdNode3D, gdPackedScene, gdSceneTree]
 import gdext/classes/[gdGridMap]
-import std/[tables {.all.}, hashes, times, strformat, importutils]
-
-privateAccess Table
+import std/[sets, hashes, times, strformat, importutils]
+import sparseGrids
+import std/tables
 
 type
   BoidIndex = int ## Index of BoidController3D.boids
-  CellShape = seq[Vector3i]
   Cell = object
     boids: seq[BoidIndex]
-  CellMap = Table[Vector3i, Cell]
   GridMapStatus = object
     cellSize: Vector3
     centerX, centerY, centerZ: bool
     offset: Vector3
   BoidController3D* {.gdsync, tool.} = ptr object of Node3D
-    collision_map: GridMap
+    collisionMapInstance: GridMap
     collisionMapStatus: GridMapStatus
     force_subdivision* {.gdexport.}: int = 0
     editorPreview*: bool
@@ -32,17 +30,18 @@ type
     auto_instantiate_range*: float = 15
     cohesion_factor*: float = 0.05
     cohesion_range*: int = 2
-    cohesionSensingShape: CellShape
+    cohesionSensingShape: GridShape
     separation_factor*: float = 0.005
     separation_range*: int = 1
-    separationSensingShape: CellShape
+    separationSensingShape: GridShape
     alignment_factor*: float = 0.05
     alignment_range*: int = 2
-    alignmentSensingShape: CellShape
+    alignmentSensingShape: GridShape
     control_min_speed*: float = 5
     control_max_speed*: float = 15
     control_max_acceleration*: float = 75
-    cellMap: CellMap
+    cellMap: SparseGrid[Cell]
+    collisionMap: HashSet[Vector3i]
     spawnSyncRequired: bool
 
 # =================================== GridMap utils ===================================
@@ -79,7 +78,7 @@ proc mapToLocal(status: GridMapStatus; mapPosition: Vector3i): Vector3 =
 
 # =================================== Cell Shapes ===================================
 
-proc sphere(_: typedesc[CellShape]; radius: Natural): CellShape =
+proc sphere(_: typedesc[GridShape]; radius: Natural): GridShape =
   let r2 = radius * radius
   for x in -radius..radius:
     for y in -radius..radius:
@@ -87,47 +86,33 @@ proc sphere(_: typedesc[CellShape]; radius: Natural): CellShape =
         if x*x + y*y + z*z <= r2:
           result.add vector3i(int32 x, int32 y, int32 z)
 
+proc box(_: typedesc[GridShape]; radius: Natural): GridShape =
+  for x in -radius..radius:
+    for y in -radius..radius:
+      for z in -radius..radius:
+        result.add vector3i(int32 x, int32 y, int32 z)
+
 # =================================== Cell Map ===================================
 
-proc getUnsafePtr[A, B](t: var Table[A, B], key: A): ptr B =
-  checkIfInitialized()
-  var hc: Hash = default(Hash)
-  var index = rawGet(t, key, hc)
-  if index < 0:
-    nil
-  else:
-    addr t.data[index].val
-
-proc addBoid(grid: var CellMap; pos: Vector3i; boidId: int) =
+proc addBoid(grid: var SparseGrid[Cell]; pos: Vector3i; boidId: int) =
   grid.mGetOrPut(pos).boids.add boidId
 
-proc removeBoidUnsafe(grid: var CellMap; pos: Vector3i; boidId: int) =
+proc removeBoidUnsafe(grid: var SparseGrid[Cell]; pos: Vector3i; boidId: int) =
   let map = addr grid[pos].boids
   map[].del map[].find boidId
+  if map[].len == 0:
+    grid.del(pos)
 
-proc removeBoid(grid: var CellMap; pos: Vector3i; boidId: int) =
+proc removeBoid(grid: var SparseGrid[Cell]; pos: Vector3i; boidId: int) =
   if grid.hasKey(pos):
     removeBoidUnsafe(grid, pos, boidId)
 
-iterator neighborAliveCells(grid: var CellMap; pos: Vector3i; cellShape: CellShape): var Cell =
-  for delta in cellShape:
-    let np = pos + delta
-    let point = grid.getUnsafePtr(np)
-    if point != nil:
-      yield point[]
-iterator neighbors(grid: var CellMap; pos: Vector3i; cellShape: CellShape): int =
-  for cell in grid.neighborAliveCells(pos, cellShape):
+iterator neighborBoids(grid: var SparseGrid[Cell]; pos: Vector3i; gridShape: GridShape): int =
+  for cell in grid.neighbors(pos, gridShape):
     for boid in cell.boids:
       yield boid
 
-iterator neighborAliveCellPairs(grid: var CellMap; pos: Vector3i; cellShape: CellShape): (Vector3i, var Cell) =
-  for delta in cellShape:
-    let np = pos + delta
-    let point = grid.getUnsafePtr(np)
-    if point != nil:
-      yield (np, point[])
-
-proc allBoids(grid: CellMap): seq[int] =
+proc allBoids(grid: SparseGrid[Cell]): seq[int] =
   var res: seq[int] = @[]
   for cell in grid.values:
     res.add(cell.boids)
@@ -138,6 +123,7 @@ proc allBoids(grid: CellMap): seq[int] =
 proc rand(_: typedesc[Vector3]): Vector3 = vector3(randf(), randf(), randf())
 proc signedRand(_: typedesc[Vector3]): Vector3 = (Vector3.rand - 0.5) * 2
 proc `+=`[I, T, S](a: var Vector[I, T]; b: Vector[I, S]) {.inline.} = a = a + b
+proc `-=`[I, T, S](a: var Vector[I, T]; b: Vector[I, S]) {.inline.} = a = a - b
 
 proc enabled(self: BoidController3D): bool =
   not Engine.isEditorHint or self.editorPreview
@@ -190,9 +176,16 @@ proc spawnSync(self: BoidController3D) =
       self.destroyLast()
 
 proc updateSensingMap(self: BoidController3D) =
-    self.cohesionSensingShape = CellShape.sphere(self.cohesion_range)
-    self.separationSensingShape = CellShape.sphere(self.separation_range)
-    self.alignmentSensingShape = CellShape.sphere(self.alignment_range)
+    self.cohesionSensingShape = GridShape.sphere(self.cohesion_range)
+    self.separationSensingShape = GridShape.sphere(self.separation_range)
+    self.alignmentSensingShape = GridShape.sphere(self.alignment_range)
+
+proc loadCollisionMap(self: BoidController3D; map: GridMap) =
+  self.collisionMapInstance = map
+  self.collisionMapStatus = self.collisionMapInstance.getStatus
+  self.updateSensingMap()
+  for cell in map.getUsedCells:
+    self.collisionMap.incl cell
 
 # =================================== Properties ===================================
 
@@ -220,11 +213,9 @@ gdexport "pausing",
       discard self.simulation_resumed()
 
 gdexport "collision_map",
-  getter= proc(self: BoidController3D): GridMap = self.collisionMap,
+  getter= proc(self: BoidController3D): GridMap = self.collisionMapInstance,
   setter= proc(self: BoidController3D; value: GridMap) =
-    self.collisionMap = value
-    self.collisionMapStatus = self.collisionMap.getStatus
-    self.updateSensingMap()
+    self.loadCollisionMap value
 
 gdexport BoidController3D.leader
 
@@ -305,24 +296,34 @@ var timebuf = TimeBuffer[8]()
 proc cohesion(self: BoidController3D; position: Vector3; acceleration: var Vector3; affiliation: Vector3i) =
   var center: Vector3
   var count: int
-  for boid in self.cellMap.neighbors(affiliation, self.cohesionSensingShape):
+  for boid in self.cellMap.neighborBoids(affiliation, self.cohesionSensingShape):
     center += self.positions[boid]
     inc count
   acceleration += ((center / count) - position) * self.cohesion_factor
 
 proc separation(self: BoidController3D; position: Vector3; acceleration: var Vector3; affiliation: Vector3i) =
   var move: Vector3
-  for boid in self.cellMap.neighbors(affiliation, self.separationSensingShape):
+  for boid in self.cellMap.neighborBoids(affiliation, self.separationSensingShape):
     move += position - self.positions[boid]
   acceleration += move * self.separation_factor
 
 proc alignment(self: BoidController3D; velocity: var Vector3; affiliation: Vector3i) =
   var sum: Vector3
   var count: int
-  for other in self.cellMap.neighbors(affiliation, self.alignmentSensingShape):
+  for other in self.cellMap.neighborBoids(affiliation, self.alignmentSensingShape):
     sum += self.velocities[other]
     inc count
   velocity += ((sum/count) - velocity) * self.alignment_factor
+
+proc interactCollisionMap(self: BoidController3D; position: Vector3; velocity, acceleration: var Vector3; affiliation: Vector3i) =
+  var move: Vector3
+  for delta in self.cohesionSensingShape:
+    let np = affiliation + delta
+    if np in self.collisionMap:
+      move -= delta
+
+  if move != Vector3.Zero:
+    acceleration += move * 0.2
 
 method process*(self: BoidController3D; delta: float64) {.gdsync.} =
   if self.spawnSyncRequired:
@@ -341,6 +342,7 @@ method process*(self: BoidController3D; delta: float64) {.gdsync.} =
 
         self.cohesion(position[], acceleration[], affiliation[])
         self.separation(position[], acceleration[], affiliation[])
+        self.interactCollisionMap(position[], velocity[], acceleration[], affiliation[])
 
         acceleration[] = acceleration[].limit_length(self.control_max_acceleration * delta)
         velocity[] += acceleration[]
