@@ -37,3 +37,17 @@ iterator neighborPairs*[T](grid: SparseGrid[T]; pos: Vector3i; shape: GridShape)
 iterator neighborPairs*[T](grid: var SparseGrid[T]; pos: Vector3i; shape: GridShape): (Vector3i, var T) =
   neighborsImpl(grid, pos, shape):
     yield (np, point[])
+
+proc sphere*(_: typedesc[GridShape]; radius: Natural): GridShape =
+  let r2 = radius * radius
+  for x in -radius..radius:
+    for y in -radius..radius:
+      for z in -radius..radius:
+        if x*x + y*y + z*z <= r2:
+          result.add vector3i(int32 x, int32 y, int32 z)
+
+proc box*(_: typedesc[GridShape]; radius: Natural): GridShape =
+  for x in -radius..radius:
+    for y in -radius..radius:
+      for z in -radius..radius:
+        result.add vector3i(int32 x, int32 y, int32 z)
