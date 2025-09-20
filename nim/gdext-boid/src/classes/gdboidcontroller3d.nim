@@ -1,6 +1,7 @@
 import gdext
 import gdext/classes/[gdNode3D, gdPackedScene, gdSceneTree]
 import gdext/classes/[gdGridMap]
+import gdext/classes/[gdEngine]
 import std/[sets, hashes, times, strformat, importutils]
 import sparseGrids
 import std/tables
@@ -13,6 +14,12 @@ type
     cellSize: Vector3
     centerX, centerY, centerZ: bool
     offset: Vector3
+  Boid* = object
+    position*: Vector3
+    velocity*: Vector3
+    acceleration*: Vector3
+    cell*: Vector3i
+    agent*: Node3D
   BoidController3D* {.gdsync, tool.} = ptr object of Node3D
     collisionMapInstance: GridMap
     collisionMapStatus: GridMapStatus
@@ -22,11 +29,7 @@ type
     leader*: Node3D
     auto_instantiate_blueprint*: gdref PackedScene
     numOfInstances*: int
-    positions: seq[Vector3]
-    velocities: seq[Vector3]
-    accelerations: seq[Vector3]
-    affiliations: seq[Vector3i]
-    instances: seq[Node3D]
+    boids: seq[Boid]
     auto_instantiate_range*: float = 15
     cohesion_factor*: float = 0.05
     cohesion_range*: int = 2
@@ -140,39 +143,39 @@ proc spawn(self: BoidController3D): Node3D =
   let cell = self.collisionMapStatus.localToMap(pos)
   result.setPosition pos
   self.addChild result
-  self.instances.add result
-  self.positions.add pos
-  self.velocities.add Vector3.signedRand.normalized.map(self.control_min_speed..self.control_max_speed)
-  self.accelerations.add Vector3.Zero
-  self.affiliations.add cell
-  self.cellMap.addBoid(cell, self.affiliations.high)
+  self.boids.add Boid(
+    agent: result,
+    position: pos,
+    velocity: Vector3.signedRand.normalized.map(self.control_min_speed..self.control_max_speed),
+    acceleration: Vector3.Zero,
+    cell: cell,
+  )
+  self.cellMap.addBoid(cell, self.boids.high)
 
 proc destroyLast(self: BoidController3D) =
-  queueFree self.instances[^1]
-  self.cellMap.removeBoidUnsafe(self.affiliations[^1], self.affiliations.high)
-  self.positions.setLen(self.positions.len.pred)
-  self.velocities.setLen(self.velocities.len.pred)
-  self.accelerations.setLen(self.accelerations.len.pred)
-  self.affiliations.setLen(self.affiliations.len.pred)
-  self.instances.setLen(self.instances.len.pred)
+  queueFree self.boids[^1].agent
+  self.cellMap.removeBoidUnsafe(self.boids[^1].cell, self.boids.high)
+  discard self.boids.pop()
 
 proc spawnSync(self: BoidController3D) =
   if self.enabled:
     let arr = self.getChildren
-    if arr.len != 0 and self.affiliations.len == 0:
+    if arr.len != 0 and self.boids.len == 0:
       for node in arr:
-        self.instances.add node as Node3D
-        self.positions.add self.instances[^1].position
-        self.velocities.add Vector3.Zero
-        self.accelerations.add Vector3.Zero
-        self.affiliations.add self.collisionMapStatus.localToMap(self.positions[^1])
+        let agent = node as Node3D
+        let position = agent.position
+        self.boids.add Boid(
+          agent: agent,
+          position: position,
+          cell: self.collisionMapStatus.localToMap(position),
+        )
 
-    for i in 0..<(self.numOfInstances - self.affiliations.len):
+    for i in 0..<(self.numOfInstances - self.boids.len):
       discard self.spawn()
-    for i in 0..<(self.affiliations.len - self.numOfInstances):
+    for i in 0..<(self.boids.len - self.numOfInstances):
       self.destroyLast()
   else:
-    for i in 0..<self.affiliations.len:
+    for i in 0..<self.boids.len:
       self.destroyLast()
 
 proc updateSensingMap(self: BoidController3D) =
@@ -293,37 +296,37 @@ template measure(buffer: TimeBuffer; body): string =
 
 var timebuf = TimeBuffer[8]()
 
-proc cohesion(self: BoidController3D; position: Vector3; acceleration: var Vector3; affiliation: Vector3i) =
+proc cohesion(self: BoidController3D; boid: var Boid) =
   var center: Vector3
   var count: int
-  for boid in self.cellMap.neighborBoids(affiliation, self.cohesionSensingShape):
-    center += self.positions[boid]
+  for other in self.cellMap.neighborBoids(boid.cell, self.cohesionSensingShape):
+    center += self.boids[other].position
     inc count
-  acceleration += ((center / count) - position) * self.cohesion_factor
+  boid.acceleration += ((center / count) - boid.position) * self.cohesion_factor
 
-proc separation(self: BoidController3D; position: Vector3; acceleration: var Vector3; affiliation: Vector3i) =
+proc separation(self: BoidController3D; boid: var Boid) =
   var move: Vector3
-  for boid in self.cellMap.neighborBoids(affiliation, self.separationSensingShape):
-    move += position - self.positions[boid]
-  acceleration += move * self.separation_factor
+  for other in self.cellMap.neighborBoids(boid.cell, self.separationSensingShape):
+    move += boid.position - self.boids[other].position
+  boid.acceleration += move * self.separation_factor
 
-proc alignment(self: BoidController3D; velocity: var Vector3; affiliation: Vector3i) =
+proc alignment(self: BoidController3D; boid: var Boid) =
   var sum: Vector3
   var count: int
-  for other in self.cellMap.neighborBoids(affiliation, self.alignmentSensingShape):
-    sum += self.velocities[other]
+  for other in self.cellMap.neighborBoids(boid.cell, self.alignmentSensingShape):
+    sum += self.boids[other].velocity
     inc count
-  velocity += ((sum/count) - velocity) * self.alignment_factor
+  boid.velocity += ((sum/count) - boid.velocity) * self.alignment_factor
 
-proc interactCollisionMap(self: BoidController3D; position: Vector3; velocity, acceleration: var Vector3; affiliation: Vector3i) =
+proc interactCollisionMap(self: BoidController3D; boid: var Boid) =
   var move: Vector3
   for delta in self.cohesionSensingShape:
-    let np = affiliation + delta
+    let np = boid.cell + delta
     if np in self.collisionMap:
       move -= delta
 
   if move != Vector3.Zero:
-    acceleration += move * 0.2
+    boid.acceleration += move * 0.2
 
 method process*(self: BoidController3D; delta: float64) {.gdsync.} =
   if self.spawnSyncRequired:
@@ -331,36 +334,35 @@ method process*(self: BoidController3D; delta: float64) {.gdsync.} =
     self.spawnSyncRequired = false
   if self.running:
     print: timebuf.measure:
-      for i in 0..<self.numOfInstances:
-        let position = addr self.positions[i]
-        let velocity = addr self.velocities[i]
-        let acceleration = addr self.accelerations[i]
-        let affiliation = addr self.affiliations[i]
-        let instance = addr self.instances[i]
+      for i, boid in self.boids.mpairs:
 
-        reset acceleration[]
+        reset boid.acceleration
 
-        self.cohesion(position[], acceleration[], affiliation[])
-        self.separation(position[], acceleration[], affiliation[])
-        self.interactCollisionMap(position[], velocity[], acceleration[], affiliation[])
+        if likely(self.cohesion_factor != 0):
+          self.cohesion(boid)
+        if likely(self.separation_factor != 0):
+          self.separation(boid)
 
-        acceleration[] = acceleration[].limit_length(self.control_max_acceleration * delta)
-        velocity[] += acceleration[]
+        self.interactCollisionMap(boid)
 
-        self.alignment(velocity[], affiliation[])
+        boid.acceleration = boid.acceleration.limit_length(self.control_max_acceleration * delta)
+        boid.velocity += boid.acceleration
 
-        let length = velocity[].length
+        if likely(self.alignment_factor != 0):
+          self.alignment(boid)
+
+        let length = boid.velocity.length
         if length < self.control_min_speed or self.control_max_speed < length:
-          velocity[] = (velocity[]/length) * length.clamp(self.control_min_speed, self.control_max_speed)
+          boid.velocity = (boid.velocity/length) * length.clamp(self.control_min_speed, self.control_max_speed)
 
-        position[] += velocity[] * delta
-        let newcell = self.collisionMapStatus.localToMap(position[])
-        if affiliation[] != newcell:
-          self.cellMap.removeBoidUnsafe(affiliation[], i)
+        boid.position += boid.velocity * delta
+        let newcell = self.collisionMapStatus.localToMap(boid.position)
+        if boid.cell != newcell:
+          self.cellMap.removeBoidUnsafe(boid.cell, i)
           self.cellMap.addBoid(newcell, i)
-          affiliation[] = newcell
+          boid.cell = newcell
 
-        if likely(velocity[] != Vector3.Zero):
-          instance[].lookAt(position[] + velocity[])
+        if likely(boid.velocity != Vector3.Zero):
+          boid.agent.lookAt(boid.position + boid.velocity)
 
-        instance[].position = position[]
+        boid.agent.position = boid.position
