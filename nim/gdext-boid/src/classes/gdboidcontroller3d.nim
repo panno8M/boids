@@ -5,13 +5,13 @@ import std/[sets, hashes, tables]
 import sparseGrids
 import timemeasure
 import global
-import classes/[gdBoidSpawner3D, gdBoidRuleCohesion3D]
+import classes/[gdBoidSpawner3D, gdBoidRule3D]
 
 type
   BoidController3D* {.gdsync.} = ptr object of Node3D
     shared*: SharedData
     spawner: BoidSpawner3D
-    cohesion: BoidRuleCohesion3D
+    rules: seq[BoidRule3D]
     collisionMapInstance: GridMap
     separation_factor*: float = 0.005
     separation_range*: int = 1
@@ -96,9 +96,9 @@ method ready*(self: BoidController3D) {.gdsync.} =
       if child of BoidSpawner3D:
         self.spawner = child as BoidSpawner3D
         self.spawner.shared = self.shared
-      if child of BoidRuleCohesion3D:
-        self.cohesion = child as BoidRuleCohesion3D
-        self.cohesion.shared = self.shared
+      if child of BoidRule3D:
+        self.rules.add child as BoidRule3D
+        self.rules[^1].shared = self.shared
 
 proc separation(self: BoidController3D; boid: var Boid) =
   var move: Vector3
@@ -124,26 +124,32 @@ proc interactCollisionMap(self: BoidController3D; boid: var Boid) =
   if move != Vector3.Zero:
     boid.acceleration += move * 0.2
 
+proc fix_acceleration(self: BoidController3D): Error {.gdsync, signal.}
+
 method process*(self: BoidController3D; delta: float64) {.gdsync.} =
   if not Engine.isEditorHint:
     if self.shared.running:
       for i, boid in self.shared.boids.mpairs:
-
         reset boid.acceleration
 
-        if likely(self.cohesion.factor != 0):
-          self.cohesion.cohesion(boid)
+      discard self.fix_acceleration()
+
+      for i, boid in self.shared.boids.mpairs:
         if likely(self.separation_factor != 0):
           self.separation(boid)
 
+      for i, boid in self.shared.boids.mpairs:
         self.interactCollisionMap(boid)
 
+      for i, boid in self.shared.boids.mpairs:
         boid.acceleration = boid.acceleration.limit_length(self.control_max_acceleration * delta)
         boid.velocity += boid.acceleration
 
+      for i, boid in self.shared.boids.mpairs:
         if likely(self.alignment_factor != 0):
           self.alignment(boid)
 
+      for i, boid in self.shared.boids.mpairs:
         let length = boid.velocity.length
         if length < self.shared.control_min_speed or self.shared.control_max_speed < length:
           boid.velocity = (boid.velocity/length) * length.clamp(self.shared.control_min_speed, self.shared.control_max_speed)

@@ -23,6 +23,8 @@ type
     collisionMapStatus*: GridMapStatus
     controlMinSpeed*: float = 5
     controlMaxSpeed*: float = 15
+    fixAcceleration*: seq[proc()]
+    fixVelocity*: seq[proc()]
 
 # =================================== GridMap utils ===================================
 
