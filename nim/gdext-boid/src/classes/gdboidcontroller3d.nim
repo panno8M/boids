@@ -1,21 +1,18 @@
 import gdext
 import gdext/classes/[gdNode3D]
 import gdext/classes/[gdGridMap, gdEngine]
-import std/[sets, hashes, importutils, tables]
+import std/[sets, hashes, tables]
 import sparseGrids
 import timemeasure
 import global
-import classes/[gdBoidSpawner3D]
+import classes/[gdBoidSpawner3D, gdBoidRuleCohesion3D]
 
 type
-  BoidController3D* {.gdsync, tool.} = ptr object of Node3D
+  BoidController3D* {.gdsync.} = ptr object of Node3D
     shared*: SharedData
     spawner: BoidSpawner3D
+    cohesion: BoidRuleCohesion3D
     collisionMapInstance: GridMap
-    leader*: Node3D
-    cohesion_factor*: float = 0.05
-    cohesion_range*: int = 2
-    cohesionSensingShape: GridShape
     separation_factor*: float = 0.005
     separation_range*: int = 1
     separationSensingShape: GridShape
@@ -28,11 +25,6 @@ type
 
 # =================================== Cell Map ===================================
 
-iterator neighborBoids(grid: var SparseGrid[Cell]; pos: Vector3i; gridShape: GridShape): int =
-  for cell in grid.neighbors(pos, gridShape):
-    for boid in cell.boids:
-      yield boid
-
 proc allBoids(grid: SparseGrid[Cell]): seq[int] =
   var res: seq[int] = @[]
   for cell in grid.values:
@@ -40,7 +32,6 @@ proc allBoids(grid: SparseGrid[Cell]): seq[int] =
   res
 
 proc updateSensingMap(self: BoidController3D) =
-    self.cohesionSensingShape = GridShape.sphere(self.cohesion_range)
     self.separationSensingShape = GridShape.sphere(self.separation_range)
     self.alignmentSensingShape = GridShape.sphere(self.alignment_range)
 
@@ -56,8 +47,7 @@ gdexport "collision_map",
   getter= proc(self: BoidController3D): GridMap = self.collisionMapInstance,
   setter= proc(self: BoidController3D; value: GridMap) =
     self.loadCollisionMap value
-
-gdexport BoidController3D.leader
+    self.collisionMapInstance = value
 
 gdexport[BoidController3D] "auto_instantiate", Appearance.group("auto_instantiate")
 
@@ -66,15 +56,6 @@ gdexport "pausing",
     self.shared.pausing,
   setter= proc(self: BoidController3D; value: bool) =
     self.shared.pausing = value
-
-gdexport[BoidController3D] "Rule: Cohesion", Appearance.group("cohesion")
-gdexport BoidController3D.cohesion_factor, Appearance.range(0, 1)
-gdexport "cohesion_range",
-  getter= proc(self: BoidController3D): int = self.cohesion_range,
-  setter= proc(self: BoidController3D; value: int) =
-    self.cohesion_range = value
-    self.updateSensingMap(),
-  Appearance.range(0, 5)
 
 gdexport[BoidController3D] "Rule: Separation", Appearance.group("separation")
 gdexport BoidController3D.separation_factor, Appearance.range(0, 1)
@@ -112,32 +93,12 @@ method ready*(self: BoidController3D) {.gdsync.} =
   if not Engine.isEditorHint:
     self.shared.cellMap = initTable[Vector3i, Cell](1024)
     for child in self.getChildren:
-      if self.spawner == nil and child of BoidSpawner3D:
+      if child of BoidSpawner3D:
         self.spawner = child as BoidSpawner3D
         self.spawner.shared = self.shared
-
-method getConfigurationWarnings*(self: BoidController3D): PackedStringArray {.gdsync.} =
-  var
-    boidSpawner3DCount: int
-  for child in self.getChildren:
-    if child of BoidSpawner3D:
-      inc boidSpawner3DCount
-
-  case boidSpawner3DCount
-  of 0:
-    result.add "no BoidSpawner3D found"
-  of 1:
-    discard
-  else:
-    result.add "more than one BoidSpawner3Ds found"
-
-proc cohesion(self: BoidController3D; boid: var Boid) =
-  var center: Vector3
-  var count: int
-  for other in self.shared.cellMap.neighborBoids(boid.cell, self.cohesionSensingShape):
-    center += self.shared.boids[other].position
-    inc count
-  boid.acceleration += ((center / count) - boid.position) * self.cohesion_factor
+      if child of BoidRuleCohesion3D:
+        self.cohesion = child as BoidRuleCohesion3D
+        self.cohesion.shared = self.shared
 
 proc separation(self: BoidController3D; boid: var Boid) =
   var move: Vector3
@@ -155,7 +116,7 @@ proc alignment(self: BoidController3D; boid: var Boid) =
 
 proc interactCollisionMap(self: BoidController3D; boid: var Boid) =
   var move: Vector3
-  for delta in self.cohesionSensingShape:
+  for delta in self.alignmentSensingShape:
     let np = boid.cell + delta
     if np in self.collisionMap:
       move -= delta
@@ -170,8 +131,8 @@ method process*(self: BoidController3D; delta: float64) {.gdsync.} =
 
         reset boid.acceleration
 
-        if likely(self.cohesion_factor != 0):
-          self.cohesion(boid)
+        if likely(self.cohesion.factor != 0):
+          self.cohesion.cohesion(boid)
         if likely(self.separation_factor != 0):
           self.separation(boid)
 

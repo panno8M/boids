@@ -64,6 +64,13 @@ proc signedRand*(_: typedesc[Vector3]): Vector3 = (Vector3.rand - 0.5) * 2
 proc map*[T, S](ratio: T; range: HSlice[S, S]): auto =
   range.a * ratio + range.b * (1 - ratio)
 
+# =================================== Cell Map ===================================
+
+iterator neighborBoids*(grid: var SparseGrid[Cell]; pos: Vector3i; gridShape: GridShape): int =
+  for cell in grid.neighbors(pos, gridShape):
+    for boid in cell.boids:
+      yield boid
+
 # =================================== meta data ===================================
 
 proc running*(self: SharedData): bool =
