@@ -13,9 +13,6 @@ type
     spawner: BoidSpawner3D
     rules: seq[BoidRule3D]
     collisionMapInstance: GridMap
-    separation_factor*: float = 0.005
-    separation_range*: int = 1
-    separationSensingShape: GridShape
     alignment_factor*: float = 0.05
     alignment_range*: int = 2
     alignmentSensingShape: GridShape
@@ -32,7 +29,6 @@ proc allBoids(grid: SparseGrid[Cell]): seq[int] =
   res
 
 proc updateSensingMap(self: BoidController3D) =
-    self.separationSensingShape = GridShape.sphere(self.separation_range)
     self.alignmentSensingShape = GridShape.sphere(self.alignment_range)
 
 proc loadCollisionMap(self: BoidController3D; map: GridMap) =
@@ -56,15 +52,6 @@ gdexport "pausing",
     self.shared.pausing,
   setter= proc(self: BoidController3D; value: bool) =
     self.shared.pausing = value
-
-gdexport[BoidController3D] "Rule: Separation", Appearance.group("separation")
-gdexport BoidController3D.separation_factor, Appearance.range(0, 1)
-gdexport "separation_range",
-  getter= proc(self: BoidController3D): int = self.separation_range,
-  setter= proc(self: BoidController3D; value: int) =
-    self.separation_range = value
-    self.updateSensingMap(),
-  Appearance.range(0, 5)
 
 gdexport[BoidController3D] "Rule: Alignment", Appearance.group("alignment")
 gdexport BoidController3D.alignment_factor, Appearance.range(0, 1)
@@ -100,12 +87,6 @@ method ready*(self: BoidController3D) {.gdsync.} =
         self.rules.add child as BoidRule3D
         self.rules[^1].shared = self.shared
 
-proc separation(self: BoidController3D; boid: var Boid) =
-  var move: Vector3
-  for other in self.shared.cellMap.neighborBoids(boid.cell, self.separationSensingShape):
-    move += boid.position - self.shared.boids[other].position
-  boid.acceleration += move * self.separation_factor
-
 proc alignment(self: BoidController3D; boid: var Boid) =
   var sum: Vector3
   var count: int
@@ -133,10 +114,6 @@ method process*(self: BoidController3D; delta: float64) {.gdsync.} =
         reset boid.acceleration
 
       discard self.fix_acceleration()
-
-      for i, boid in self.shared.boids.mpairs:
-        if likely(self.separation_factor != 0):
-          self.separation(boid)
 
       for i, boid in self.shared.boids.mpairs:
         self.interactCollisionMap(boid)
