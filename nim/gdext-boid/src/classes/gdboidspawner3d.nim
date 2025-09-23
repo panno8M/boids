@@ -26,38 +26,38 @@ proc spawn(self: BoidSpawner3D; gridmapStatus: GridMapStatus; minSpeed, maxSpeed
   let cell = gridmapStatus.localToMap(pos)
   result.setPosition pos
   self.addChild result
-  self.shared.boids.add Boid(
+  self.controller.boids.add Boid(
     agent: result,
     position: pos,
     velocity: Vector3.signedRand.normalized.map(minSpeed..maxSpeed),
     acceleration: Vector3.Zero,
     cell: cell,
   )
-  self.shared.cellMap.addBoid(cell, self.shared.boids.high)
+  self.controller.cellMap.addBoid(cell, self.controller.boids.high)
 
 proc destroyLast(self: BoidSpawner3D) =
-  queueFree self.shared.boids[^1].agent
-  self.shared.cellMap.removeBoidUnsafe(self.shared.boids[^1].cell, self.shared.boids.high)
-  discard self.shared.boids.pop()
+  queueFree self.controller.boids[^1].agent
+  self.controller.cellMap.removeBoidUnsafe(self.controller.boids[^1].cell, self.controller.boids.high)
+  discard self.controller.boids.pop()
 
 proc spawnSync*(self: BoidSpawner3D; gridmapStatus: GridMapStatus; minSpeed, maxSpeed: float) =
   let arr = self.getChildren
-  if arr.len != 0 and self.shared.boids.len == 0:
+  if arr.len != 0 and self.controller.boids.len == 0:
     for node in arr:
       let agent = node as Node3D
       let position = agent.position
-      self.shared.boids.add Boid(
+      self.controller.boids.add Boid(
         agent: agent,
         position: position,
         cell: gridmapStatus.localToMap(position),
       )
 
-  for i in 0..<(self.numOfInstances - self.shared.boids.len):
+  for i in 0..<(self.numOfInstances - self.controller.boids.len):
     discard self.spawn(gridmapStatus, minSpeed, maxSpeed)
-  for i in 0..<(self.shared.boids.len - self.numOfInstances):
+  for i in 0..<(self.controller.boids.len - self.numOfInstances):
     self.destroyLast()
 
 method process(self: BoidSpawner3D; delta: float64) {.gdsync.} =
   if self.spawnSyncRequired:
-    self.spawnSync(self.shared.cellMapStatus, self.shared.controlMinSpeed, self.shared.controlMaxSpeed)
+    self.spawnSync(self.controller.cellMapStatus, self.controller.controlMinSpeed, self.controller.controlMaxSpeed)
     self.spawnSyncRequired = false

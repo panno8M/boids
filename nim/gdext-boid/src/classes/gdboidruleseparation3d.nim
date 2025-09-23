@@ -20,12 +20,12 @@ gdexport "range",
 
 proc separation(self: BoidRuleSeparation3D; boid: var Boid) =
   var move: Vector3
-  for other in self.shared.cellMap.neighborBoids(boid.cell, self.sensingShape):
-    move += boid.position - self.shared.boids[other].position
+  for other in self.controller.cellMap.neighborBoids(boid.cell, self.sensingShape):
+    move += boid.position - self.controller.boids[other].position
   boid.acceleration += move * self.factor
 
 proc update(self: BoidRuleSeparation3D) {.gdsync.} =
-  for i, boid in self.shared.boids.mpairs:
+  for i, boid in self.controller.boids.mpairs:
     if likely(self.factor != 0):
       self.separation(boid)
 

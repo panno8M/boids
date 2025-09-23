@@ -20,13 +20,13 @@ gdexport "range",
 proc cohesion(self: BoidRuleCohesion3D; boid: var Boid) =
   var center: Vector3
   var count: int
-  for other in self.shared.cellMap.neighborBoids(boid.cell, self.sensingShape):
-    center += self.shared.boids[other].position
+  for other in self.controller.cellMap.neighborBoids(boid.cell, self.sensingShape):
+    center += self.controller.boids[other].position
     inc count
   boid.acceleration += ((center / count) - boid.position) * self.factor
 
 proc update(self: BoidRuleCohesion3D) {.gdsync.} =
-  for i, boid in self.shared.boids.mpairs:
+  for i, boid in self.controller.boids.mpairs:
     if likely(self.factor != 0):
       self.cohesion(boid)
 

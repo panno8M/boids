@@ -18,15 +18,6 @@ type
     acceleration*: Vector3
     cell*: Vector3i
     agent*: Node3D
-  SharedData* = ref object
-    pausing*: bool
-    cellMap*: SparseGrid[Cell]
-    boids*: seq[Boid]
-    cellMapStatus*: GridMapStatus
-    controlMinSpeed*: float = 5
-    controlMaxSpeed*: float = 15
-    fixAcceleration*: seq[proc()]
-    fixVelocity*: seq[proc()]
 
 # =================================== GridMap utils ===================================
 
@@ -91,8 +82,3 @@ proc removeBoid*(grid: var SparseGrid[Cell]; pos: Vector3i; boidId: int) =
 proc moveBoid*(grid: var SparseGrid[Cell]; src, dst: Vector3i; boidId: int) =
   grid.removeBoidUnsafe(src, boidId)
   grid.addBoid(dst, boidId)
-
-# =================================== meta data ===================================
-
-proc running*(self: SharedData): bool =
-  not self.pausing

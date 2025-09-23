@@ -37,7 +37,7 @@ proc avoidGrid(self: BoidRuleAvoidGrid3D; boid: var Boid) =
     boid.acceleration += move * self.factor
 
 proc update(self: BoidRuleAvoidGrid3D) {.gdsync.} =
-  for i, boid in self.shared.boids.mpairs:
+  for i, boid in self.controller.boids.mpairs:
     if likely(self.factor != 0):
       self.avoidGrid(boid)
 

@@ -8,7 +8,14 @@ import global
 
 type
   BoidController3D* {.gdsync.} = ptr object of Node3D
-    shared*: SharedData
+    pausing*: bool
+    cellMap*: SparseGrid[Cell]
+    boids*: seq[Boid]
+    cellMapStatus*: GridMapStatus
+    controlMinSpeed*: float = 5
+    controlMaxSpeed*: float = 15
+    fixAcceleration*: seq[proc()]
+    fixVelocity*: seq[proc()]
     cellMapInstance*: GridMap
     control_max_acceleration*: float = 75
 
@@ -25,60 +32,59 @@ gdexport "cell_map",
   getter= proc(self: BoidController3D): GridMap = self.cellMapInstance,
   setter= proc(self: BoidController3D; value: GridMap) =
     self.cellMapInstance = value
-    self.shared.cellMapStatus = self.cellMapInstance.getStatus
+    self.cellMapStatus = self.cellMapInstance.getStatus
 
 gdexport[BoidController3D] "auto_instantiate", Appearance.group("auto_instantiate")
 
 gdexport "pausing",
   getter= proc(self: BoidController3D): bool =
-    self.shared.pausing,
+    self.pausing,
   setter= proc(self: BoidController3D; value: bool) =
-    self.shared.pausing = value
+    self.pausing = value
 
 gdexport[BoidController3D] "Control", Appearance.group("control")
 gdexport "control_min_speed",
-  getter= proc(self: BoidController3D): float = self.shared.control_min_speed,
-  setter= proc(self: BoidController3D; value: float) = self.shared.control_min_speed = value
+  getter= proc(self: BoidController3D): float = self.control_min_speed,
+  setter= proc(self: BoidController3D; value: float) = self.control_min_speed = value
 gdexport "control_max_speed",
-  getter= proc(self: BoidController3D): float = self.shared.control_max_speed,
-  setter= proc(self: BoidController3D; value: float) = self.shared.control_max_speed = value
+  getter= proc(self: BoidController3D): float = self.control_max_speed,
+  setter= proc(self: BoidController3D; value: float) = self.control_max_speed = value
 gdexport BoidController3D.control_max_acceleration
 
 # =================================== Functions ===================================
-
-method onInit*(self: BoidController3D) =
-  new self.shared
+proc running*(self: BoidController3D): bool =
+  not self.pausing
 
 method ready*(self: BoidController3D) {.gdsync.} =
   if not Engine.isEditorHint:
-    self.shared.cellMap = initTable[Vector3i, Cell](1024)
+    self.cellMap = initTable[Vector3i, Cell](1024)
 
 proc fix_acceleration(self: BoidController3D): Error {.gdsync, signal.}
 proc fix_velocity(self: BoidController3D): Error {.gdsync, signal.}
 
 method process*(self: BoidController3D; delta: float64) {.gdsync.} =
   if not Engine.isEditorHint:
-    if self.shared.running:
-      for i, boid in self.shared.boids.mpairs:
+    if self.running:
+      for i, boid in self.boids.mpairs:
         reset boid.acceleration
 
       discard self.fix_acceleration()
 
-      for i, boid in self.shared.boids.mpairs:
+      for i, boid in self.boids.mpairs:
         boid.acceleration = boid.acceleration.limit_length(self.control_max_acceleration * delta)
         boid.velocity += boid.acceleration
 
       discard self.fix_velocity()
 
-      for i, boid in self.shared.boids.mpairs:
+      for i, boid in self.boids.mpairs:
         let length = boid.velocity.length
-        if length < self.shared.control_min_speed or self.shared.control_max_speed < length:
-          boid.velocity = (boid.velocity/length) * length.clamp(self.shared.control_min_speed, self.shared.control_max_speed)
+        if length < self.control_min_speed or self.control_max_speed < length:
+          boid.velocity = (boid.velocity/length) * length.clamp(self.control_min_speed, self.control_max_speed)
 
         boid.position += boid.velocity * delta
-        let newcell = self.shared.cellMapStatus.localToMap(boid.position)
+        let newcell = self.cellMapStatus.localToMap(boid.position)
         if boid.cell != newcell:
-          self.shared.cellMap.moveBoid(boid.cell, newcell, i)
+          self.cellMap.moveBoid(boid.cell, newcell, i)
           boid.cell = newcell
 
         if likely(boid.velocity != Vector3.Zero):

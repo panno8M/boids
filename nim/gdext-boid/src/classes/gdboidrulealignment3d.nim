@@ -21,13 +21,13 @@ gdexport "range",
 proc alignment(self: BoidRuleAlignment3D; boid: var Boid) =
   var sum: Vector3
   var count: int
-  for other in self.shared.cellMap.neighborBoids(boid.cell, self.sensingShape):
-    sum += self.shared.boids[other].velocity
+  for other in self.controller.cellMap.neighborBoids(boid.cell, self.sensingShape):
+    sum += self.controller.boids[other].velocity
     inc count
   boid.velocity += ((sum/count) - boid.velocity) * self.factor
 
 proc update(self: BoidRuleAlignment3D) {.gdsync.} =
-  for i, boid in self.shared.boids.mpairs:
+  for i, boid in self.controller.boids.mpairs:
     if likely(self.factor != 0):
       self.alignment(boid)
 
