@@ -1,16 +1,15 @@
 [gd_scene load_steps=3 format=3 uid="uid://yahhp4q7qkrl"]
 
-[ext_resource type="PackedScene" uid="uid://bup7bjeyxy1ir" path="res://gizmo_3d.tscn" id="1_xu20i"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ng3n0"]
-albedo_color = Color(1, 1, 0.32549, 1)
+[ext_resource type="Script" uid="uid://dc1py1rn7b4qd" path="res://fish.gd" id="1_hgn23"]
+[ext_resource type="PackedScene" uid="uid://dl5f6m3mehyj1" path="res://Fish.glb" id="1_xu20i"]
 
 [node name="Boid3D" type="Node3D"]
+script = ExtResource("1_hgn23")
 
-[node name="CSGCylinder3D" type="CSGCylinder3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, -1)
-cone = true
-smooth_faces = false
-material = SubResource("StandardMaterial3D_ng3n0")
+[node name="Fish" parent="." instance=ExtResource("1_xu20i")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 
-[node name="Gizmo3D" parent="." instance=ExtResource("1_xu20i")]
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 1.09197, 0)
+pixel_size = 0.0115
+billboard = 1
