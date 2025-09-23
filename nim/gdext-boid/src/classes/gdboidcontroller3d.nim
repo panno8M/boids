@@ -1,7 +1,7 @@
 import gdext
 import gdext/classes/[gdNode3D]
 import gdext/classes/[gdGridMap, gdEngine]
-import std/[sets, hashes, tables]
+import std/[hashes, tables]
 import sparseGrids
 import timemeasure
 import global
@@ -9,15 +9,11 @@ import global
 type
   BoidController3D* {.gdsync.} = ptr object of Node3D
     shared*: SharedData
-    spawner: BoidSpawner3D
-    rules: seq[BoidRule3D]
-    collisionMapInstance: GridMap
+    cellMapInstance*: GridMap
     alignment_factor*: float = 0.05
     alignment_range*: int = 2
-    alignmentSensingShape: GridShape
+    alignmentSensingShape: GridShape = GridShape.sphere(2)
     control_max_acceleration*: float = 75
-    collisionMap: HashSet[Vector3i]
-
 
 # =================================== Cell Map ===================================
 
@@ -27,22 +23,12 @@ proc allBoids(grid: SparseGrid[Cell]): seq[int] =
     res.add(cell.boids)
   res
 
-proc updateSensingMap(self: BoidController3D) =
-    self.alignmentSensingShape = GridShape.sphere(self.alignment_range)
-
-proc loadCollisionMap(self: BoidController3D; map: GridMap) =
-  self.collisionMapInstance = map
-  self.shared.collisionMapStatus = self.collisionMapInstance.getStatus
-  self.updateSensingMap()
-  for cell in map.getUsedCells:
-    self.collisionMap.incl cell
-
 # =================================== Properties ===================================
-gdexport "collision_map",
-  getter= proc(self: BoidController3D): GridMap = self.collisionMapInstance,
+gdexport "cell_map",
+  getter= proc(self: BoidController3D): GridMap = self.cellMapInstance,
   setter= proc(self: BoidController3D; value: GridMap) =
-    self.loadCollisionMap value
-    self.collisionMapInstance = value
+    self.cellMapInstance = value
+    self.shared.cellMapStatus = self.cellMapInstance.getStatus
 
 gdexport[BoidController3D] "auto_instantiate", Appearance.group("auto_instantiate")
 
@@ -58,7 +44,7 @@ gdexport "alignment_range",
   getter= proc(self: BoidController3D): int = self.alignment_range,
   setter= proc(self: BoidController3D; value: int) =
     self.alignment_range = value
-    self.updateSensingMap(),
+    self.alignmentSensingShape = GridShape.sphere(self.alignment_range),
   Appearance.range(0, 5)
 
 gdexport[BoidController3D] "Control", Appearance.group("control")
@@ -87,16 +73,6 @@ proc alignment(self: BoidController3D; boid: var Boid) =
     inc count
   boid.velocity += ((sum/count) - boid.velocity) * self.alignment_factor
 
-proc interactCollisionMap(self: BoidController3D; boid: var Boid) =
-  var move: Vector3
-  for delta in self.alignmentSensingShape:
-    let np = boid.cell + delta
-    if np in self.collisionMap:
-      move -= delta
-
-  if move != Vector3.Zero:
-    boid.acceleration += move * 0.2
-
 proc fix_acceleration(self: BoidController3D): Error {.gdsync, signal.}
 
 method process*(self: BoidController3D; delta: float64) {.gdsync.} =
@@ -106,9 +82,6 @@ method process*(self: BoidController3D; delta: float64) {.gdsync.} =
         reset boid.acceleration
 
       discard self.fix_acceleration()
-
-      for i, boid in self.shared.boids.mpairs:
-        self.interactCollisionMap(boid)
 
       for i, boid in self.shared.boids.mpairs:
         boid.acceleration = boid.acceleration.limit_length(self.control_max_acceleration * delta)
@@ -124,7 +97,7 @@ method process*(self: BoidController3D; delta: float64) {.gdsync.} =
           boid.velocity = (boid.velocity/length) * length.clamp(self.shared.control_min_speed, self.shared.control_max_speed)
 
         boid.position += boid.velocity * delta
-        let newcell = self.shared.collisionMapStatus.localToMap(boid.position)
+        let newcell = self.shared.cellMapStatus.localToMap(boid.position)
         if boid.cell != newcell:
           self.shared.cellMap.moveBoid(boid.cell, newcell, i)
           boid.cell = newcell

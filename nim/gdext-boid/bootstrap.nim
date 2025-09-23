@@ -4,6 +4,7 @@ import classes/gdBoidSpawner3D
 import classes/gdBoidModule3D
 import classes/gdBoidRuleCohesion3D
 import classes/gdBoidRuleSeparation3D
+import classes/gdBoidRuleAvoidGrid3D
 
 
 GDExtensionEntryPoint
