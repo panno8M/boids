@@ -5,7 +5,6 @@ import std/[sets, hashes, tables]
 import sparseGrids
 import timemeasure
 import global
-import classes/[gdBoidSpawner3D, gdBoidRule3D]
 
 type
   BoidController3D* {.gdsync.} = ptr object of Node3D
@@ -79,13 +78,6 @@ method onInit*(self: BoidController3D) =
 method ready*(self: BoidController3D) {.gdsync.} =
   if not Engine.isEditorHint:
     self.shared.cellMap = initTable[Vector3i, Cell](1024)
-    for child in self.getChildren:
-      if child of BoidSpawner3D:
-        self.spawner = child as BoidSpawner3D
-        self.spawner.shared = self.shared
-      if child of BoidRule3D:
-        self.rules.add child as BoidRule3D
-        self.rules[^1].shared = self.shared
 
 proc alignment(self: BoidController3D; boid: var Boid) =
   var sum: Vector3

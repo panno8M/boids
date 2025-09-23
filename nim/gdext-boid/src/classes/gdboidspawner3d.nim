@@ -1,12 +1,12 @@
 import gdext
-import gdext/classes/[gdNode3D, gdPackedScene]
+import gdext/classes/[gdPackedScene]
 import std/[tables]
+
 import global
-import sparsegrids
+import classes/[gdBoidModule3D]
 
 type
-  BoidSpawner3D* {.gdsync.} = ptr object of Node3D
-    shared*: SharedData
+  BoidSpawner3D* {.gdsync.} = ptr object of BoidModule3D
     numOfInstances*: int
     auto_instantiate_blueprint*: gdref PackedScene
     auto_instantiate_range*: float = 15
@@ -19,23 +19,6 @@ gdexport "auto_instantiate_count",
   setter= proc(self: BoidSpawner3D; value: int) =
     self.numOfInstances = value
     self.spawnSyncRequired = true
-
-proc addBoid(grid: var SparseGrid[Cell]; pos: Vector3i; boidId: int) =
-  grid.mGetOrPut(pos).boids.add boidId
-
-proc removeBoidUnsafe(grid: var SparseGrid[Cell]; pos: Vector3i; boidId: int) =
-  let map = addr grid[pos].boids
-  map[].del map[].find boidId
-  if map[].len == 0:
-    grid.del(pos)
-
-proc removeBoid(grid: var SparseGrid[Cell]; pos: Vector3i; boidId: int) =
-  if grid.hasKey(pos):
-    removeBoidUnsafe(grid, pos, boidId)
-
-proc moveBoid*(grid: var SparseGrid[Cell]; src, dst: Vector3i; boidId: int) =
-  grid.removeBoidUnsafe(src, boidId)
-  grid.addBoid(dst, boidId)
 
 proc spawn(self: BoidSpawner3D; gridmapStatus: GridMapStatus; minSpeed, maxSpeed: float): Node3D =
   result = instantiate(self.auto_instantiate_blueprint[]) as Node3D
@@ -76,5 +59,5 @@ proc spawnSync*(self: BoidSpawner3D; gridmapStatus: GridMapStatus; minSpeed, max
 
 method process(self: BoidSpawner3D; delta: float64) {.gdsync.} =
   if self.spawnSyncRequired:
-    self.spawnSync(self.shared.collisionMapStatus, self.shared.controlMinSpeed, self.shared.controlMaxSpeed)
+    self.spawnSync(self.shared.cellMapStatus, self.shared.controlMinSpeed, self.shared.controlMaxSpeed)
     self.spawnSyncRequired = false

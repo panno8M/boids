@@ -1,11 +1,11 @@
 import gdext
 import gdext/classes/[gdNode3D]
-import classes/[gdBoidRule3D]
 
 import global
 import sparsegrids
+import classes/[gdBoidModule3D]
 
-type BoidRuleSeparation3D* {.gdsync.} = ptr object of BoidRule3D
+type BoidRuleSeparation3D* {.gdsync.} = ptr object of BoidModule3D
   factor*: float = 0.01
   range*: int = 1
   sensingShape*: GridShape = GridShape.sphere(1)
@@ -29,5 +29,5 @@ proc update(self: BoidRuleSeparation3D) {.gdsync.} =
     if likely(self.factor != 0):
       self.separation(boid)
 
-method ready(self: BoidRule3D) {.gdsync.} =
+method ready(self: BoidModule3D) {.gdsync.} =
   discard (self/"..").connect("fix_acceleration", self.callable"update")

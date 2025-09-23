@@ -1,3 +1,5 @@
+import std/[tables]
+
 import gdext
 import gdext/classes/[gdGridMap]
 import sparsegrids
@@ -20,7 +22,7 @@ type
     pausing*: bool
     cellMap*: SparseGrid[Cell]
     boids*: seq[Boid]
-    collisionMapStatus*: GridMapStatus
+    cellMapStatus*: GridMapStatus
     controlMinSpeed*: float = 5
     controlMaxSpeed*: float = 15
     fixAcceleration*: seq[proc()]
@@ -72,6 +74,23 @@ iterator neighborBoids*(grid: var SparseGrid[Cell]; pos: Vector3i; gridShape: Gr
   for cell in grid.neighbors(pos, gridShape):
     for boid in cell.boids:
       yield boid
+
+proc addBoid*(grid: var SparseGrid[Cell]; pos: Vector3i; boidId: int) =
+  grid.mGetOrPut(pos).boids.add boidId
+
+proc removeBoidUnsafe*(grid: var SparseGrid[Cell]; pos: Vector3i; boidId: int) =
+  let map = addr grid[pos].boids
+  map[].del map[].find boidId
+  if map[].len == 0:
+    grid.del(pos)
+
+proc removeBoid*(grid: var SparseGrid[Cell]; pos: Vector3i; boidId: int) =
+  if grid.hasKey(pos):
+    removeBoidUnsafe(grid, pos, boidId)
+
+proc moveBoid*(grid: var SparseGrid[Cell]; src, dst: Vector3i; boidId: int) =
+  grid.removeBoidUnsafe(src, boidId)
+  grid.addBoid(dst, boidId)
 
 # =================================== meta data ===================================
 
