@@ -1,9 +1,8 @@
 import gdext
-import gdext/classes/[gdNode3D]
 
 import global
 import sparsegrids
-import classes/[gdBoidModule3D]
+import classes/[gdBoidController3D]
 
 type BoidRuleAlignment3D* {.gdsync.} = ptr object of BoidModule3D
   factor*: float = 0.05

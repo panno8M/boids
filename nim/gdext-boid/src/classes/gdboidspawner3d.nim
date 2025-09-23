@@ -3,26 +3,26 @@ import gdext/classes/[gdPackedScene]
 import std/[tables]
 
 import global
-import classes/[gdBoidModule3D]
+import classes/[gdBoidController3D]
 
 type
   BoidSpawner3D* {.gdsync.} = ptr object of BoidModule3D
     numOfInstances*: int
-    auto_instantiate_blueprint*: gdref PackedScene
-    auto_instantiate_range*: float = 15
+    blueprint*: gdref PackedScene
+    range*: float = 15
     spawnSyncRequired*: bool
 
-gdexport BoidSpawner3D.auto_instantiate_blueprint
-gdexport BoidSpawner3D.auto_instantiate_range, Appearance.range(0, 100)
-gdexport "auto_instantiate_count",
+gdexport BoidSpawner3D.blueprint
+gdexport BoidSpawner3D.range, Appearance.range(0, 100)
+gdexport "count",
   getter= proc(self: BoidSpawner3D): int = self.numOfInstances,
   setter= proc(self: BoidSpawner3D; value: int) =
     self.numOfInstances = value
     self.spawnSyncRequired = true
 
 proc spawn(self: BoidSpawner3D; gridmapStatus: GridMapStatus; minSpeed, maxSpeed: float): Node3D =
-  result = instantiate(self.auto_instantiate_blueprint[]) as Node3D
-  let pos = Vector3.signedRand * self.auto_instantiate_range
+  result = instantiate(self.blueprint[]) as Node3D
+  let pos = Vector3.signedRand * self.range
   let cell = gridmapStatus.localToMap(pos)
   result.setPosition pos
   self.addChild result

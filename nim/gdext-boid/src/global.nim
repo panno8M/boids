@@ -66,6 +66,12 @@ iterator neighborBoids*(grid: var SparseGrid[Cell]; pos: Vector3i; gridShape: Gr
     for boid in cell.boids:
       yield boid
 
+proc allBoids*(grid: SparseGrid[Cell]): seq[int] =
+  var res: seq[int] = @[]
+  for cell in grid.values:
+    res.add(cell.boids)
+  res
+
 proc addBoid*(grid: var SparseGrid[Cell]; pos: Vector3i; boidId: int) =
   grid.mGetOrPut(pos).boids.add boidId
 

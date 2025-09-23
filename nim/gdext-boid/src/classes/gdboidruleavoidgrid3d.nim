@@ -5,7 +5,7 @@ import gdext/classes/[gdGridMap]
 
 import global
 import sparsegrids
-import classes/[gdBoidModule3D]
+import classes/[gdBoidController3D]
 
 type BoidRuleAvoidGrid3D* {.gdsync.} = ptr object of BoidModule3D
   factor*: float = 0.2
@@ -21,7 +21,7 @@ gdexport "range",
     self.sensingShape = GridShape.sphere(value),
   Appearance.range(0, 5)
 
-proc load_cell_map*(self: BoidRuleAvoidGrid3D) {.gdsync.} =
+proc loadCellMap*(self: BoidRuleAvoidGrid3D) {.gdsync.} =
   for cell in self.controller.cellMapInstance.getUsedCells:
     self.collisionMap.incl cell
 

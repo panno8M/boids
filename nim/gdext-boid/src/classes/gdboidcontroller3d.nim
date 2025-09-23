@@ -6,26 +6,21 @@ import sparseGrids
 import timemeasure
 import global
 
+export gdNode3D
+
 type
   BoidController3D* {.gdsync.} = ptr object of Node3D
     pausing*: bool
     cellMap*: SparseGrid[Cell]
     boids*: seq[Boid]
     cellMapStatus*: GridMapStatus
+    cellMapInstance*: GridMap
     controlMinSpeed*: float = 5
     controlMaxSpeed*: float = 15
-    fixAcceleration*: seq[proc()]
-    fixVelocity*: seq[proc()]
-    cellMapInstance*: GridMap
-    control_max_acceleration*: float = 75
+    controlMaxAcceleration*: float = 75
 
-# =================================== Cell Map ===================================
-
-proc allBoids(grid: SparseGrid[Cell]): seq[int] =
-  var res: seq[int] = @[]
-  for cell in grid.values:
-    res.add(cell.boids)
-  res
+  BoidModule3D* {.gdsync.} = ptr object of Node3D
+    controller*: BoidController3D
 
 # =================================== Properties ===================================
 gdexport "cell_map",
@@ -43,15 +38,12 @@ gdexport "pausing",
     self.pausing = value
 
 gdexport[BoidController3D] "Control", Appearance.group("control")
-gdexport "control_min_speed",
-  getter= proc(self: BoidController3D): float = self.control_min_speed,
-  setter= proc(self: BoidController3D; value: float) = self.control_min_speed = value
-gdexport "control_max_speed",
-  getter= proc(self: BoidController3D): float = self.control_max_speed,
-  setter= proc(self: BoidController3D; value: float) = self.control_max_speed = value
-gdexport BoidController3D.control_max_acceleration
+gdexport BoidController3D.controlMinSpeed
+gdexport BoidController3D.controlMaxSpeed
+gdexport BoidController3D.controlMaxAcceleration
 
 # =================================== Functions ===================================
+
 proc running*(self: BoidController3D): bool =
   not self.pausing
 
@@ -59,8 +51,11 @@ method ready*(self: BoidController3D) {.gdsync.} =
   if not Engine.isEditorHint:
     self.cellMap = initTable[Vector3i, Cell](1024)
 
-proc fix_acceleration(self: BoidController3D): Error {.gdsync, signal.}
-proc fix_velocity(self: BoidController3D): Error {.gdsync, signal.}
+method enterTree*(self: BoidModule3D) {.gdsync.} =
+  self.controller = self.getParent.as(BoidController3D)
+
+proc fixAcceleration(self: BoidController3D): Error {.gdsync, signal.}
+proc fixVelocity(self: BoidController3D): Error {.gdsync, signal.}
 
 method process*(self: BoidController3D; delta: float64) {.gdsync.} =
   if not Engine.isEditorHint:
@@ -68,18 +63,18 @@ method process*(self: BoidController3D; delta: float64) {.gdsync.} =
       for i, boid in self.boids.mpairs:
         reset boid.acceleration
 
-      discard self.fix_acceleration()
+      discard self.fixAcceleration()
 
       for i, boid in self.boids.mpairs:
-        boid.acceleration = boid.acceleration.limit_length(self.control_max_acceleration * delta)
+        boid.acceleration = boid.acceleration.limitLength(self.controlMaxAcceleration * delta)
         boid.velocity += boid.acceleration
 
-      discard self.fix_velocity()
+      discard self.fixVelocity()
 
       for i, boid in self.boids.mpairs:
         let length = boid.velocity.length
-        if length < self.control_min_speed or self.control_max_speed < length:
-          boid.velocity = (boid.velocity/length) * length.clamp(self.control_min_speed, self.control_max_speed)
+        if length < self.controlMinSpeed or self.controlMaxSpeed < length:
+          boid.velocity = (boid.velocity/length) * length.clamp(self.controlMinSpeed, self.controlMaxSpeed)
 
         boid.position += boid.velocity * delta
         let newcell = self.cellMapStatus.localToMap(boid.position)
