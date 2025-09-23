@@ -25,10 +25,14 @@ proc alignment(self: BoidRuleAlignment3D; boid: var Boid) =
     inc count
   boid.velocity += ((sum/count) - boid.velocity) * self.factor
 
-proc update(self: BoidRuleAlignment3D) {.gdsync.} =
-  for i, boid in self.controller.boids.mpairs:
-    if likely(self.factor != 0):
-      self.alignment(boid)
+proc update(self: BoidRuleAlignment3D; phase: ProcessPhase) {.gdsync.} =
+  case phase
+  of ProcessPhaseAcceleration:
+    discard
+  of ProcessPhaseVelocity:
+    for i, boid in self.controller.boids.mpairs:
+      if likely(self.factor != 0):
+        self.alignment(boid)
 
 method ready(self: BoidModule3D) {.gdsync.} =
-  discard (self/"..").connect("fix_acceleration", self.callable"update")
+  discard (self/"..").connect("phased_process", self.callable"update")

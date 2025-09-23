@@ -36,11 +36,15 @@ proc avoidGrid(self: BoidRuleAvoidGrid3D; boid: var Boid) =
   if move != Vector3.Zero:
     boid.acceleration += move * self.factor
 
-proc update(self: BoidRuleAvoidGrid3D) {.gdsync.} =
-  for i, boid in self.controller.boids.mpairs:
-    if likely(self.factor != 0):
-      self.avoidGrid(boid)
+proc update(self: BoidRuleAvoidGrid3D; phase: ProcessPhase) {.gdsync.} =
+  case phase
+  of ProcessPhaseAcceleration:
+    for i, boid in self.controller.boids.mpairs:
+      if likely(self.factor != 0):
+        self.avoidGrid(boid)
+  of ProcessPhaseVelocity:
+    discard
 
 method ready(self: BoidRuleAvoidGrid3D) {.gdsync.} =
-  discard (self/"..").connect("fix_acceleration", self.callable"update")
+  discard (self/"..").connect("phased_process", self.callable"update")
   discard self.callDeferred("load_cell_map")

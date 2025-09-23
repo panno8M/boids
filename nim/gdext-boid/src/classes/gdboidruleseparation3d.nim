@@ -23,10 +23,14 @@ proc separation(self: BoidRuleSeparation3D; boid: var Boid) =
     move += boid.position - self.controller.boids[other].position
   boid.acceleration += move * self.factor
 
-proc update(self: BoidRuleSeparation3D) {.gdsync.} =
-  for i, boid in self.controller.boids.mpairs:
-    if likely(self.factor != 0):
-      self.separation(boid)
+proc update(self: BoidRuleSeparation3D; phase: ProcessPhase) {.gdsync.} =
+  case phase
+  of ProcessPhaseAcceleration:
+    for i, boid in self.controller.boids.mpairs:
+      if likely(self.factor != 0):
+        self.separation(boid)
+  of ProcessPhaseVelocity:
+    discard
 
 method ready(self: BoidModule3D) {.gdsync.} =
-  discard (self/"..").connect("fix_acceleration", self.callable"update")
+  discard (self/"..").connect("phased_process", self.callable"update")

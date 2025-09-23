@@ -25,10 +25,14 @@ proc cohesion(self: BoidRuleCohesion3D; boid: var Boid) =
     inc count
   boid.acceleration += ((center / count) - boid.position) * self.factor
 
-proc update(self: BoidRuleCohesion3D) {.gdsync.} =
-  for i, boid in self.controller.boids.mpairs:
-    if likely(self.factor != 0):
-      self.cohesion(boid)
+proc update(self: BoidRuleCohesion3D; phase: ProcessPhase) {.gdsync.} =
+  case phase
+  of ProcessPhaseAcceleration:
+    for i, boid in self.controller.boids.mpairs:
+      if likely(self.factor != 0):
+        self.cohesion(boid)
+  of ProcessPhaseVelocity:
+    discard
 
 method ready(self: BoidRuleCohesion3D) {.gdsync.} =
-  discard (self/"..").connect("fix_acceleration", self.callable"update")
+  discard (self/"..").connect("phased_process", self.callable"update")

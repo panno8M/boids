@@ -22,7 +22,14 @@ type
   BoidModule3D* {.gdsync.} = ptr object of Node3D
     controller*: BoidController3D
 
+  ProcessPhase* = enum
+    ProcessPhaseAcceleration
+    ProcessPhaseVelocity
+
 # =================================== Properties ===================================
+
+BoidController3D.bind ProcessPhase
+
 gdexport "cell_map",
   getter= proc(self: BoidController3D): GridMap = self.cellMapInstance,
   setter= proc(self: BoidController3D; value: GridMap) =
@@ -54,8 +61,7 @@ method ready*(self: BoidController3D) {.gdsync.} =
 method enterTree*(self: BoidModule3D) {.gdsync.} =
   self.controller = self.getParent.as(BoidController3D)
 
-proc fixAcceleration(self: BoidController3D): Error {.gdsync, signal.}
-proc fixVelocity(self: BoidController3D): Error {.gdsync, signal.}
+proc phasedProcess*(self: BoidController3D; phase: ProcessPhase): Error {.gdsync, signal.}
 
 method process*(self: BoidController3D; delta: float64) {.gdsync.} =
   if not Engine.isEditorHint:
@@ -63,13 +69,13 @@ method process*(self: BoidController3D; delta: float64) {.gdsync.} =
       for i, boid in self.boids.mpairs:
         reset boid.acceleration
 
-      discard self.fixAcceleration()
+      discard self.phasedProcess(ProcessPhaseAcceleration)
 
       for i, boid in self.boids.mpairs:
         boid.acceleration = boid.acceleration.limitLength(self.controlMaxAcceleration * delta)
         boid.velocity += boid.acceleration
 
-      discard self.fixVelocity()
+      discard self.phasedProcess(ProcessPhaseVelocity)
 
       for i, boid in self.boids.mpairs:
         let length = boid.velocity.length
