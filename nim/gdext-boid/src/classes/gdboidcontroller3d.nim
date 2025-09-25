@@ -49,6 +49,9 @@ gdexport BoidController3D.controlMinSpeed
 gdexport BoidController3D.controlMaxSpeed
 gdexport BoidController3D.controlMaxAcceleration
 
+proc getAgentCount*(self: BoidController3D): Int {.gdsync.} =
+  Int(self.boids.len)
+
 # =================================== Functions ===================================
 
 proc running*(self: BoidController3D): bool =
