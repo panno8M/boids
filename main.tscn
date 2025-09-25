@@ -38,9 +38,8 @@ script = ExtResource("1_0xm2m")
 cell_map = NodePath("../GridMap")
 transform = Transform3D(0.999997, 0, 0, 0, 1, 0, 0, 0, 0.999997, 0, 0, 0)
 
-[node name="BoidSpawner3D" type="BoidSpawner3D" parent="BoidController3D"]
+[node name="BoidSpawnerFpsAdaptive3D" type="BoidSpawnerFpsAdaptive3D" parent="BoidController3D"]
 blueprint = ExtResource("1_ig7tw")
-count = 300
 
 [node name="BoidRuleCohesion3D" type="BoidRuleCohesion3D" parent="BoidController3D"]
 
