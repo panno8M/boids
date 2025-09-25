@@ -32,6 +32,3 @@ proc update(self: BoidRuleStayInBounds3D; phase: ProcessPhase) {.gdsync.} =
         self.stayInBounds(boid)
   of ProcessPhaseVelocity:
     discard
-
-method ready(self: BoidRuleStayInBounds3D) {.gdsync.} =
-  discard (self/"..").connect("phased_process", self.callable"update")

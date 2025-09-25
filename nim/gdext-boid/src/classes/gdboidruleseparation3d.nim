@@ -31,6 +31,3 @@ proc update(self: BoidRuleSeparation3D; phase: ProcessPhase) {.gdsync.} =
         self.separation(boid)
   of ProcessPhaseVelocity:
     discard
-
-method ready(self: BoidModule3D) {.gdsync.} =
-  discard (self/"..").connect("phased_process", self.callable"update")

@@ -33,6 +33,3 @@ proc update(self: BoidRuleCohesion3D; phase: ProcessPhase) {.gdsync.} =
         self.cohesion(boid)
   of ProcessPhaseVelocity:
     discard
-
-method ready(self: BoidRuleCohesion3D) {.gdsync.} =
-  discard (self/"..").connect("phased_process", self.callable"update")

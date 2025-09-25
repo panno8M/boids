@@ -33,6 +33,3 @@ proc update(self: BoidRuleAlignment3D; phase: ProcessPhase) {.gdsync.} =
     for i, boid in self.controller.boids.mpairs:
       if likely(self.factor != 0):
         self.alignment(boid)
-
-method ready(self: BoidModule3D) {.gdsync.} =
-  discard (self/"..").connect("phased_process", self.callable"update")

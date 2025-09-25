@@ -46,5 +46,4 @@ proc update(self: BoidRuleAvoidGrid3D; phase: ProcessPhase) {.gdsync.} =
     discard
 
 method ready(self: BoidRuleAvoidGrid3D) {.gdsync.} =
-  discard (self/"..").connect("phased_process", self.callable"update")
   discard self.callDeferred("load_cell_map")

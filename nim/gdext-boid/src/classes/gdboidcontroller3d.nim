@@ -60,6 +60,7 @@ method ready*(self: BoidController3D) {.gdsync.} =
 
 method enterTree*(self: BoidModule3D) {.gdsync.} =
   self.controller = self.getParent.as(BoidController3D)
+  discard self.controller.connect("phased_process", self.callable"update")
 
 proc phasedProcess*(self: BoidController3D; phase: ProcessPhase): Error {.gdsync, signal.}
 
