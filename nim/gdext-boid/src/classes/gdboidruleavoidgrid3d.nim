@@ -36,7 +36,7 @@ proc avoidGrid(self: BoidRuleAvoidGrid3D; boid: var Boid) =
   if move != Vector3.Zero:
     boid.acceleration += move * self.factor
 
-proc update(self: BoidRuleAvoidGrid3D; phase: ProcessPhase) {.gdsync.} =
+method update(self: BoidRuleAvoidGrid3D; phase: ProcessPhase) {.gdsync.} =
   case phase
   of ProcessPhaseAcceleration:
     for i, boid in self.controller.boids.mpairs:

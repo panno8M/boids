@@ -33,7 +33,7 @@ proc cohesion(self: BoidRuleCohesion3D; flock: BoidController3D; boid: var Boid)
     inc count
   boid.acceleration += ((center / count) - boid.position) * self.factor
 
-proc update(self: BoidRuleCohesion3D; phase: ProcessPhase) {.gdsync.} =
+method update(self: BoidRuleCohesion3D; phase: ProcessPhase) {.gdsync.} =
   if unlikely(self.factor == 0): return
 
   let flock = self.getFlock

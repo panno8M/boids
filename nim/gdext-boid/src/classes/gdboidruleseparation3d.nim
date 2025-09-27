@@ -31,7 +31,7 @@ proc separation(self: BoidRuleSeparation3D; flock: BoidController3D; boid: var B
     move += boid.position - flock.boids[other].position
   boid.acceleration += move * self.factor
 
-proc update(self: BoidRuleSeparation3D; phase: ProcessPhase) {.gdsync.} =
+method update(self: BoidRuleSeparation3D; phase: ProcessPhase) {.gdsync.} =
   if unlikely(self.factor == 0):return
 
   let flock = self.getFlock

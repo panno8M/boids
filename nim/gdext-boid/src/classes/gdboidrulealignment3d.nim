@@ -33,7 +33,7 @@ proc alignment(self: BoidRuleAlignment3D; flock: BoidController3D; boid: var Boi
     inc count
   boid.velocity += ((sum/count) - boid.velocity) * self.factor
 
-proc update(self: BoidRuleAlignment3D; phase: ProcessPhase) {.gdsync.} =
+method update(self: BoidRuleAlignment3D; phase: ProcessPhase) {.gdsync.} =
   if unlikely(self.factor == 0): return
 
   let flock = self.getFlock

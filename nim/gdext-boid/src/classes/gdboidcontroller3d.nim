@@ -20,6 +20,7 @@ type
     controlMaxAcceleration*: float = 75
 
   BoidModule3D* {.gdsync.} = ptr object of Node3D
+    enabled* {.gdexport.}: bool = true
     controller*: BoidController3D
 
   ProcessPhase* = enum
@@ -61,9 +62,15 @@ method ready*(self: BoidController3D) {.gdsync.} =
   if not Engine.isEditorHint:
     self.cellMap = initTable[Vector3i, Cell](1024)
 
+
+method update*(self: BoidModule3D; phase: ProcessPhase) {.gdsync, base.} = discard
+proc onPhasedProcess*(self: BoidModule3D; phase: ProcessPhase) {.gdsync, name: "_on_phased_process".} =
+  if self.enabled:
+    self.update(phase)
+
 method enterTree*(self: BoidModule3D) {.gdsync.} =
   self.controller = self.getParent.as(BoidController3D)
-  discard self.controller.connect("phased_process", self.callable"update")
+  discard self.controller.connect("phased_process", self.callable"_on_phased_process")
 
 proc phasedProcess*(self: BoidController3D; phase: ProcessPhase): Error {.gdsync, signal.}
 

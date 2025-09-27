@@ -24,7 +24,7 @@ proc stayInBounds(self: BoidRuleStayInBounds3D; boid: var Boid) =
     axisForce(self.bounds.position.z, self.bounds.size.z, self.threshold, boid.position.z),
   ) * self.factor
 
-proc update(self: BoidRuleStayInBounds3D; phase: ProcessPhase) {.gdsync.} =
+method update(self: BoidRuleStayInBounds3D; phase: ProcessPhase) {.gdsync.} =
   case phase
   of ProcessPhaseAcceleration:
     if likely(self.factor != 0):
