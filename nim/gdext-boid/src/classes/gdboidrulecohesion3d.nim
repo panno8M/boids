@@ -39,7 +39,7 @@ method update(self: BoidRuleCohesion3D; phase: ProcessPhase) {.gdsync.} =
   let flock = self.getFlock
   case phase
   of ProcessPhaseAcceleration:
-    for i, boid in flock.boids.mpairs:
+    for i, boid in self.controller.boids.mpairs:
       self.cohesion(flock, boid)
   of ProcessPhaseVelocity:
     discard

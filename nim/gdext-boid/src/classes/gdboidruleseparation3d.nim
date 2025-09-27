@@ -37,7 +37,7 @@ method update(self: BoidRuleSeparation3D; phase: ProcessPhase) {.gdsync.} =
   let flock = self.getFlock
   case phase
   of ProcessPhaseAcceleration:
-    for i, boid in flock.boids.mpairs:
+    for i, boid in self.controller.boids.mpairs:
       self.separation(flock, boid)
   of ProcessPhaseVelocity:
     discard
