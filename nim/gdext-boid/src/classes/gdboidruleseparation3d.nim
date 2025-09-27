@@ -8,6 +8,7 @@ type BoidRuleSeparation3D* {.gdsync.} = ptr object of BoidModule3D
   factor*: float = 0.01
   range*: int = 1
   sensingShape*: GridShape = GridShape.sphere(1)
+  target*: BoidController3D
 
 gdexport BoidRuleSeparation3D.factor, Appearance.range(0, 1)
 gdexport "range",
@@ -16,18 +17,27 @@ gdexport "range",
     self.range = value
     self.sensingShape = GridShape.sphere(value),
   Appearance.range(0, 5)
+gdexport BoidRuleSeparation3D.target
 
-proc separation(self: BoidRuleSeparation3D; boid: var Boid) =
+proc getFlock(self: BoidRuleSeparation3D): BoidController3D =
+  if self.target.isNil:
+    self.controller
+  else:
+    self.target
+
+proc separation(self: BoidRuleSeparation3D; flock: BoidController3D; boid: var Boid) =
   var move: Vector3
-  for other in self.controller.cellMap.neighborBoids(boid.cell, self.sensingShape):
-    move += boid.position - self.controller.boids[other].position
+  for other in flock.cellMap.neighborBoids(boid.cell, self.sensingShape):
+    move += boid.position - flock.boids[other].position
   boid.acceleration += move * self.factor
 
 proc update(self: BoidRuleSeparation3D; phase: ProcessPhase) {.gdsync.} =
+  if unlikely(self.factor == 0):return
+
+  let flock = self.getFlock
   case phase
   of ProcessPhaseAcceleration:
-    for i, boid in self.controller.boids.mpairs:
-      if likely(self.factor != 0):
-        self.separation(boid)
+    for i, boid in flock.boids.mpairs:
+      self.separation(flock, boid)
   of ProcessPhaseVelocity:
     discard
