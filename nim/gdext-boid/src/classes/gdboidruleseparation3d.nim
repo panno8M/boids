@@ -1,6 +1,5 @@
 import gdext
 
-import global
 import sparsegrids
 import classes/[gdBoidController3D]
 
@@ -25,11 +24,11 @@ proc getFlock(self: BoidRuleSeparation3D): BoidController3D =
   else:
     self.target
 
-proc separation(self: BoidRuleSeparation3D; flock: BoidController3D; boid: var Boid) =
+proc separation(self: BoidRuleSeparation3D; flock: BoidController3D; boid: BoidAgent3D) =
   var move: Vector3
   for other in flock.cellMap.neighborBoids(boid.cell, self.sensingShape):
-    move += boid.position - flock.boids[other].position
-  boid.acceleration += move * self.factor
+    move += boid.p - other.p
+  boid.a += move * self.factor
 
 method update(self: BoidRuleSeparation3D; phase: ProcessPhase) {.gdsync.} =
   if unlikely(self.factor == 0):return
@@ -37,7 +36,7 @@ method update(self: BoidRuleSeparation3D; phase: ProcessPhase) {.gdsync.} =
   let flock = self.getFlock
   case phase
   of ProcessPhaseAcceleration:
-    for i, boid in self.controller.boids.mpairs:
+    for boid in self.controller.boids:
       self.separation(flock, boid)
   of ProcessPhaseVelocity:
     discard

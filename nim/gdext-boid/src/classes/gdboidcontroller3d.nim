@@ -12,7 +12,7 @@ type
   BoidController3D* {.gdsync.} = ptr object of Node3D
     pausing*: bool
     cellMap*: SparseGrid[Cell]
-    boids*: seq[Boid]
+    boids*: seq[BoidAgent3D]
     cellMapStatus*: GridMapStatus
     cellMapInstance*: GridMap
     controlMinSpeed*: float = 5
@@ -22,6 +22,15 @@ type
   BoidModule3D* {.gdsync.} = ptr object of Node3D
     enabled* {.gdexport.}: bool = true
     controller*: BoidController3D
+
+  BoidAgent3D* {.gdsync.} = ptr object of Node3D
+    p*: Vector3
+    v*: Vector3
+    a*: Vector3
+    cell*: Vector3i
+
+  Cell* = object
+    boids*: seq[BoidAgent3D]
 
   ProcessPhase* = enum
     ProcessPhaseAcceleration
@@ -55,6 +64,32 @@ proc getAgentCount*(self: BoidController3D): Int {.gdsync.} =
 
 # =================================== Functions ===================================
 
+iterator neighborBoids*(grid: var SparseGrid[Cell]; pos: Vector3i; gridShape: GridShape): BoidAgent3D =
+  for cell in grid.neighbors(pos, gridShape):
+    for boid in cell.boids:
+      yield boid
+
+proc allBoids*(grid: SparseGrid[Cell]): seq[BoidAgent3D] =
+  for cell in grid.values:
+    result.add(cell.boids)
+
+proc addBoid*(grid: var SparseGrid[Cell]; pos: Vector3i; boid: BoidAgent3D) =
+  grid.mGetOrPut(pos).boids.add boid
+
+proc removeBoidUnsafe*(grid: var SparseGrid[Cell]; pos: Vector3i; boid: BoidAgent3D) =
+  let map = addr grid[pos].boids
+  map[].del map[].find boid
+  if map[].len == 0:
+    grid.del(pos)
+
+proc removeBoid*(grid: var SparseGrid[Cell]; pos: Vector3i; boid: BoidAgent3D) =
+  if grid.hasKey(pos):
+    removeBoidUnsafe(grid, pos, boid)
+
+proc moveBoid*(grid: var SparseGrid[Cell]; src, dst: Vector3i; boid: BoidAgent3D) =
+  grid.removeBoidUnsafe(src, boid)
+  grid.addBoid(dst, boid)
+
 proc running*(self: BoidController3D): bool =
   not self.pausing
 
@@ -77,29 +112,29 @@ proc phasedProcess*(self: BoidController3D; phase: ProcessPhase): Error {.gdsync
 method process*(self: BoidController3D; delta: float64) {.gdsync.} =
   if not Engine.isEditorHint:
     if self.running:
-      for i, boid in self.boids.mpairs:
-        reset boid.acceleration
+      for boid in self.boids:
+        reset boid.a
 
       discard self.phasedProcess(ProcessPhaseAcceleration)
 
-      for i, boid in self.boids.mpairs:
-        boid.acceleration = boid.acceleration.limitLength(self.controlMaxAcceleration * delta)
-        boid.velocity += boid.acceleration
+      for boid in self.boids:
+        boid.a = boid.a.limitLength(self.controlMaxAcceleration * delta)
+        boid.v += boid.a
 
       discard self.phasedProcess(ProcessPhaseVelocity)
 
-      for i, boid in self.boids.mpairs:
-        let length = boid.velocity.length
+      for boid in self.boids:
+        let length = boid.v.length
         if length < self.controlMinSpeed or self.controlMaxSpeed < length:
-          boid.velocity = (boid.velocity/length) * length.clamp(self.controlMinSpeed, self.controlMaxSpeed)
+          boid.v = (boid.v/length) * length.clamp(self.controlMinSpeed, self.controlMaxSpeed)
 
-        boid.position += boid.velocity * delta
-        let newcell = self.cellMapStatus.localToMap(boid.position)
+        boid.p += boid.v * delta
+        let newcell = self.cellMapStatus.localToMap(boid.p)
         if boid.cell != newcell:
-          self.cellMap.moveBoid(boid.cell, newcell, i)
+          self.cellMap.moveBoid(boid.cell, newcell, boid)
           boid.cell = newcell
 
-        if likely(boid.velocity != Vector3.Zero):
-          boid.agent.lookAt(boid.position + boid.velocity)
+        if likely(boid.v != Vector3.Zero):
+          boid.lookAt(boid.p + boid.v)
 
-        boid.agent.position = boid.position
+        boid.position = boid.p

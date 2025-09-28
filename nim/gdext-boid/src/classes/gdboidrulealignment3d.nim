@@ -1,6 +1,5 @@
 import gdext
 
-import global
 import sparsegrids
 import classes/[gdBoidController3D]
 
@@ -25,13 +24,13 @@ proc getFlock(self: BoidRuleAlignment3D): BoidController3D =
   else:
     self.target
 
-proc alignment(self: BoidRuleAlignment3D; flock: BoidController3D; boid: var Boid) =
+proc alignment(self: BoidRuleAlignment3D; flock: BoidController3D; boid: BoidAgent3D) =
   var sum: Vector3
   var count: int
   for other in flock.cellMap.neighborBoids(boid.cell, self.sensingShape):
-    sum += flock.boids[other].velocity
+    sum += other.v
     inc count
-  boid.velocity += ((sum/count) - boid.velocity) * self.factor
+  boid.v += ((sum/count) - boid.v) * self.factor
 
 method update(self: BoidRuleAlignment3D; phase: ProcessPhase) {.gdsync.} =
   if unlikely(self.factor == 0): return
@@ -41,5 +40,5 @@ method update(self: BoidRuleAlignment3D; phase: ProcessPhase) {.gdsync.} =
   of ProcessPhaseAcceleration:
     discard
   of ProcessPhaseVelocity:
-    for i, boid in self.controller.boids.mpairs:
+    for boid in self.controller.boids:
       self.alignment(flock, boid)

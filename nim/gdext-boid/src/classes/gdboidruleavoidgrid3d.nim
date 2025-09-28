@@ -3,7 +3,6 @@ import std/[sets]
 import gdext
 import gdext/classes/[gdGridMap]
 
-import global
 import sparsegrids
 import classes/[gdBoidController3D]
 
@@ -26,7 +25,7 @@ proc loadCellMap*(self: BoidRuleAvoidGrid3D) {.gdsync.} =
     self.collisionMap.incl cell
 
 
-proc avoidGrid(self: BoidRuleAvoidGrid3D; boid: var Boid) =
+proc avoidGrid(self: BoidRuleAvoidGrid3D; boid: BoidAgent3D) =
   var move: Vector3
   for delta in self.sensingShape:
     let np = boid.cell + delta
@@ -34,12 +33,12 @@ proc avoidGrid(self: BoidRuleAvoidGrid3D; boid: var Boid) =
       move -= delta
 
   if move != Vector3.Zero:
-    boid.acceleration += move * self.factor
+    boid.a += move * self.factor
 
 method update(self: BoidRuleAvoidGrid3D; phase: ProcessPhase) {.gdsync.} =
   case phase
   of ProcessPhaseAcceleration:
-    for i, boid in self.controller.boids.mpairs:
+    for boid in self.controller.boids:
       if likely(self.factor != 0):
         self.avoidGrid(boid)
   of ProcessPhaseVelocity:

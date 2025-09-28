@@ -1,15 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://yahhp4q7qkrl"]
+[gd_scene load_steps=2 format=3 uid="uid://yahhp4q7qkrl"]
 
-[ext_resource type="Script" uid="uid://dc1py1rn7b4qd" path="res://fish.gd" id="1_hgn23"]
 [ext_resource type="PackedScene" uid="uid://dl5f6m3mehyj1" path="res://Fish.glb" id="1_xu20i"]
 
-[node name="Boid3D" type="Node3D"]
-script = ExtResource("1_hgn23")
+[node name="Boid3D" type="BoidAgent3D"]
+process_mode = 4
 
 [node name="Fish" parent="." instance=ExtResource("1_xu20i")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
-
-[node name="Label3D" type="Label3D" parent="."]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 1.09197, 0)
-pixel_size = 0.0115
-billboard = 1

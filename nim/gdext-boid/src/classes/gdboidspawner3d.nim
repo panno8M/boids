@@ -9,23 +9,20 @@ type
     blueprint* {.gdexport.}: gdref PackedScene
     range* {.gdexport: Appearance.range(0, 100).}: float = 15
 
-proc spawn*(self: BoidSpawner3D): Node3D =
-  result = instantiate(self.blueprint[]) as Node3D
-  let pos = Vector3.signedRand * self.range
-  let cell = self.controller.cellMapStatus.localToMap(pos)
-  result.setPosition pos
+proc spawn*(self: BoidSpawner3D): BoidAgent3D =
+  result = instantiate(self.blueprint[]) as BoidAgent3D
   self.addChild result
-  self.controller.boids.add Boid(
-    agent: result,
-    position: pos,
-    velocity: Vector3.signedRand.normalized.map(self.controller.controlMinSpeed..self.controller.controlMaxSpeed),
-    acceleration: Vector3.Zero,
-    cell: cell,
-  )
-  self.controller.cellMap.addBoid(cell, self.controller.boids.high)
+  result.p = Vector3.signedRand * self.range
+  result.v = Vector3.signedRand.normalized.map(self.controller.controlMinSpeed..self.controller.controlMaxSpeed)
+  result.a = Vector3.Zero
+  result.cell = self.controller.cellMapStatus.localToMap(result.p)
+  result.position = result.p
+  self.controller.boids.add result
+  self.controller.cellMap.addBoid(result.cell, result)
 
 proc despawnLast*(self: BoidSpawner3D) =
   if self.controller.boids.len == 0: return
-  queueFree self.controller.boids[^1].agent
-  self.controller.cellMap.removeBoidUnsafe(self.controller.boids[^1].cell, self.controller.boids.high)
+  let boid = self.controller.boids[^1]
+  queueFree boid
+  self.controller.cellMap.removeBoidUnsafe(boid.cell, boid)
   discard self.controller.boids.pop()

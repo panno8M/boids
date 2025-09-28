@@ -1,23 +1,11 @@
-import std/[tables]
-
 import gdext
 import gdext/classes/[gdGridMap]
-import sparsegrids
 
 type
-  BoidIndex* = int ## Index of BoidController3D.boids
-  Cell* = object
-    boids*: seq[BoidIndex]
   GridMapStatus* = object
     cellSize*: Vector3
     centerX*, centerY*, centerZ*: bool
     offset*: Vector3
-  Boid* = object
-    position*: Vector3
-    velocity*: Vector3
-    acceleration*: Vector3
-    cell*: Vector3i
-    agent*: Node3D
 
 # =================================== GridMap utils ===================================
 
@@ -60,31 +48,3 @@ proc map*[T, S](ratio: T; range: HSlice[S, S]): auto =
   range.a * ratio + range.b * (1 - ratio)
 
 # =================================== Cell Map ===================================
-
-iterator neighborBoids*(grid: var SparseGrid[Cell]; pos: Vector3i; gridShape: GridShape): int =
-  for cell in grid.neighbors(pos, gridShape):
-    for boid in cell.boids:
-      yield boid
-
-proc allBoids*(grid: SparseGrid[Cell]): seq[int] =
-  var res: seq[int] = @[]
-  for cell in grid.values:
-    res.add(cell.boids)
-  res
-
-proc addBoid*(grid: var SparseGrid[Cell]; pos: Vector3i; boidId: int) =
-  grid.mGetOrPut(pos).boids.add boidId
-
-proc removeBoidUnsafe*(grid: var SparseGrid[Cell]; pos: Vector3i; boidId: int) =
-  let map = addr grid[pos].boids
-  map[].del map[].find boidId
-  if map[].len == 0:
-    grid.del(pos)
-
-proc removeBoid*(grid: var SparseGrid[Cell]; pos: Vector3i; boidId: int) =
-  if grid.hasKey(pos):
-    removeBoidUnsafe(grid, pos, boidId)
-
-proc moveBoid*(grid: var SparseGrid[Cell]; src, dst: Vector3i; boidId: int) =
-  grid.removeBoidUnsafe(src, boidId)
-  grid.addBoid(dst, boidId)

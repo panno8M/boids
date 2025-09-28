@@ -1,7 +1,6 @@
 import gdext
 import gdext/classes/[gdGridMap]
 
-import global
 import classes/[gdBoidController3D]
 
 type Cache = object
@@ -43,11 +42,11 @@ proc axisForce(boundsMin, boundsMax, pos: float32): float32 =
   else:
     0
 
-proc stayInBounds(self: BoidRuleStayInBounds3D; boid: var Boid) =
-  boid.acceleration += vector3(
-    axisForce(self.cache.boundsMin.x, self.cache.boundsMax.x, boid.position.x),
-    axisForce(self.cache.boundsMin.y, self.cache.boundsMax.y, boid.position.y),
-    axisForce(self.cache.boundsMin.z, self.cache.boundsMax.z, boid.position.z),
+proc stayInBounds(self: BoidRuleStayInBounds3D; boid: BoidAgent3D) =
+  boid.a += vector3(
+    axisForce(self.cache.boundsMin.x, self.cache.boundsMax.x, boid.p.x),
+    axisForce(self.cache.boundsMin.y, self.cache.boundsMax.y, boid.p.y),
+    axisForce(self.cache.boundsMin.z, self.cache.boundsMax.z, boid.p.z),
   ) * self.factor
 
 method update(self: BoidRuleStayInBounds3D; phase: ProcessPhase) {.gdsync.} =
@@ -55,7 +54,7 @@ method update(self: BoidRuleStayInBounds3D; phase: ProcessPhase) {.gdsync.} =
 
   case phase
   of ProcessPhaseAcceleration:
-    for i, boid in self.controller.boids.mpairs:
+    for boid in self.controller.boids:
       self.stayInBounds(boid)
   of ProcessPhaseVelocity:
     discard

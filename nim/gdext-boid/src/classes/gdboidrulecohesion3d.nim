@@ -1,6 +1,5 @@
 import gdext
 
-import global
 import sparsegrids
 import classes/[gdBoidController3D]
 
@@ -25,13 +24,13 @@ proc getFlock(self: BoidRuleCohesion3D): BoidController3D =
   else:
     self.target
 
-proc cohesion(self: BoidRuleCohesion3D; flock: BoidController3D; boid: var Boid) =
+proc cohesion(self: BoidRuleCohesion3D; flock: BoidController3D; boid: BoidAgent3D) =
   var center: Vector3
   var count: int
   for other in flock.cellMap.neighborBoids(boid.cell, self.sensingShape):
-    center += flock.boids[other].position
+    center += other.p
     inc count
-  boid.acceleration += ((center / count) - boid.position) * self.factor
+  boid.a += ((center / count) - boid.p) * self.factor
 
 method update(self: BoidRuleCohesion3D; phase: ProcessPhase) {.gdsync.} =
   if unlikely(self.factor == 0): return
@@ -39,7 +38,7 @@ method update(self: BoidRuleCohesion3D; phase: ProcessPhase) {.gdsync.} =
   let flock = self.getFlock
   case phase
   of ProcessPhaseAcceleration:
-    for i, boid in self.controller.boids.mpairs:
+    for boid in self.controller.boids:
       self.cohesion(flock, boid)
   of ProcessPhaseVelocity:
     discard
