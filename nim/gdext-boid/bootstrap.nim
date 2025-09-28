@@ -9,6 +9,7 @@ import classes/gdBoidRuleSeparation3D
 import classes/gdBoidRuleAlignment3D
 import classes/gdBoidRuleAvoidGrid3D
 import classes/gdBoidRuleStayInBounds3D
+import classes/gdBoidRuleInterestNode3D
 
 proc set_formatters {.execon: EntryPoint.} =
   defaultPropertyFormatter = toSnakeCase
