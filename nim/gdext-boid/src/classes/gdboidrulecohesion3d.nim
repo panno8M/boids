@@ -39,6 +39,7 @@ method update(self: BoidRuleCohesion3D; phase: ProcessPhase) {.gdsync.} =
   case phase
   of ProcessPhaseAcceleration:
     for boid in self.controller.boids:
-      self.cohesion(flock, boid)
+      if likely(boid.enabled):
+        self.cohesion(flock, boid)
   of ProcessPhaseVelocity:
     discard

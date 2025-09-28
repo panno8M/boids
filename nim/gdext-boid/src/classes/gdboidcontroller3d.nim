@@ -24,6 +24,7 @@ type
     controller*: BoidController3D
 
   BoidAgent3D* {.gdsync.} = ptr object of Node3D
+    enabled*: bool = true
     p*: Vector3
     v*: Vector3
     a*: Vector3
@@ -124,17 +125,18 @@ method process*(self: BoidController3D; delta: float64) {.gdsync.} =
       discard self.phasedProcess(ProcessPhaseVelocity)
 
       for boid in self.boids:
-        let length = boid.v.length
-        if length < self.controlMinSpeed or self.controlMaxSpeed < length:
-          boid.v = (boid.v/length) * length.clamp(self.controlMinSpeed, self.controlMaxSpeed)
+        if likely(boid.enabled):
+          let length = boid.v.length
+          if length < self.controlMinSpeed or self.controlMaxSpeed < length:
+            boid.v = (boid.v/length) * length.clamp(self.controlMinSpeed, self.controlMaxSpeed)
 
-        boid.p += boid.v * delta
-        let newcell = self.cellMapStatus.localToMap(boid.p)
-        if boid.cell != newcell:
-          self.cellMap.moveBoid(boid.cell, newcell, boid)
-          boid.cell = newcell
+          boid.p += boid.v * delta
+          let newcell = self.cellMapStatus.localToMap(boid.p)
+          if boid.cell != newcell:
+            self.cellMap.moveBoid(boid.cell, newcell, boid)
+            boid.cell = newcell
 
-        if likely(boid.v != Vector3.Zero):
-          boid.lookAt(boid.p + boid.v)
+          if likely(boid.v != Vector3.Zero):
+            boid.lookAt(boid.p + boid.v)
 
-        boid.position = boid.p
+          boid.position = boid.p

@@ -36,10 +36,12 @@ proc avoidGrid(self: BoidRuleAvoidGrid3D; boid: BoidAgent3D) =
     boid.a += move * self.factor
 
 method update(self: BoidRuleAvoidGrid3D; phase: ProcessPhase) {.gdsync.} =
+  if unlikely(self.factor != 0): return
+
   case phase
   of ProcessPhaseAcceleration:
     for boid in self.controller.boids:
-      if likely(self.factor != 0):
+      if likely(boid.enabled):
         self.avoidGrid(boid)
   of ProcessPhaseVelocity:
     discard

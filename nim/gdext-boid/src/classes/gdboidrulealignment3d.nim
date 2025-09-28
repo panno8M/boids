@@ -41,4 +41,5 @@ method update(self: BoidRuleAlignment3D; phase: ProcessPhase) {.gdsync.} =
     discard
   of ProcessPhaseVelocity:
     for boid in self.controller.boids:
-      self.alignment(flock, boid)
+      if likely(boid.enabled):
+        self.alignment(flock, boid)

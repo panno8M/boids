@@ -55,6 +55,7 @@ method update(self: BoidRuleStayInBounds3D; phase: ProcessPhase) {.gdsync.} =
   case phase
   of ProcessPhaseAcceleration:
     for boid in self.controller.boids:
-      self.stayInBounds(boid)
+      if likely(boid.enabled):
+        self.stayInBounds(boid)
   of ProcessPhaseVelocity:
     discard

@@ -29,6 +29,7 @@ method update(self: BoidRuleInterestNode3D; phase: ProcessPhase) {.gdsync.} =
   case phase
   of ProcessPhaseAcceleration:
     for boid in self.controller.boids:
-      self.separation(targetpos, boid)
+      if likely(boid.enabled):
+        self.separation(targetpos, boid)
   of ProcessPhaseVelocity:
     discard
