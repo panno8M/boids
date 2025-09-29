@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://bpwugrpfc2agh"]
+[gd_scene load_steps=10 format=3 uid="uid://bpwugrpfc2agh"]
 
 [ext_resource type="Script" uid="uid://cygsnmisi4ro8" path="res://main.gd" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://yahhp4q7qkrl" path="res://fish.tscn" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://cuxresj1risim" path="res://player.tscn" id="3_h2yge"]
+[ext_resource type="PackedScene" uid="uid://chmw0o7co7ik6" path="res://shark.tscn" id="3_lquwl"]
 [ext_resource type="Script" uid="uid://dtg2gyc01o3op" path="res://stat.gd" id="4_1bvp3"]
 
 [sub_resource type="Curve3D" id="Curve3D_h2yge"]
@@ -50,6 +51,30 @@ blueprint = ExtResource("1_ig7tw")
 
 [node name="BoidRuleStayInBounds3D" type="BoidRuleStayInBounds3D" parent="BoidController3D"]
 bounds = AABB(-25, -25, -25, 50, 50, 50)
+
+[node name="BoidRuleSeparation3D2" type="BoidRuleSeparation3D" parent="BoidController3D" node_paths=PackedStringArray("target")]
+factor = 0.035
+range = 4
+target = NodePath("../../Shark Flock")
+
+[node name="BoidRuleInterestNode3D" type="BoidRuleInterestNode3D" parent="BoidController3D" node_paths=PackedStringArray("target")]
+target = NodePath("../../Player")
+
+[node name="Shark Flock" type="BoidController3D" parent="." node_paths=PackedStringArray("cell_map")]
+cell_map = NodePath("../GridMap")
+transform = Transform3D(0.99999404, 0, 0, 0, 1, 0, 0, 0, 0.99999404, 0, 0, 0)
+
+[node name="BoidSpawnerFixed3D" type="BoidSpawnerFixed3D" parent="Shark Flock"]
+count = 3
+blueprint = ExtResource("3_lquwl")
+
+[node name="BoidRuleSeparation3D" type="BoidRuleSeparation3D" parent="Shark Flock"]
+
+[node name="BoidRuleStayInBounds3D" type="BoidRuleStayInBounds3D" parent="Shark Flock"]
+bounds = AABB(-25, -25, -25, 50, 50, 50)
+
+[node name="BoidRuleInterestNode3D" type="BoidRuleInterestNode3D" parent="Shark Flock" node_paths=PackedStringArray("target")]
+target = NodePath("../../Player")
 
 [node name="Path3D" type="Path3D" parent="."]
 curve = SubResource("Curve3D_h2yge")

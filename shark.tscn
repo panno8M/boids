@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://chmw0o7co7ik6"]
+
+[ext_resource type="PackedScene" uid="uid://dpkxxrgorjhtx" path="res://Shark.glb" id="1_rwmi6"]
+
+[node name="Node3D" type="BoidAgent3D"]
+process_mode = 4
+
+[node name="Shark" parent="." instance=ExtResource("1_rwmi6")]
+transform = Transform3D(-6, 0, 9.0597484e-07, 0, 6, 0, -9.0597484e-07, 0, -6, 0, 0, 0)
