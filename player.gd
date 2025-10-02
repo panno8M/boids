@@ -33,6 +33,20 @@ func _input(event):
 		pitch -= event.relative.y * mouse_sensitivity
 		pitch = clamp(pitch, -89, 89)
 		rotation_degrees = Vector3(pitch, yaw, 0)
+	if event is InputEventKey:
+		if event.pressed and event.keycode == KEY_ESCAPE:
+			var mode: int
+			if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+				mode = Input.MOUSE_MODE_VISIBLE
+			else:
+				mode = Input.MOUSE_MODE_CAPTURED
+			Input.set_mouse_mode(mode)
+	if event is InputEventMouseButton:
+		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			if closest_agent:
+				var book = closest_agent as Bookfly
+				print(book.path)
+				book.execute()
 
 func _process(delta):
 	var acc = Vector3.ZERO
