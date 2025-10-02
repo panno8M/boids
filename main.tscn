@@ -38,7 +38,7 @@ script = ExtResource("1_0xm2m")
 
 [node name="BoidController3D" type="BoidController3D" parent="." node_paths=PackedStringArray("cell_map")]
 cell_map = NodePath("../GridMap")
-transform = Transform3D(0.999997, 0, 0, 0, 1, 0, 0, 0, 0.999997, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="BoidSpawnerFpsAdaptive3D" type="BoidSpawnerFpsAdaptive3D" parent="BoidController3D"]
 blueprint = ExtResource("1_ig7tw")
@@ -62,7 +62,7 @@ target = NodePath("../../Player")
 
 [node name="Shark Flock" type="BoidController3D" parent="." node_paths=PackedStringArray("cell_map")]
 cell_map = NodePath("../GridMap")
-transform = Transform3D(0.99999404, 0, 0, 0, 1, 0, 0, 0, 0.99999404, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="BoidSpawnerFixed3D" type="BoidSpawnerFixed3D" parent="Shark Flock"]
 count = 3
@@ -96,10 +96,10 @@ metadata/_editor_floor_ = Vector3(17, 16, -17)
 [node name="Player" parent="." instance=ExtResource("3_h2yge")]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 5.12346e-05, -0.000213384, 0.00021336, 0.000377094, 1, 5.13353e-05, -1, 0.000377081, 0, 0, 0)
-light_color = Color(0.196078, 0.505882, 1, 1)
-light_energy = 0.995
-light_specular = 10.379
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+light_color = Color(0.2, 0.5, 1, 1)
+light_energy = 1.0
+light_specular = 10.0
 
 [node name="HUD" type="Control" parent="."]
 layout_mode = 3
@@ -108,18 +108,19 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="Stat" type="Control" parent="HUD" node_paths=PackedStringArray("controller")]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchor_right = 48.0
+anchor_bottom = 27.0
 script = ExtResource("4_1bvp3")
 controller = NodePath("../../BoidController3D")
 
 [node name="ColorRect" type="ColorRect" parent="HUD/Stat"]
 layout_mode = 1
 anchors_preset = -1
-anchor_bottom = 18.0
+anchor_bottom = 1.0
 offset_right = 150.0
-color = Color(0, 0, 0, 0.5803922)
+offset_bottom = 2.0
+color = Color(0, 0, 0, 0.6)
 metadata/_edit_use_anchors_ = true
 
 [node name="FPS key" type="Label" parent="HUD/Stat"]
