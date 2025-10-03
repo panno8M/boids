@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bpwugrpfc2agh"]
+[gd_scene load_steps=12 format=3 uid="uid://bpwugrpfc2agh"]
 
 [ext_resource type="PackedScene" uid="uid://yahhp4q7qkrl" path="res://fish.tscn" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://cuxresj1risim" path="res://player.tscn" id="3_h2yge"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://b17idx2wi2vgm" path="res://Status.tscn" id="4_7mycd"]
 [ext_resource type="Material" uid="uid://dj52uxdnanxxa" path="res://dust_particle_process_material.tres" id="5_7mycd"]
 [ext_resource type="QuadMesh" uid="uid://deegmffpba3cq" path="res://dust_quad_mesh.tres" id="6_272bh"]
+[ext_resource type="Script" uid="uid://bhpuheestwkir" path="res://piemenu.gd" id="5_lquwl"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
 transparency = 3
@@ -105,6 +106,16 @@ text = "+"
 label_settings = SubResource("LabelSettings_lquwl")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="PieMenu" type="Control" parent="HUD"]
+layout_mode = 1
+anchor_right = 48.000004
+anchor_bottom = 27.000002
+offset_right = -0.00012207031
+offset_bottom = -0.00012207031
+script = ExtResource("5_lquwl")
+action = &"pie_menu"
+item_list = Array[String](["A", "B", "C"])
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
 amount = 1000
