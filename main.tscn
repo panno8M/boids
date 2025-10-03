@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://bpwugrpfc2agh"]
+[gd_scene load_steps=13 format=3 uid="uid://bpwugrpfc2agh"]
 
 [ext_resource type="PackedScene" uid="uid://c1xcy4s8lhvjw" path="res://book/bookfly.tscn" id="3_7mycd"]
 [ext_resource type="PackedScene" uid="uid://cuxresj1risim" path="res://player.tscn" id="3_h2yge"]
 [ext_resource type="PackedScene" uid="uid://b17idx2wi2vgm" path="res://Status.tscn" id="4_7mycd"]
 [ext_resource type="Material" uid="uid://dj52uxdnanxxa" path="res://dust_particle_process_material.tres" id="5_7mycd"]
+[ext_resource type="Script" uid="uid://bhpuheestwkir" path="res://piemenu.gd" id="5_lquwl"]
 [ext_resource type="QuadMesh" uid="uid://deegmffpba3cq" path="res://dust_quad_mesh.tres" id="6_272bh"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
@@ -87,6 +88,21 @@ text = "+"
 label_settings = SubResource("LabelSettings_lquwl")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="PieMenu" type="Label" parent="HUD"]
+layout_mode = 0
+offset_right = 68.0
+offset_bottom = 23.0
+text = "PieMenu
+
+"
+script = ExtResource("5_lquwl")
+action = &"pie_menu"
+item_list = Dictionary[String, Variant]({
+"A": Color(0.94541115, 0.7724989, 0.8730342, 1),
+"B": AABB(0.29, 0.29, 0.045, 0.355, 0.295, 0.115),
+"C": "Hello, world!"
+})
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
 amount = 1000
