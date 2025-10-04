@@ -1,13 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://cuxresj1risim"]
+[gd_scene load_steps=4 format=3 uid="uid://cuxresj1risim"]
 
 [ext_resource type="Script" uid="uid://caunji8imw0wb" path="res://player.gd" id="1_4flbx"]
+[ext_resource type="Environment" uid="uid://dptnq4x4nhko" path="res://water_environment.tres" id="2_i3pqv"]
+[ext_resource type="CameraAttributesPractical" uid="uid://b2vxwwvedde8t" path="res://water_camera_attributes_practical.tres" id="3_hqtel"]
 
 [node name="Player" type="Node3D"]
 script = ExtResource("1_4flbx")
 
 [node name="Camera3D" type="Camera3D" parent="."]
+environment = ExtResource("2_i3pqv")
+attributes = ExtResource("3_hqtel")
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Camera3D"]
 light_color = Color(0.65098, 0.729412, 1, 1)
-light_energy = 16.996
+light_energy = 26.896
 spot_range = 93.223

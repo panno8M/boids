@@ -28,6 +28,5 @@ enabled=PackedStringArray()
 
 [rendering]
 
-renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"
+renderer/rendering_method="mobile"
 environment/defaults/default_clear_color=Color(0.240638, 0.278344, 0.502106, 1)

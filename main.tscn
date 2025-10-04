@@ -76,7 +76,8 @@ metadata/_editor_floor_ = Vector3(17, 16, -17)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
-light_color = Color(0.2, 0.5, 1, 1)
+light_color = Color(0.45585513, 0.7559191, 1, 1)
+light_energy = 2.38
 light_specular = 10.0
 
 [node name="HUD" type="Control" parent="."]
