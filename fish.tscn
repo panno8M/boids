@@ -1,9 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://yahhp4q7qkrl"]
+[gd_scene load_steps=3 format=3 uid="uid://yahhp4q7qkrl"]
 
 [ext_resource type="PackedScene" uid="uid://dl5f6m3mehyj1" path="res://Fish.glb" id="1_xu20i"]
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_xu20i"]
+radius = 2.0
+
 [node name="Boid3D" type="BoidAgent3D"]
-process_mode = 4
 
 [node name="Fish" parent="." instance=ExtResource("1_xu20i")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_xu20i")
