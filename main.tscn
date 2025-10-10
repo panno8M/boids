@@ -91,9 +91,10 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Stat" parent="HUD" node_paths=PackedStringArray("controller") instance=ExtResource("4_7mycd")]
+[node name="Stat" parent="HUD" node_paths=PackedStringArray("controller", "player") instance=ExtResource("4_7mycd")]
 layout_mode = 1
 controller = NodePath("../../BoidController3D")
+player = NodePath("../../Player")
 
 [node name="CrossHair" type="Label" parent="HUD"]
 layout_mode = 1
