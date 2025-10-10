@@ -10,3 +10,4 @@ func _process(delta: float) -> void:
 	if player:
 		if player.latest_agent:
 			$CurrentAgent/Name.text = player.latest_agent.name
+			$CurrentAgent/Path.text = player.latest_agent.path
