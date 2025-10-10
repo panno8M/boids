@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://yahhp4q7qkrl" path="res://fish.tscn" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://cuxresj1risim" path="res://player.tscn" id="3_h2yge"]
 [ext_resource type="PackedScene" uid="uid://chmw0o7co7ik6" path="res://shark.tscn" id="3_lquwl"]
-[ext_resource type="Script" uid="uid://dtg2gyc01o3op" path="res://stat.gd" id="4_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://b17idx2wi2vgm" path="res://Status.tscn" id="4_7mycd"]
 [ext_resource type="Material" uid="uid://dj52uxdnanxxa" path="res://dust_particle_process_material.tres" id="5_7mycd"]
 [ext_resource type="QuadMesh" uid="uid://deegmffpba3cq" path="res://dust_quad_mesh.tres" id="6_272bh"]
 
@@ -91,48 +91,9 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Stat" type="Control" parent="HUD" node_paths=PackedStringArray("controller")]
+[node name="Stat" parent="HUD" node_paths=PackedStringArray("controller") instance=ExtResource("4_7mycd")]
 layout_mode = 1
-anchor_right = 48.0
-anchor_bottom = 27.0
-script = ExtResource("4_1bvp3")
 controller = NodePath("../../BoidController3D")
-
-[node name="ColorRect" type="ColorRect" parent="HUD/Stat"]
-layout_mode = 1
-anchors_preset = -1
-anchor_bottom = 1.0
-offset_right = 150.0
-offset_bottom = 2.0
-color = Color(0, 0, 0, 0.6)
-metadata/_edit_use_anchors_ = true
-
-[node name="FPS key" type="Label" parent="HUD/Stat"]
-layout_mode = 0
-offset_left = 26.0
-offset_right = 66.0
-offset_bottom = 23.0
-text = "FPS:"
-
-[node name="Agents key" type="Label" parent="HUD/Stat"]
-layout_mode = 0
-offset_top = 23.0
-offset_right = 62.0
-offset_bottom = 46.0
-text = "Agents: "
-
-[node name="FPS" type="Label" parent="HUD/Stat"]
-layout_mode = 0
-offset_left = 62.0
-offset_right = 102.0
-offset_bottom = 23.0
-
-[node name="Agents" type="Label" parent="HUD/Stat"]
-layout_mode = 0
-offset_left = 62.0
-offset_top = 23.0
-offset_right = 102.0
-offset_bottom = 46.0
 
 [node name="CrossHair" type="Label" parent="HUD"]
 layout_mode = 1

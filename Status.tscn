@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3 uid="uid://b17idx2wi2vgm"]
+
+[ext_resource type="Script" uid="uid://dtg2gyc01o3op" path="res://stat.gd" id="1_u4nki"]
+
+[node name="Stat" type="Control"]
+layout_mode = 3
+anchor_right = 48.0
+anchor_bottom = 27.0
+script = ExtResource("1_u4nki")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 1.0
+offset_right = 150.0
+offset_bottom = 2.0
+color = Color(0, 0, 0, 0.6)
+metadata/_edit_use_anchors_ = true
+
+[node name="FPS key" type="Label" parent="."]
+layout_mode = 0
+offset_left = 26.0
+offset_right = 66.0
+offset_bottom = 23.0
+text = "FPS:"
+
+[node name="Agents key" type="Label" parent="."]
+layout_mode = 0
+offset_top = 23.0
+offset_right = 62.0
+offset_bottom = 46.0
+text = "Agents: "
+
+[node name="FPS" type="Label" parent="."]
+layout_mode = 0
+offset_left = 62.0
+offset_right = 102.0
+offset_bottom = 23.0
+
+[node name="Agents" type="Label" parent="."]
+layout_mode = 0
+offset_left = 62.0
+offset_top = 23.0
+offset_right = 102.0
+offset_bottom = 46.0
