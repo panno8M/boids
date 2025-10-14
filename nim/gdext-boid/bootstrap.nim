@@ -12,6 +12,7 @@ import classes/gdBoidRuleStayInBounds3D
 import classes/gdBoidRuleInteractNode3D
 import classes/gdBoidRuleFollowNode3D
 import classes/gdBoidRulePostureLookAt3D
+import classes/gdTerminal
 import nabula/archives
 
 proc set_formatters {.execon: EntryPoint.} =
