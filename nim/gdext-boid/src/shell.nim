@@ -1,5 +1,5 @@
 {.experimental: "dotOperators".}
-import std/[os, osproc, strtabs, terminal]
+import std/[os, osproc, strtabs, terminal, streams]
 
 type ShellEnv* = object
   pwd*: string = "."
@@ -32,6 +32,37 @@ proc exec*(command: string;
           args: openArray[string] = []; env: StringTableRef = nil;
           options: set[ProcessOption] = {poStdErrToStdOut, poUsePath}): ShellEnv {.discardable.} =
   ShellEnv().exec(command, args, env, options)
+
+when defined(windows):
+  import std/winlean
+  proc setNamedPipeHandleState(hNamedPipe: Handle;
+                                lpMode: PDWORD;
+                                lpMaxCollectionCount: PDWORD;
+                                lpCollectDataTimeout: PDWORD;
+    ): WINBOOL {.stdcall, dynlib: "kernel32", importc: "SetNamedPipeHandleState", sideEffect.}
+
+  proc setNonBlock*(p: Process) =
+    let h = cast[Handle](p.outputHandle)
+    var mode: DWORD = PIPE_NOWAIT
+    if setNamedPipeHandleState(h, addr mode, nil, nil) == 0:
+      raise newException(OSError, "SetNamedPipeHandleState failed: " & $osLastError())
+else:
+  import std/posix
+  proc setNonBlock*(p: Process) =
+    let fd = p.outputHandle
+    let flags = fcntl(fd, F_GETFL, 0)
+    if flags == -1:
+      raise newException(OSError, "fcntl(GETFL) failed: " & $osLastError())
+    if fcntl(fd, F_SETFL, flags or O_NONBLOCK) == -1:
+      raise newException(OSError, "fcntl(SETFL) failed: " & $osLastError())
+
+proc readAvailable*(p: Process): string =
+  if not p.running: return
+  try:
+    while true:
+      result.add p.peekableOutputStream.readChar
+  except IOError:
+    return
 
 template `.`*(shell: ShellEnv; command: untyped; args: varargs[string]): ShellEnv =
   shell.exec(astToStr command, args)
