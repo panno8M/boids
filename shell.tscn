@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=3 uid="uid://8f0eyknjwtiy"]
+
+[ext_resource type="Script" uid="uid://bj0r2o3uq01fy" path="res://line_2d.gd" id="1_6fuaf"]
+
+[node name="Terminal" type="Terminal" node_paths=PackedStringArray("view_buffer", "write_buffer", "pwd")]
+view_buffer = NodePath("ViewBuffer")
+write_buffer = NodePath("WriteBuffer")
+pwd = NodePath("Pwd")
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ViewBuffer" type="CodeEdit" parent="."]
+layout_mode = 0
+offset_right = 726.0
+offset_bottom = 460.0
+editable = false
+
+[node name="WriteBuffer" type="CodeEdit" parent="."]
+layout_mode = 0
+offset_top = 483.0
+offset_right = 726.0
+offset_bottom = 669.0
+
+[node name="Pwd" type="Label" parent="."]
+layout_mode = 0
+offset_top = 460.0
+offset_right = 40.0
+offset_bottom = 483.0
+
+[node name="Line2D" type="Line2D" parent="."]
+position = Vector2(952, 236)
+points = PackedVector2Array(-100, 0, 100, 0)
+script = ExtResource("1_6fuaf")
