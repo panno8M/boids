@@ -1,11 +1,23 @@
-[gd_resource type="Environment" format=3 uid="uid://dptnq4x4nhko"]
+[gd_resource type="Environment" load_steps=4 format=3 uid="uid://dptnq4x4nhko"]
+
+[ext_resource type="Texture2D" uid="uid://kowcktbwi2yv" path="res://warm_reception_dinner_4k.exr" id="1_1deh2"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_1deh2"]
+panorama = ExtResource("1_1deh2")
+
+[sub_resource type="Sky" id="Sky_bbqii"]
+sky_material = SubResource("PanoramaSkyMaterial_1deh2")
 
 [resource]
-background_mode = 1
-background_color = Color(0.22473317, 0.25002652, 0.40143988, 1)
+background_mode = 2
+background_color = Color(0.4, 0.28266668, 0.224, 1)
+sky = SubResource("Sky_bbqii")
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 3.2
 glow_enabled = true
 fog_enabled = true
-fog_light_color = Color(0.17254902, 0.28627452, 0.3882353, 1)
-fog_light_energy = 0.2
+fog_light_color = Color(0.39, 0.23712, 0.1716, 1)
+fog_light_energy = 0.86
 fog_sun_scatter = 0.25
-fog_density = 0.05
+fog_density = 0.002
