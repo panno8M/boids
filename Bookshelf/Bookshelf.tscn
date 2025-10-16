@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4eeymsaio1mr"]
+
+[ext_resource type="PackedScene" uid="uid://kftnt0lbhb2b" path="res://Bookshelf/bookshelf.glb" id="1_6qlgb"]
+
+[node name="Sketchfab_Scene" instance=ExtResource("1_6qlgb")]
+
+[node name="Sketchfab_model" parent="." index="0"]
+transform = Transform3D(0.012025085, 0, 0, 0, -5.2563315e-10, -0.012025085, 0, 0.012025085, -5.2563315e-10, 0, 0, 0)
