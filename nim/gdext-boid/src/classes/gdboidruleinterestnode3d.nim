@@ -24,12 +24,9 @@ proc separation(self: BoidRuleInterestNode3D; targetpos: Vector3; boid: BoidAgen
 
 method update(self: BoidRuleInterestNode3D; phase: ProcessPhase) {.gdsync.} =
   if unlikely(self.factor == 0): return
+  if phase != ProcessPhaseAcceleration: return
 
   let targetpos = self.target.position
-  case phase
-  of ProcessPhaseAcceleration:
-    for boid in self.controller.boids:
-      if likely(boid.enabled):
-        self.separation(targetpos, boid)
-  of ProcessPhaseVelocity:
-    discard
+  for boid in self.controller.boids:
+    if likely(boid.enabled):
+      self.separation(targetpos, boid)

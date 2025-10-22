@@ -54,6 +54,8 @@ target = NodePath("../../Shark Flock")
 [node name="BoidRuleInterestNode3D" type="BoidRuleInterestNode3D" parent="BoidController3D" node_paths=PackedStringArray("target")]
 target = NodePath("../../Player")
 
+[node name="BoidRulePostureLookAt3D" type="BoidRulePostureLookAt3D" parent="BoidController3D"]
+
 [node name="Shark Flock" type="BoidController3D" parent="." node_paths=PackedStringArray("cell_map")]
 cell_map = NodePath("../GridMap")
 
@@ -68,6 +70,8 @@ bounds = AABB(-25, -25, -25, 50, 50, 50)
 
 [node name="BoidRuleInterestNode3D" type="BoidRuleInterestNode3D" parent="Shark Flock" node_paths=PackedStringArray("target")]
 target = NodePath("../../Player")
+
+[node name="BoidRulePostureLookAt3D" type="BoidRulePostureLookAt3D" parent="Shark Flock"]
 
 [node name="GridMap" type="GridMap" parent="."]
 visible = false

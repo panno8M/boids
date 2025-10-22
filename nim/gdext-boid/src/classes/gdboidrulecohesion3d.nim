@@ -34,12 +34,9 @@ proc cohesion(self: BoidRuleCohesion3D; flock: BoidController3D; boid: BoidAgent
 
 method update(self: BoidRuleCohesion3D; phase: ProcessPhase) {.gdsync.} =
   if unlikely(self.factor == 0): return
+  if phase != ProcessPhaseAcceleration: return
 
   let flock = self.getFlock
-  case phase
-  of ProcessPhaseAcceleration:
-    for boid in self.controller.boids:
-      if likely(boid.enabled):
-        self.cohesion(flock, boid)
-  of ProcessPhaseVelocity:
-    discard
+  for boid in self.controller.boids:
+    if likely(boid.enabled):
+      self.cohesion(flock, boid)

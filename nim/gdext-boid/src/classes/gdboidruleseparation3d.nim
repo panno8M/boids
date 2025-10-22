@@ -32,12 +32,9 @@ proc separation(self: BoidRuleSeparation3D; flock: BoidController3D; boid: BoidA
 
 method update(self: BoidRuleSeparation3D; phase: ProcessPhase) {.gdsync.} =
   if unlikely(self.factor == 0):return
+  if phase != ProcessPhaseAcceleration: return
 
   let flock = self.getFlock
-  case phase
-  of ProcessPhaseAcceleration:
-    for boid in self.controller.boids:
-      if likely(boid.enabled):
-        self.separation(flock, boid)
-  of ProcessPhaseVelocity:
-    discard
+  for boid in self.controller.boids:
+    if likely(boid.enabled):
+      self.separation(flock, boid)

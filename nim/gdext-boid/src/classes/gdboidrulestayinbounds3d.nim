@@ -51,11 +51,8 @@ proc stayInBounds(self: BoidRuleStayInBounds3D; boid: BoidAgent3D) =
 
 method update(self: BoidRuleStayInBounds3D; phase: ProcessPhase) {.gdsync.} =
   if unlikely(self.factor == 0): return
+  if phase != ProcessPhaseAcceleration: return
 
-  case phase
-  of ProcessPhaseAcceleration:
-    for boid in self.controller.boids:
-      if likely(boid.enabled):
-        self.stayInBounds(boid)
-  of ProcessPhaseVelocity:
-    discard
+  for boid in self.controller.boids:
+    if likely(boid.enabled):
+      self.stayInBounds(boid)

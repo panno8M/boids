@@ -34,12 +34,9 @@ proc alignment(self: BoidRuleAlignment3D; flock: BoidController3D; boid: BoidAge
 
 method update(self: BoidRuleAlignment3D; phase: ProcessPhase) {.gdsync.} =
   if unlikely(self.factor == 0): return
+  if phase != ProcessPhaseVelocity: return
 
   let flock = self.getFlock
-  case phase
-  of ProcessPhaseAcceleration:
-    discard
-  of ProcessPhaseVelocity:
-    for boid in self.controller.boids:
-      if likely(boid.enabled):
-        self.alignment(flock, boid)
+  for boid in self.controller.boids:
+    if likely(boid.enabled):
+      self.alignment(flock, boid)

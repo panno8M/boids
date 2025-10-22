@@ -36,6 +36,7 @@ type
   ProcessPhase* = enum
     ProcessPhaseAcceleration
     ProcessPhaseVelocity
+    ProcessPhasePosture
 
 # =================================== Properties ===================================
 
@@ -129,14 +130,14 @@ method process*(self: BoidController3D; delta: float64) {.gdsync.} =
           let length = boid.v.length
           if length < self.controlMinSpeed or self.controlMaxSpeed < length:
             boid.v = (boid.v/length) * length.clamp(self.controlMinSpeed, self.controlMaxSpeed)
-
           boid.p += boid.v * delta
+
+      discard self.phasedProcess(ProcessPhasePosture)
+
+      for boid in self.boids:
           let newcell = self.cellMapStatus.localToMap(boid.p)
           if boid.cell != newcell:
             self.cellMap.moveBoid(boid.cell, newcell, boid)
             boid.cell = newcell
-
-          if likely(boid.v != Vector3.Zero):
-            boid.lookAt(boid.p + boid.v)
 
           boid.position = boid.p
