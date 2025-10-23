@@ -60,7 +60,8 @@ data = {
 }
 metadata/_editor_floor_ = Vector3(17, 16, -17)
 
-[node name="Player" parent="." instance=ExtResource("3_h2yge")]
+[node name="Player" parent="." node_paths=PackedStringArray("book_command") instance=ExtResource("3_h2yge")]
+book_command = NodePath("../HUD/BookCommand")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
@@ -89,19 +90,17 @@ label_settings = SubResource("LabelSettings_lquwl")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PieMenu" type="Label" parent="HUD"]
+[node name="BookCommand" type="Label" parent="HUD"]
 layout_mode = 0
-offset_right = 68.0
-offset_bottom = 23.0
-text = "PieMenu
-
-"
+offset_right = 256.0
+offset_bottom = 69.0
+text = "Book Command"
+horizontal_alignment = 1
+text_overrun_behavior = 3
 script = ExtResource("5_lquwl")
-action = &"pie_menu"
 item_list = Dictionary[String, Variant]({
-"A": Color(0.94541115, 0.7724989, 0.8730342, 1),
-"B": AABB(0.29, 0.29, 0.045, 0.355, 0.295, 0.115),
-"C": "Hello, world!"
+"Execute": &"execute",
+"Take": &"take"
 })
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]

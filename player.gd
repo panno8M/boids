@@ -8,6 +8,11 @@ var pitch := 0.0
 var velocity := Vector3.ZERO
 @export var closest_agent: BoidAgent3D
 @export var latest_agent: BoidAgent3D
+@export var book_command: PieMenu
+var mouse_left_command: PieMenu
+
+func _ready() -> void:
+	mouse_left_command = book_command
 
 func get_closest_agent(camera: Camera3D, distance: float = 1000.0, mask: int = 0xFFFFFFFF) -> BoidAgent3D:
 	var screen_center = get_viewport().size / 2
@@ -39,12 +44,23 @@ func _input(event):
 				mode = Input.MOUSE_MODE_CAPTURED
 			Input.set_mouse_mode(mode)
 	if event is InputEventMouseButton:
-		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			if closest_agent:
-				var book = closest_agent as Bookfly
-				print(book.path)
-				book.execute()
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				if closest_agent:
+					mouse_left_command.begin()
+			else:
+				var item = mouse_left_command.confirm()
+				match typeof(item):
+					TYPE_STRING_NAME:
+						if has_method(item):
+							call(item)
 
+func execute():
+	if latest_agent:
+		var book = latest_agent as Bookfly
+		print(book.path)
+		book.execute()
+		
 func _process(delta):
 	var acc = Vector3.ZERO
 
