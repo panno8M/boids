@@ -14,6 +14,7 @@ type Bookfly* {.gdsync.} = ptr object of BoidAgent3D
   animationPlayer* {.gdexport.}: NodePath
   player: AnimationPlayer
   flyName* {.gdexport.}: StringName = "Fly"
+  openName* {.gdexport.}: StringName = "Open"
 
 type BookSpawner* {.gdsync.} = ptr object of BoidSpawner3D
     spawnSyncRequired*: bool
@@ -32,6 +33,11 @@ proc seekRandom(player: AnimationPlayer) =
 proc playRandom(player: AnimationPlayer; animation: StringName) =
   player.play(animation)
   player.seekRandom()
+
+proc pause(player: AnimationPlayer; animation: StringName; seconds: float = 0) =
+  player.play(animation)
+  player.seek(seconds)
+  player.pause()
 
 proc init*(self: Bookfly) =
   self.player = self/self.animationPlayer as AnimationPlayer
@@ -61,3 +67,11 @@ method process(self: BookSpawner; delta: float64) {.gdsync.} =
 
 proc execute*(self: Bookfly) {.gdsync.} =
   discard cd".".startProcess("xdg-open", [$self.path])
+
+proc transfer*(self: Bookfly; newParent: Node3D) {.gdsync.} =
+  self.enabled = false
+  self.getParent.removeChild(self)
+  newParent.addChild(self)
+  self.p = vector3(0, 0, -2.5)
+  self.transform = Transform3D(origin: self.p)
+  self.player.pause(self.openName)

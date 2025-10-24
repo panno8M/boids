@@ -24,7 +24,7 @@ type
     controller*: BoidController3D
 
   BoidAgent3D* {.gdsync.} = ptr object of Node3D
-    enabled*: bool = true
+    enabled* {.gdexport.}: bool = true
     p*: Vector3
     v*: Vector3
     a*: Vector3

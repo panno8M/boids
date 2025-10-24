@@ -60,7 +60,11 @@ func execute():
 		var book = latest_agent as Bookfly
 		print(book.path)
 		book.execute()
-		
+
+func take():
+	if latest_agent:
+		latest_agent.transfer(self)
+
 func _process(delta):
 	var acc = Vector3.ZERO
 
