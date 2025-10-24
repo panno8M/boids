@@ -9,7 +9,10 @@ var velocity := Vector3.ZERO
 @export var closest_agent: BoidAgent3D
 @export var latest_agent: BoidAgent3D
 @export var book_command: PieMenu
+@export var book_command_holding: PieMenu
+@export var controller: BoidController3D
 var mouse_left_command: PieMenu
+var holding: BoidAgent3D
 
 func _ready() -> void:
 	mouse_left_command = book_command
@@ -62,8 +65,16 @@ func execute():
 		book.execute()
 
 func take():
-	if latest_agent:
+	if latest_agent and not holding:
 		latest_agent.transfer(self)
+		holding = latest_agent
+		mouse_left_command = book_command_holding
+
+func release():
+	if holding:
+		latest_agent.release(controller)
+		mouse_left_command = book_command
+		holding = null
 
 func _process(delta):
 	var acc = Vector3.ZERO

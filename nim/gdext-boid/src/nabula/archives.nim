@@ -75,3 +75,12 @@ proc transfer*(self: Bookfly; newParent: Node3D) {.gdsync.} =
   self.p = vector3(0, 0, -2.5)
   self.transform = Transform3D(origin: self.p)
   self.player.pause(self.openName)
+
+proc release*(self: Bookfly; newParent: Node3D) {.gdsync.} =
+  self.enabled = true
+  let global = self.globalTransform
+  self.getParent.removeChild(self)
+  newParent.addChild(self)
+  self.globalTransform = global
+  self.p = self.position
+  self.player.play(self.flyName)

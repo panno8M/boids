@@ -60,8 +60,10 @@ data = {
 }
 metadata/_editor_floor_ = Vector3(17, 16, -17)
 
-[node name="Player" parent="." node_paths=PackedStringArray("book_command") instance=ExtResource("3_h2yge")]
+[node name="Player" parent="." node_paths=PackedStringArray("book_command", "book_command_holding", "controller") instance=ExtResource("3_h2yge")]
 book_command = NodePath("../HUD/BookCommand")
+book_command_holding = NodePath("../HUD/BookCommandHolding")
+controller = NodePath("../BoidController3D")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
@@ -101,6 +103,19 @@ script = ExtResource("5_lquwl")
 item_list = Dictionary[String, Variant]({
 "Execute": &"execute",
 "Take": &"take"
+})
+
+[node name="BookCommandHolding" type="Label" parent="HUD"]
+layout_mode = 0
+offset_right = 256.0
+offset_bottom = 69.0
+text = "Book Command"
+horizontal_alignment = 1
+text_overrun_behavior = 3
+script = ExtResource("5_lquwl")
+item_list = Dictionary[String, Variant]({
+"Execute": &"execute",
+"Release": &"release"
 })
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
