@@ -10,6 +10,7 @@ var velocity := Vector3.ZERO
 @export var latest_agent: BoidAgent3D
 @export var book_command: PieMenu
 @export var book_command_holding: PieMenu
+@export var book_command_viewing: PieMenu
 @export var controller: BoidController3D
 var mouse_left_command: PieMenu
 var holding: BoidAgent3D
@@ -75,6 +76,16 @@ func release():
 		latest_agent.release(controller)
 		mouse_left_command = book_command
 		holding = null
+
+func open():
+	if holding:
+		holding.open()
+		mouse_left_command = book_command_viewing
+
+func close():
+	if holding:
+		holding.close()
+		mouse_left_command = book_command_holding
 
 func _process(delta):
 	var acc = Vector3.ZERO

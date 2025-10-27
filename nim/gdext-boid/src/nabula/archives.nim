@@ -84,3 +84,9 @@ proc release*(self: Bookfly; newParent: Node3D) {.gdsync.} =
   self.globalTransform = global
   self.p = self.position
   self.player.play(self.flyName)
+
+proc open*(self: Bookfly) {.gdsync.} =
+  self.player.play(self.openName)
+
+proc close*(self: Bookfly) {.gdsync.} =
+  self.player.playBackwards(self.openName)
