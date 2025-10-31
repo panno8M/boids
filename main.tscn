@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bpwugrpfc2agh"]
+[gd_scene load_steps=14 format=3 uid="uid://bpwugrpfc2agh"]
 
 [ext_resource type="PackedScene" uid="uid://c1xcy4s8lhvjw" path="res://book/bookfly.tscn" id="3_7mycd"]
 [ext_resource type="PackedScene" uid="uid://cuxresj1risim" path="res://player.tscn" id="3_h2yge"]
@@ -28,6 +28,11 @@ item/0/navigation_layers = 1
 
 [sub_resource type="LabelSettings" id="LabelSettings_lquwl"]
 font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_7mycd"]
+font_size = 32
+outline_size = 12
+outline_color = Color(0.24477637, 0.2447764, 0.24477637, 1)
 
 [node name="Main" type="Node"]
 
@@ -60,11 +65,12 @@ data = {
 }
 metadata/_editor_floor_ = Vector3(17, 16, -17)
 
-[node name="Player" parent="." node_paths=PackedStringArray("book_command", "book_command_holding", "book_command_viewing", "controller") instance=ExtResource("3_h2yge")]
+[node name="Player" parent="." node_paths=PackedStringArray("book_command", "book_command_holding", "book_command_viewing", "controller", "book_title") instance=ExtResource("3_h2yge")]
 book_command = NodePath("../HUD/BookCommand")
 book_command_holding = NodePath("../HUD/BookCommandHolding")
 book_command_viewing = NodePath("../HUD/BookCommandViewing")
 controller = NodePath("../BoidController3D")
+book_title = NodePath("../HUD/BookTitle")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
@@ -133,6 +139,18 @@ item_list = Dictionary[String, Variant]({
 "Release": &"release",
 "Close": &"close"
 })
+
+[node name="BookTitle" type="Label" parent="HUD"]
+visible = false
+layout_mode = 0
+offset_left = 760.0
+offset_top = 300.0
+offset_right = 1160.0
+offset_bottom = 537.0
+text = "Book Title"
+label_settings = SubResource("LabelSettings_7mycd")
+horizontal_alignment = 1
+autowrap_mode = 3
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
 amount = 1000

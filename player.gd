@@ -12,6 +12,7 @@ var velocity := Vector3.ZERO
 @export var book_command_holding: PieMenu
 @export var book_command_viewing: PieMenu
 @export var controller: BoidController3D
+@export var book_title: Label
 var mouse_left_command: PieMenu
 var holding: BoidAgent3D
 
@@ -51,7 +52,7 @@ func _input(event):
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
 				if closest_agent:
-					mouse_left_command.begin()
+					mouse_left_command.begin(closest_agent.path.get_file().get_basename())
 			else:
 				var item = mouse_left_command.confirm()
 				match typeof(item):
@@ -69,22 +70,27 @@ func take():
 	if latest_agent and not holding:
 		latest_agent.transfer(self)
 		holding = latest_agent
+		book_title.text = holding.path.get_file().get_basename()
+		book_title.visible = true
 		mouse_left_command = book_command_holding
 
 func release():
 	if holding:
 		latest_agent.release(controller)
+		book_title.visible = false
 		mouse_left_command = book_command
 		holding = null
 
 func open():
 	if holding:
 		holding.open()
+		book_title.visible = false
 		mouse_left_command = book_command_viewing
 
 func close():
 	if holding:
 		holding.close()
+		book_title.visible = true
 		mouse_left_command = book_command_holding
 
 func _process(delta):
