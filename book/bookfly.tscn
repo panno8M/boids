@@ -1,0 +1,52 @@
+[gd_scene load_steps=8 format=3 uid="uid://c1xcy4s8lhvjw"]
+
+[ext_resource type="PackedScene" uid="uid://0o3j5n8jgvnw" path="res://book/book.tscn" id="1_hrdg0"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_xu20i"]
+radius = 1.7
+
+[sub_resource type="Curve" id="Curve_48jhu"]
+_data = [Vector2(0, 1), 0.0, -0.02461195, 0, 0, Vector2(0.390681, 0.9903846), 0.0, 0.0, 0, 0, Vector2(1, 0), -5.17376, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_bjtuq"]
+curve = SubResource("Curve_48jhu")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_48jhu"]
+emission_shape = 1
+emission_sphere_radius = 1.0
+gravity = Vector3(0, -0.5, 0)
+alpha_curve = SubResource("CurveTexture_bjtuq")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_48jhu"]
+transparency = 1
+vertex_color_use_as_albedo = true
+emission_enabled = true
+emission = Color(0.85333335, 1, 0.19999999, 1)
+emission_energy_multiplier = 16.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_bjtuq"]
+material = SubResource("StandardMaterial3D_48jhu")
+radius = 0.02
+height = 0.04
+radial_segments = 16
+rings = 8
+
+[node name="Boid3D" type="Bookfly"]
+animation_player = NodePath("Book/AnimationPlayer")
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_xu20i")
+
+[node name="Book" parent="." instance=ExtResource("1_hrdg0")]
+transform = Transform3D(-12, 0, 1.0490733e-06, 0, 12, 0, -1.0490733e-06, 0, -12, 0, 0, 0)
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.3378726, 0.3278752)
+amount = 25
+lifetime = 1.5
+process_material = SubResource("ParticleProcessMaterial_48jhu")
+draw_pass_1 = SubResource("SphereMesh_bjtuq")

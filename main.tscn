@@ -1,8 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://bpwugrpfc2agh"]
+[gd_scene load_steps=12 format=3 uid="uid://bpwugrpfc2agh"]
 
-[ext_resource type="PackedScene" uid="uid://yahhp4q7qkrl" path="res://fish.tscn" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://c1xcy4s8lhvjw" path="res://book/bookfly.tscn" id="3_7mycd"]
 [ext_resource type="PackedScene" uid="uid://cuxresj1risim" path="res://player.tscn" id="3_h2yge"]
-[ext_resource type="PackedScene" uid="uid://chmw0o7co7ik6" path="res://shark.tscn" id="3_lquwl"]
 [ext_resource type="PackedScene" uid="uid://b17idx2wi2vgm" path="res://Status.tscn" id="4_7mycd"]
 [ext_resource type="Material" uid="uid://dj52uxdnanxxa" path="res://dust_particle_process_material.tres" id="5_7mycd"]
 [ext_resource type="QuadMesh" uid="uid://deegmffpba3cq" path="res://dust_quad_mesh.tres" id="6_272bh"]
@@ -34,44 +33,23 @@ font_size = 32
 [node name="BoidController3D" type="BoidController3D" parent="." node_paths=PackedStringArray("cell_map")]
 cell_map = NodePath("../GridMap")
 
-[node name="BoidSpawnerFpsAdaptive3D" type="BoidSpawnerFpsAdaptive3D" parent="BoidController3D"]
-blueprint = ExtResource("1_ig7tw")
-
-[node name="BoidRuleCohesion3D" type="BoidRuleCohesion3D" parent="BoidController3D"]
+[node name="BookSpawner" type="BookSpawner" parent="BoidController3D"]
+root_directory = "/home/panno/hdd/animes"
+blueprint = ExtResource("3_7mycd")
 
 [node name="BoidRuleSeparation3D" type="BoidRuleSeparation3D" parent="BoidController3D"]
+range = 2
 
 [node name="BoidRuleAlignment3D" type="BoidRuleAlignment3D" parent="BoidController3D"]
 
 [node name="BoidRuleStayInBounds3D" type="BoidRuleStayInBounds3D" parent="BoidController3D"]
 bounds = AABB(-25, -25, -25, 50, 50, 50)
 
-[node name="BoidRuleSeparation3D2" type="BoidRuleSeparation3D" parent="BoidController3D" node_paths=PackedStringArray("target")]
-factor = 0.035
-range = 4
-target = NodePath("../../Shark Flock")
-
 [node name="BoidRuleInterestNode3D" type="BoidRuleInterestNode3D" parent="BoidController3D" node_paths=PackedStringArray("target")]
 target = NodePath("../../Player")
 
 [node name="BoidRulePostureLookAt3D" type="BoidRulePostureLookAt3D" parent="BoidController3D"]
-
-[node name="Shark Flock" type="BoidController3D" parent="." node_paths=PackedStringArray("cell_map")]
-cell_map = NodePath("../GridMap")
-
-[node name="BoidSpawnerFixed3D" type="BoidSpawnerFixed3D" parent="Shark Flock"]
-count = 3
-blueprint = ExtResource("3_lquwl")
-
-[node name="BoidRuleSeparation3D" type="BoidRuleSeparation3D" parent="Shark Flock"]
-
-[node name="BoidRuleStayInBounds3D" type="BoidRuleStayInBounds3D" parent="Shark Flock"]
-bounds = AABB(-25, -25, -25, 50, 50, 50)
-
-[node name="BoidRuleInterestNode3D" type="BoidRuleInterestNode3D" parent="Shark Flock" node_paths=PackedStringArray("target")]
-target = NodePath("../../Player")
-
-[node name="BoidRulePostureLookAt3D" type="BoidRulePostureLookAt3D" parent="Shark Flock"]
+enable_y = false
 
 [node name="GridMap" type="GridMap" parent="."]
 visible = false
