@@ -2,6 +2,7 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_272bh"]
 font_size = 64
+font_color = Color(0, 0, 0, 1)
 
 [node name="Control" type="Control"]
 layout_mode = 3
