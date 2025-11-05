@@ -1,0 +1,51 @@
+[gd_scene load_steps=11 format=3 uid="uid://b8u5t6id3x1en"]
+
+[ext_resource type="Script" uid="uid://44fdkapah2dd" path="res://book_user.gd" id="1_d0kbr"]
+[ext_resource type="PackedScene" uid="uid://cikeoyjuodwyw" path="res://page/page_view.tscn" id="2_wbaa7"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_wbaa7"]
+viewport_path = NodePath("RightPageView1")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vhyl2"]
+resource_local_to_scene = true
+albedo_texture = SubResource("ViewportTexture_wbaa7")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_f67ww"]
+viewport_path = NodePath("RightPageView2")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fceqc"]
+resource_local_to_scene = true
+albedo_texture = SubResource("ViewportTexture_f67ww")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_nv3y1"]
+viewport_path = NodePath("LeftPageView1")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wapbq"]
+resource_local_to_scene = true
+albedo_texture = SubResource("ViewportTexture_nv3y1")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_7q4gy"]
+viewport_path = NodePath("LeftPageView2")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q8yjg"]
+resource_local_to_scene = true
+albedo_texture = SubResource("ViewportTexture_7q4gy")
+
+[node name="BookUser" type="Node3D" node_paths=PackedStringArray("right_page1", "right_page2", "left_page1", "left_page2")]
+script = ExtResource("1_d0kbr")
+right_page1 = NodePath("RightPageView1")
+right_page_material1 = SubResource("StandardMaterial3D_vhyl2")
+right_page2 = NodePath("RightPageView2")
+right_page_material2 = SubResource("StandardMaterial3D_fceqc")
+left_page1 = NodePath("LeftPageView1")
+left_page_material1 = SubResource("StandardMaterial3D_wapbq")
+left_page2 = NodePath("LeftPageView2")
+left_page_material2 = SubResource("StandardMaterial3D_q8yjg")
+
+[node name="RightPageView1" parent="." instance=ExtResource("2_wbaa7")]
+
+[node name="RightPageView2" parent="." instance=ExtResource("2_wbaa7")]
+
+[node name="LeftPageView1" parent="." instance=ExtResource("2_wbaa7")]
+
+[node name="LeftPageView2" parent="." instance=ExtResource("2_wbaa7")]

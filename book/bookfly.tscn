@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://c1xcy4s8lhvjw"]
 
-[ext_resource type="PackedScene" uid="uid://0o3j5n8jgvnw" path="res://book/book.tscn" id="1_hrdg0"]
+[ext_resource type="PackedScene" uid="uid://xq73bbo1st2t" path="res://book/Book.glb" id="1_eabwy"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_xu20i"]
 radius = 1.7
@@ -32,8 +32,11 @@ height = 0.04
 radial_segments = 16
 rings = 8
 
-[node name="Boid3D" type="Bookfly"]
+[node name="Boid3D" type="Bookfly" node_paths=PackedStringArray("right_page", "left_page", "free_page")]
 animation_player = NodePath("Book/AnimationPlayer")
+right_page = NodePath("Book/Armature/Skeleton3D/Plane")
+left_page = NodePath("Book/Armature/Skeleton3D/Plane_001")
+free_page = NodePath("Book/Armature/Skeleton3D/Plane_002")
 
 [node name="Area3D" type="Area3D" parent="."]
 collision_mask = 0
@@ -41,8 +44,8 @@ collision_mask = 0
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 shape = SubResource("SphereShape3D_xu20i")
 
-[node name="Book" parent="." instance=ExtResource("1_hrdg0")]
-transform = Transform3D(-12, 0, 1.0490733e-06, 0, 12, 0, -1.0490733e-06, 0, -12, 0, 0, 0)
+[node name="Book" parent="." instance=ExtResource("1_eabwy")]
+transform = Transform3D(-12, 0, -1.0490733e-06, 0, 12, 0, 1.0490733e-06, 0, -12, 0, 0, 0)
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.3378726, 0.3278752)

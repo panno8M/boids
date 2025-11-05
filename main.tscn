@@ -1,7 +1,8 @@
-[gd_scene load_steps=14 format=3 uid="uid://bpwugrpfc2agh"]
+[gd_scene load_steps=15 format=3 uid="uid://bpwugrpfc2agh"]
 
 [ext_resource type="PackedScene" uid="uid://c1xcy4s8lhvjw" path="res://book/bookfly.tscn" id="3_7mycd"]
 [ext_resource type="PackedScene" uid="uid://cuxresj1risim" path="res://player.tscn" id="3_h2yge"]
+[ext_resource type="PackedScene" uid="uid://b8u5t6id3x1en" path="res://book_user.tscn" id="4_5vw27"]
 [ext_resource type="PackedScene" uid="uid://b17idx2wi2vgm" path="res://Status.tscn" id="4_7mycd"]
 [ext_resource type="Material" uid="uid://dj52uxdnanxxa" path="res://dust_particle_process_material.tres" id="5_7mycd"]
 [ext_resource type="Script" uid="uid://bhpuheestwkir" path="res://piemenu.gd" id="5_lquwl"]
@@ -40,7 +41,7 @@ outline_color = Color(0.24477637, 0.2447764, 0.24477637, 1)
 cell_map = NodePath("../GridMap")
 
 [node name="BookSpawner" type="BookSpawner" parent="BoidController3D"]
-root_directory = "/home/panno/hdd/animes"
+root_directory = "/home/panno/Documents/godot-projects/boids"
 blueprint = ExtResource("3_7mycd")
 
 [node name="BoidRuleSeparation3D" type="BoidRuleSeparation3D" parent="BoidController3D"]
@@ -71,6 +72,9 @@ book_command_holding = NodePath("../HUD/BookCommandHolding")
 book_command_viewing = NodePath("../HUD/BookCommandViewing")
 controller = NodePath("../BoidController3D")
 book_title = NodePath("../HUD/BookTitle")
+
+[node name="BookUser" parent="Player" node_paths=PackedStringArray("book_title") instance=ExtResource("4_5vw27")]
+book_title = NodePath("../../HUD/BookTitle")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)

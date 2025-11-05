@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://thdlyhp663w4"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_272bh"]
+font_size = 64
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Page View
+Placeholder"
+label_settings = SubResource("LabelSettings_272bh")

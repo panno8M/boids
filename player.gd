@@ -13,8 +13,10 @@ var velocity := Vector3.ZERO
 @export var book_command_viewing: PieMenu
 @export var controller: BoidController3D
 @export var book_title: Label
+
+@onready var book_user = $BookUser
+
 var mouse_left_command: PieMenu
-var holding: BoidAgent3D
 
 func _ready() -> void:
 	mouse_left_command = book_command
@@ -41,13 +43,22 @@ func _input(event):
 		pitch = clamp(pitch, -89, 89)
 		rotation_degrees = Vector3(pitch, yaw, 0)
 	if event is InputEventKey:
-		if event.pressed and event.keycode == KEY_ESCAPE:
-			var mode: int
-			if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-				mode = Input.MOUSE_MODE_VISIBLE
-			else:
-				mode = Input.MOUSE_MODE_CAPTURED
-			Input.set_mouse_mode(mode)
+		match event.keycode:
+			KEY_ESCAPE:
+				if event.pressed:
+					var mode: int
+					if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+						mode = Input.MOUSE_MODE_VISIBLE
+					else:
+						mode = Input.MOUSE_MODE_CAPTURED
+					Input.set_mouse_mode(mode)
+			KEY_LEFT:
+				if event.pressed and mouse_left_command == book_command_viewing:
+					book_user.page_left()
+			KEY_RIGHT:
+				if event.pressed and mouse_left_command == book_command_viewing:
+					book_user.page_right()
+
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
@@ -67,30 +78,19 @@ func execute():
 		book.execute()
 
 func take():
-	if latest_agent and not holding:
-		latest_agent.transfer(self)
-		holding = latest_agent
-		book_title.text = holding.path.get_file().get_basename()
-		book_title.visible = true
+	if book_user.hold(latest_agent):
 		mouse_left_command = book_command_holding
 
 func release():
-	if holding:
-		latest_agent.release(controller)
-		book_title.visible = false
+	if book_user.release(controller):
 		mouse_left_command = book_command
-		holding = null
 
 func open():
-	if holding:
-		holding.open()
-		book_title.visible = false
+	if book_user.open():
 		mouse_left_command = book_command_viewing
 
 func close():
-	if holding:
-		holding.close()
-		book_title.visible = true
+	if book_user.close():
 		mouse_left_command = book_command_holding
 
 func _process(delta):

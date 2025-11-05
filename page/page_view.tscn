@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://cikeoyjuodwyw"]
+
+[ext_resource type="PackedScene" uid="uid://thdlyhp663w4" path="res://page/page_contents.tscn" id="1_awheg"]
+
+[node name="PageView" type="SubViewport"]
+
+[node name="Root" parent="." instance=ExtResource("1_awheg")]
