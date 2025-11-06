@@ -54,8 +54,8 @@ func init_pages() -> void:
 	swap_left_page_material = left_page_material2
 
 func update_page(right_page, left_page: SubViewport, index: int) -> void:
-	right_page.get_node("Root/Label").text = "Right Page " + str(index)
-	left_page.get_node("Root/Label").text = "Left Page " + str(index)
+	right_page.get_node("Root/Index").text = str(index * 2 + 2)
+	left_page.get_node("Root/Index").text = str(index * 2 + 1)
 
 func flush_page(right_page, left_page: SubViewport, index: int) -> void:
 	update_page(right_page, left_page, index)

@@ -4,5 +4,6 @@
 
 [node name="PageView" type="SubViewport"]
 transparent_bg = true
+size = Vector2i(716, 1024)
 
 [node name="Root" parent="." instance=ExtResource("1_awheg")]

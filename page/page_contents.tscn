@@ -1,19 +1,65 @@
-[gd_scene load_steps=2 format=3 uid="uid://thdlyhp663w4"]
+[gd_scene load_steps=5 format=3 uid="uid://thdlyhp663w4"]
+
+[ext_resource type="Texture2D" uid="uid://71gb6l12pnmw" path="res://icon.svg" id="1_45oh0"]
+[ext_resource type="Script" uid="uid://iibudepve783" path="res://page/sprite_2d.gd" id="2_kpgdg"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_272bh"]
-font_size = 64
+font_size = 53
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_o578y"]
 font_color = Color(0, 0, 0, 1)
 
 [node name="Control" type="Control"]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0, 0, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(169, 300)
+texture = ExtResource("1_45oh0")
+centered = false
+script = ExtResource("2_kpgdg")
+region = Rect2(0, 0, 716, 1024)
 
 [node name="Label" type="Label" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-text = "Page View
-Placeholder"
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Page View Placeholder
+Enter Text..."
 label_settings = SubResource("LabelSettings_272bh")
+autowrap_mode = 3
+
+[node name="Index" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_top = -24.0
+offset_right = 5.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0"
+label_settings = SubResource("LabelSettings_o578y")
+horizontal_alignment = 1

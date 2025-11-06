@@ -118,7 +118,7 @@ proc transfer*(self: Bookfly; newParent: Node3D) {.gdsync.} =
   self.enabled = false
   self.getParent.removeChild(self)
   newParent.addChild(self)
-  self.p = vector3(0, 0, -2.5)
+  self.p = vector3(0, 0, -2.0)
   self.transform = Transform3D(origin: self.p)
   self.player.pause(self.openName)
 
