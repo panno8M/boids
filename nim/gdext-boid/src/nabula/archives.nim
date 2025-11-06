@@ -134,8 +134,10 @@ proc release*(self: Bookfly; newParent: Node3D) {.gdsync.} =
   self.leftPage.material.clearOverride
   self.freePage.material.clearOverride
 
-proc open*(self: Bookfly) {.gdsync.} =
+proc open*(self: Bookfly; rightPage, leftPage: gdref Material) {.gdsync.} =
   self.player.play(self.openName)
+  self.rightPage.material[0] = rightPage
+  self.leftPage.material[0] = leftPage
 
 proc close*(self: Bookfly) {.gdsync.} =
   self.player.playBackwards(self.openName)

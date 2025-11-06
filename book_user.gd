@@ -53,19 +53,23 @@ func init_pages() -> void:
 	swap_left_page = left_page2
 	swap_left_page_material = left_page_material2
 
+func update_page(right_page, left_page: SubViewport, index: int) -> void:
+	right_page.get_node("Root/Label").text = "Right Page " + str(index)
+	left_page.get_node("Root/Label").text = "Left Page " + str(index)
+
+func flush_page(right_page, left_page: SubViewport, index: int) -> void:
+	update_page(right_page, left_page, index)
+	swap_pages()
+
 func page_left() -> void:
 	if holding.page_left(current_right_page_material, current_left_page_material):
 		page_index -= 1
-		current_right_page.get_node("Root/Label").text = "Right Page " + str(page_index)
-		current_left_page.get_node("Root/Label").text = "Left Page " + str(page_index)
-		swap_pages()
+		flush_page(current_right_page, current_left_page, page_index)
 
 func page_right() -> void:
 	if holding.page_right(current_right_page_material, current_left_page_material):
 		page_index += 1
-		current_right_page.get_node("Root/Label").text = "Right Page " + str(page_index)
-		current_left_page.get_node("Root/Label").text = "Left Page " + str(page_index)
-		swap_pages()
+		flush_page(current_right_page, current_left_page, page_index)
 
 func hold(book: Bookfly) -> bool:
 	if book and not holding:
@@ -88,7 +92,9 @@ func release(controller: BoidController3D) -> bool:
 
 func open() -> bool:
 	if holding:
-		holding.open()
+		holding.open(current_right_page_material, current_left_page_material)
+		page_index = 0
+		flush_page(current_right_page, current_left_page, page_index)
 		book_title.visible = false
 		return true
 	else:
