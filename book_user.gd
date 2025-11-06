@@ -1,27 +1,30 @@
 extends Node3D
 class_name BookUser
 
+enum BookKind {SAMPLE, TEXT}
+
 @export var book_title: Label
 
-@export var right_page1: SubViewport
+@export var right_page1: PageView
 @export var right_page_material1: Material
-@export var right_page2: SubViewport
+@export var right_page2: PageView
 @export var right_page_material2: Material
-@export var left_page1: SubViewport
+@export var left_page1: PageView
 @export var left_page_material1: Material
-@export var left_page2: SubViewport
+@export var left_page2: PageView
 @export var left_page_material2: Material
 
-var current_right_page: SubViewport
+var current_right_page: PageView
 var current_right_page_material: Material
-var swap_right_page: SubViewport
+var swap_right_page: PageView
 var swap_right_page_material: Material
-var current_left_page: SubViewport
+var current_left_page: PageView
 var current_left_page_material: Material
-var swap_left_page: SubViewport
+var swap_left_page: PageView
 var swap_left_page_material: Material
 
 var holding: Bookfly
+var book_kind: BookKind
 var page_index: int
 
 func _ready() -> void:
@@ -53,12 +56,23 @@ func init_pages() -> void:
 	swap_left_page = left_page2
 	swap_left_page_material = left_page_material2
 
-func update_page(right_page, left_page: SubViewport, index: int) -> void:
-	right_page.get_node("Root/Index").text = str(index * 2 + 2)
-	left_page.get_node("Root/Index").text = str(index * 2 + 1)
+func update_page(right_page, left_page: PageView, kind: BookKind, index: int) -> void:
+	match kind:
+		BookKind.SAMPLE:
+			left_page.init(PageView.PageKind.SAMPLE)
+			right_page.init(PageView.PageKind.SAMPLE)
 
-func flush_page(right_page, left_page: SubViewport, index: int) -> void:
-	update_page(right_page, left_page, index)
+		BookKind.TEXT:
+			left_page.init(PageView.PageKind.TEXT)
+			right_page.init(PageView.PageKind.TEXT)
+			
+			left_page.page_text = FileAccess.get_file_as_string(holding.path)
+
+	right_page.page_index = index * 2 + 2
+	left_page.page_index = index * 2 + 1
+
+func flush_page(right_page, left_page: PageView, index: int) -> void:
+	update_page(right_page, left_page, book_kind, index)
 	swap_pages()
 
 func page_left() -> void:
@@ -77,6 +91,7 @@ func hold(book: Bookfly) -> bool:
 		holding.transfer(self)
 		book_title.text = holding.path.get_file().get_basename()
 		book_title.visible = true
+		book_kind = detect_book_kind(holding.path)
 		return true
 	else:
 		return false
@@ -107,3 +122,29 @@ func close() -> bool:
 		return true
 	else:
 		return false
+
+func detect_book_kind(path: String) -> BookKind:
+	if is_text_file(path):
+		return BookKind.TEXT
+	else:
+		return BookKind.SAMPLE
+
+func is_text_file(path: String) -> bool:
+	if not FileAccess.file_exists(path):
+		return false
+
+	var bytes = FileAccess.get_file_as_bytes(path)
+	if bytes.is_empty():
+		return false
+
+	var sample_size = min(4096, bytes.size())
+	var sample = bytes.slice(0, sample_size)
+
+	var non_text_count = 0
+	for b in sample:
+		if b == 0:
+			return false
+		if b < 0x09 or (b > 0x0D and b < 0x20):
+			non_text_count += 1
+
+	return float(non_text_count) / float(sample_size) < 0.01
