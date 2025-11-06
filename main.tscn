@@ -78,8 +78,7 @@ book_title = NodePath("../../HUD/BookTitle")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
-light_color = Color(0.45585513, 0.7559191, 1, 1)
-light_energy = 2.38
+light_color = Color(0.7578687, 0.8880022, 0.99999994, 1)
 light_specular = 10.0
 
 [node name="HUD" type="Control" parent="."]
