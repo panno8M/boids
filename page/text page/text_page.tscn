@@ -11,22 +11,18 @@
 [sub_resource type="LabelSettings" id="LabelSettings_1jxpl"]
 font_color = Color(0, 0, 0, 1)
 
-[node name="TextPage" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="TextPage" type="SubViewport"]
+transparent_bg = true
+size = Vector2i(716, 1024)
 script = ExtResource("1_506bp")
 
 [node name="Text" type="TextEdit" parent="."]
-layout_mode = 1
+custom_minimum_size = Vector2(32, 32)
 anchors_preset = -1
-anchor_left = 0.1
-anchor_top = 0.05
-anchor_right = 0.9
-anchor_bottom = 0.95
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 676.0
+offset_bottom = 984.0
 theme_override_colors/font_color = Color(0.09803922, 0.09803922, 0.09803922, 1)
 theme_override_colors/font_readonly_color = Color(0.09803922, 0.09803922, 0.09803922, 1)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_506bp")
@@ -37,7 +33,6 @@ editable = false
 wrap_mode = 1
 
 [node name="Index" type="Label" parent="."]
-layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0

@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3 uid="uid://de7x47uthejdn"]
+
+[ext_resource type="Script" uid="uid://2t0gwa0cuivt" path="res://page/page_base.gd" id="1_w60o2"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_1jxpl"]
+font_color = Color(0, 0, 0, 1)
+
+[node name="EmptyPage" type="SubViewport"]
+transparent_bg = true
+size = Vector2i(716, 1024)
+script = ExtResource("1_w60o2")
+
+[node name="Index" type="Label" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_top = -24.0
+offset_right = 5.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0"
+label_settings = SubResource("LabelSettings_1jxpl")
+horizontal_alignment = 1

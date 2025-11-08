@@ -1,27 +1,16 @@
 extends Node3D
 class_name BookUser
 
-enum BookKind {SAMPLE, TEXT}
+enum BookKind {SAMPLE, TEXT, IMAGE}
 
 @export var book_title: Label
 
-@export var right_page1: PageView
-@export var right_page_material1: Material
-@export var right_page2: PageView
-@export var right_page_material2: Material
-@export var left_page1: PageView
-@export var left_page_material1: Material
-@export var left_page2: PageView
-@export var left_page_material2: Material
+@onready var page_provider: PageProvider = $PageProvider
 
-var current_right_page: PageView
-var current_right_page_material: Material
-var swap_right_page: PageView
-var swap_right_page_material: Material
-var current_left_page: PageView
-var current_left_page_material: Material
-var swap_left_page: PageView
-var swap_left_page_material: Material
+var current_right_page: PageBase
+var swap_right_page: PageBase
+var current_left_page: PageBase
+var swap_left_page: PageBase
 
 var holding: Bookfly
 var book_kind: BookKind
@@ -39,43 +28,34 @@ func swap_pages() -> void:
 	current_left_page = swap_left_page
 	swap_left_page = tmp
 
-	tmp = current_right_page_material
-	current_right_page_material = swap_right_page_material
-	swap_right_page_material = tmp
-	tmp = current_left_page_material
-	current_left_page_material = swap_left_page_material
-	swap_left_page_material = tmp
-
 func init_pages() -> void:
-	current_right_page = right_page1
-	current_right_page_material = right_page_material1
-	swap_right_page = right_page2
-	swap_right_page_material = right_page_material2
-	current_left_page = left_page1
-	current_left_page_material = left_page_material1
-	swap_left_page = left_page2
-	swap_left_page_material = left_page_material2
+	var page = page_provider.add_preset("EmptyPage")
+	
+	current_left_page = page
+	current_right_page = page
+	swap_left_page = page
+	swap_right_page = page
 
-func update_page(right_page, left_page: PageView, kind: BookKind, index: int) -> void:
-	left_page.page_index = index * 2 + 1
-	right_page.page_index = index * 2 + 2
+func update_page(right_page, left_page: PageBase, kind: BookKind, index: int) -> void:
+	left_page.page_index = index * 2
+	right_page.page_index = index * 2 + 1
 	
 	match kind:
 		BookKind.TEXT:
-			left_page.current.get_node("Text").scroll_vertical = (left_page.page_index - 1) * 34
-			right_page.current.get_node("Text").scroll_vertical = (right_page.page_index - 1) * 34
+			left_page.scroll_page()
+			right_page.scroll_page()
 
-func flush_page(right_page, left_page: PageView, index: int) -> void:
+func flush_page(right_page, left_page: PageBase, index: int) -> void:
 	update_page(right_page, left_page, book_kind, index)
 	swap_pages()
 
 func page_left() -> void:
-	if holding.page_left(current_right_page_material, current_left_page_material):
+	if holding.page_left(current_right_page.material, current_left_page.material):
 		page_index -= 1
 		flush_page(current_right_page, current_left_page, page_index)
 
 func page_right() -> void:
-	if holding.page_right(current_right_page_material, current_left_page_material):
+	if holding.page_right(current_right_page.material, current_left_page.material):
 		page_index += 1
 		flush_page(current_right_page, current_left_page, page_index)
 
@@ -85,7 +65,6 @@ func hold(book: Bookfly) -> bool:
 		holding.transfer(self)
 		book_title.text = holding.path.get_file().get_basename()
 		book_title.visible = true
-		book_kind = detect_book_kind(holding.path)
 		return true
 	else:
 		return false
@@ -101,14 +80,17 @@ func release(controller: BoidController3D) -> bool:
 
 func open() -> bool:
 	if holding:
+		book_kind = detect_book_kind(holding.path)
 		page_index = 0
 		match book_kind:
 			BookKind.TEXT:
 				open_text_file(holding.path)
 			BookKind.SAMPLE:
 				open_sample_file(holding.path)
+			BookKind.IMAGE:
+				open_image_file(holding.path)
 				
-		holding.open(current_right_page_material, current_left_page_material)
+		holding.open(current_right_page.material, current_left_page.material)
 		call_deferred("flush_page", current_right_page, current_left_page, page_index)
 		book_title.visible = false
 		return true
@@ -123,7 +105,12 @@ func close() -> bool:
 	else:
 		return false
 
-func detect_book_kind(_path: String) -> BookKind:
+const image_exts = ["png", "jpg", "jpeg", "svg", "svgz", "bmp", "tga", "webp", "exr", "hdr", "qoi", "dds", "ktx", "ktx2", "pvr"]
+
+func detect_book_kind(path: String) -> BookKind:
+	var ext = path.get_extension()
+	if ext in image_exts:
+		return BookKind.IMAGE
 	#if is_text_file(path):
 	#	return BookKind.TEXT
 	#else:
@@ -150,34 +137,30 @@ func is_text_file(path: String) -> bool:
 
 	return float(non_text_count) / float(sample_size) < 0.01
 
-func renamed(node: Node, new_name: StringName) -> Node:
-	node.name = new_name
-	return node
-
 func open_text_file(file_path: String) -> void:
-	var file_name = file_path.get_file().replace(".", "_")
-	if left_page1.has_page(file_name):
-		left_page1.set_page(file_name)
-		left_page2.set_page(file_name)
-		right_page1.set_page(file_name)
-		right_page2.set_page(file_name)
-	else:
+	var file_name = file_path.get_file()
+	var req_init = not page_provider.has_page(file_name + ".0")
+	current_left_page = page_provider.add_preset_at_once("TextPage", file_name + ".0")
+	current_right_page = page_provider.add_preset_at_once("TextPage", file_name + ".1")
+	swap_left_page = page_provider.add_preset_at_once("TextPage", file_name + ".2")
+	swap_right_page = page_provider.add_preset_at_once("TextPage", file_name + ".3")
+	if req_init:
 		var text = FileAccess.get_file_as_string(holding.path)
-		left_page1.add_preset(PageView.PageKind.TEXT, file_name)
-		left_page1.current.page_text = text
-		left_page2.add_preset(PageView.PageKind.TEXT, file_name)
-		left_page2.current.page_text = text
-		right_page1.add_preset(PageView.PageKind.TEXT, file_name)
-		right_page1.current.page_text = text
-		right_page2.add_preset(PageView.PageKind.TEXT, file_name)
-		right_page2.current.page_text = text
+		current_left_page.set_contents_from_string(text)
+		current_right_page.set_contents_from_string(text)
+		swap_left_page.set_contents_from_string(text)
+		swap_right_page.set_contents_from_string(text)
+
+func open_image_file(file_path: String) -> void:
+	var file_name = file_path.get_file()
+	current_left_page = page_provider.add_preset_at_once("ImagePage", file_name)
+	current_left_page.set_contents_from_image_path(file_path)
+	current_right_page = page_provider.add_preset_at_once("EmptyPage", "EmptyPage.0")
+	swap_left_page = page_provider.add_preset_at_once("EmptyPage", "EmptyPage.1")
+	swap_right_page = page_provider.add_preset_at_once("EmptyPage", "EmptyPage.2")
 
 func open_sample_file(_path: String) -> void:
-	if not left_page1.has_page("SamplePage"):
-		left_page1.add_preset(PageView.PageKind.SAMPLE)
-	if not left_page2.has_page("SamplePage"):
-		left_page2.add_preset(PageView.PageKind.SAMPLE)
-	if not right_page1.has_page("SamplePage"):
-		right_page1.add_preset(PageView.PageKind.SAMPLE)
-	if not right_page2.has_page("SamplePage"):
-		right_page2.add_preset(PageView.PageKind.SAMPLE)
+	current_left_page = page_provider.add_preset_at_once("SamplePage", "SamplePage.0")
+	current_right_page = page_provider.add_preset_at_once("SamplePage", "SamplePage.1")
+	swap_left_page = page_provider.add_preset_at_once("SamplePage", "SamplePage.2")
+	swap_right_page = page_provider.add_preset_at_once("SamplePage", "SamplePage.3")

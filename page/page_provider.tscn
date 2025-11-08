@@ -1,0 +1,16 @@
+[gd_scene load_steps=6 format=3 uid="uid://cikeoyjuodwyw"]
+
+[ext_resource type="Script" uid="uid://d1bguocfopi6m" path="res://page/page_provider.gd" id="1_xtcg1"]
+[ext_resource type="PackedScene" uid="uid://thdlyhp663w4" path="res://page/sample page/sample_page.tscn" id="2_j761v"]
+[ext_resource type="PackedScene" uid="uid://de7x47uthejdn" path="res://page/empty page/empty_page.tscn" id="3_hcrdi"]
+[ext_resource type="PackedScene" uid="uid://duq61pvxwscka" path="res://page/text page/text_page.tscn" id="4_pjcwu"]
+[ext_resource type="PackedScene" uid="uid://rmod3anhrlnn" path="res://page/image page/image_page.tscn" id="5_h6opa"]
+
+[node name="PageProvider" type="Node"]
+script = ExtResource("1_xtcg1")
+page_presets = Dictionary[StringName, PackedScene]({
+&"EmptyPage": ExtResource("3_hcrdi"),
+&"ImagePage": ExtResource("5_h6opa"),
+&"SamplePage": ExtResource("2_j761v"),
+&"TextPage": ExtResource("4_pjcwu")
+})
