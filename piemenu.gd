@@ -3,7 +3,7 @@ class_name PieMenu
 
 @export var action: StringName
 @export var item_list: Dictionary[String, Variant]
-@export var threshold: float = 10.0
+@export var threshold: float = 20.0
 @export var radius: float = 100.0
 @export var selected_item: Variant
 var labels: Array[Label] = []
@@ -22,15 +22,24 @@ func _draw():
 	var angle_step = TAU / count
 	var center = size / 2
 	var selecting = get_selecting_item()
+	var r: float = radius
+	var w: float = 60
+	draw_circle(center, threshold, Color(0.06, 0.06, 0.06, 0.15))
 	for i in range(count):
-		var start_angle = item_to_angle(i, count) - angle_step/2
+		var item_angle = item_to_angle(i, count)
+		var start_angle = item_angle - angle_step/2
 		var end_angle = start_angle + angle_step
 		var color: Color
 		if i == selecting: 
 			color = Color(1, 0.5, 0, 0.4)
 		else:
-			color = Color(1, 1, 1, 0.1)
-		draw_arc(center, radius, start_angle, end_angle, 32, color, 40)
+			color = Color(0.06, 0.06, 0.06, 0.3)
+		draw_arc(center, r, start_angle, end_angle, 32, color, w)
+	if selecting != -1:
+		var mouse_normalized = (get_local_mouse_position() - center).normalized()
+		var start = center + mouse_normalized * threshold
+		var end = center + mouse_normalized * (r - w/2)
+		draw_line(start, end, Color.WHITE, 1, true)
 
 func _unhandled_input(event):
 	if not action.is_empty():
@@ -38,19 +47,10 @@ func _unhandled_input(event):
 			begin()
 		elif event.is_action_released(action):
 			selected_item = confirm()
-		
-var item_prev: int
+
 func _process(_delta):
 	if not visible: return
-	var item =  get_selecting_item()
-	for i in range(item_list.size()):
-		if i == item:
-			labels[i].modulate = Color.ORANGE_RED
-		else:
-			labels[i].modulate = Color.WHITE
-	if item_prev != item:
-		queue_redraw()
-	item_prev = item
+	queue_redraw()
 
 func initialize(item_list: Dictionary[String, Variant]) -> void:
 	var keys = item_list.keys()
