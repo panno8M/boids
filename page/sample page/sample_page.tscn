@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://thdlyhp663w4"]
 
-[ext_resource type="Texture2D" uid="uid://71gb6l12pnmw" path="res://icon.svg" id="1_45oh0"]
-[ext_resource type="Script" uid="uid://iibudepve783" path="res://page/sprite_2d.gd" id="2_kpgdg"]
+[ext_resource type="Texture2D" uid="uid://71gb6l12pnmw" path="res://icon.svg" id="1_3l1bu"]
+[ext_resource type="Script" uid="uid://iibudepve783" path="res://page/sample page/sprite_2d.gd" id="2_qnvqa"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_272bh"]
 font_size = 53
@@ -10,7 +10,7 @@ font_color = Color(0, 0, 0, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_o578y"]
 font_color = Color(0, 0, 0, 1)
 
-[node name="Control" type="Control"]
+[node name="SamplePage" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -30,9 +30,9 @@ color = Color(1, 0, 0, 1)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(169, 300)
-texture = ExtResource("1_45oh0")
+texture = ExtResource("1_3l1bu")
 centered = false
-script = ExtResource("2_kpgdg")
+script = ExtResource("2_qnvqa")
 region = Rect2(0, 0, 716, 1024)
 
 [node name="Label" type="Label" parent="."]

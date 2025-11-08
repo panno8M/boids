@@ -5,21 +5,14 @@ enum PageKind {SAMPLE, TEXT}
 
 @export var sample_page: PackedScene
 @export var text_page: PackedScene
-@export var page_kind: PageKind
 
-var page: Node
+var current: Node
 
 var page_text: String:
 	get:
-		if page and page_kind == PageKind.TEXT:
-			return page.get_node("Text").text
-		else:
-			return ""
+		return current.get("page_text")
 	set(value):
-		if page and page_kind == PageKind.TEXT:
-			page.get_node("Text").text = value
-		else:
-			pass
+		current.set("page_text", value)
 
 var _page_index: int
 var page_index: int:
@@ -27,20 +20,46 @@ var page_index: int:
 		return _page_index
 	set(value):
 		_page_index = value
-		if page:
-			page.get_node("Index").text = str(value)
+		if current:
+			current.get_node("Index").text = str(value)
 
-func _ready() -> void:
-	init(page_kind)
+func add_page(node: Node) -> Node:
+	if has_page(node.name):
+		remove_child(get_page(node.name))
+	current = node
+	add_child(current)
+	return set_page(node.name)
 
-func init(kind: PageKind) -> void:
-	if page:
-		remove_child(page)
-	page_kind = kind
+func add_preset(kind: PageKind, page_name: StringName = &"") -> Node:
+	return add_page(preset(kind, page_name))
+
+func set_page(page_name: StringName) -> Node:
+	var result: Node
+	for child in get_children():
+		if child.name == page_name:
+			child.visible = true
+			child.process_mode = Node.PROCESS_MODE_INHERIT
+			result = child
+		else:
+			child.visible = false
+			child.process_mode = Node.PROCESS_MODE_DISABLED
+	return result
+	
+func get_page(page_name: StringName) -> Node:
+	return get_node(NodePath(page_name))
+
+func has_page(page_name: StringName) -> bool:
+	return has_node(NodePath(page_name))
+	
+func preset(kind: PageKind, page_name: StringName = &"") -> Node:
+	var result: Node
 	match kind:
 		PageKind.SAMPLE:
-			page = sample_page.instantiate()
+			result = sample_page.instantiate()
 		PageKind.TEXT:
-			page = text_page.instantiate()
-	page.name = "Root"
-	add_child(page)
+			result = text_page.instantiate()
+		_:
+			result = sample_page.instantiate()
+	if page_name:
+		result.name = page_name
+	return result
