@@ -27,6 +27,14 @@ item/0/shapes = []
 item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/0/navigation_layers = 1
 
+[sub_resource type="Gradient" id="Gradient_272bh"]
+offsets = PackedFloat32Array(0, 0.05, 0.95, 1)
+colors = PackedColorArray(0.12955841, 0.1295585, 0.12955844, 1, 0.23, 0.23, 0.23, 0, 0.23137255, 0.23137255, 0.23137255, 0, 0.12941177, 0.12941177, 0.12941177, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5vw27"]
+gradient = SubResource("Gradient_272bh")
+fill_from = Vector2(1, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_lquwl"]
 font_size = 32
 
@@ -83,9 +91,20 @@ light_specular = 10.0
 
 [node name="HUD" type="Control" parent="."]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Letterbox" type="TextureRect" parent="HUD"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_5vw27")
 
 [node name="Stat" parent="HUD" node_paths=PackedStringArray("controller", "player") instance=ExtResource("4_7mycd")]
 layout_mode = 1
@@ -94,9 +113,11 @@ player = NodePath("../../Player")
 
 [node name="CrossHair" type="Label" parent="HUD"]
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 48.0
-anchor_bottom = 27.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 text = "+"
 label_settings = SubResource("LabelSettings_lquwl")
 horizontal_alignment = 1
