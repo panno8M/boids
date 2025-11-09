@@ -14,17 +14,6 @@ import classes/gdBoidSpawner3D
 
 import shell
 
-import gdext/coronation/header/classes
-proc surfaceSetMaterial*(self: Mesh; surfIdx: int32; material: gdref Material): void =
-  expandMethodBind(className Mesh, "surface_set_material", 3671737478)
-  methodbind.ptrcall(self, [getPtr surfIdx, getPtr material])
-
-proc surfaceGetMaterial*(self: Mesh; surfIdx: int32): gdref Material =
-  expandMethodBind(className Mesh, "surface_get_material", 2897466400)
-  var ret: encoded gdref Material
-  methodbind.ptrcall(self, [getPtr surfIdx], addr ret)
-  (addr ret).decode_result(gdref Material)
-
 type Bookfly* {.gdsync.} = ptr object of BoidAgent3D
   path* {.gdexport.}: String
   animationPlayer* {.gdexport.}: NodePath
