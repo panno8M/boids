@@ -1,7 +1,7 @@
 extends Node3D
 class_name BookUser
 
-enum BookKind {SAMPLE, TEXT, IMAGE}
+enum BookKind {SAMPLE, TEXT, IMAGE, AUDIO}
 
 @export var book_title: Label
 
@@ -71,6 +71,9 @@ func hold(book: Bookfly) -> bool:
 
 func release(controller: BoidController3D) -> bool:
 	if holding:
+		match book_kind:
+			BookKind.AUDIO:
+				close_audio_file()
 		holding.release(controller)
 		book_title.visible = false
 		holding = null
@@ -89,6 +92,8 @@ func open() -> bool:
 				open_sample_file(holding.path)
 			BookKind.IMAGE:
 				open_image_file(holding.path)
+			BookKind.AUDIO:
+				open_audio_file(holding.path)
 				
 		holding.open(current_right_page.material, current_left_page.material)
 		call_deferred("flush_page", current_right_page, current_left_page, page_index)
@@ -99,6 +104,9 @@ func open() -> bool:
 
 func close() -> bool:
 	if holding:
+		match book_kind:
+			BookKind.AUDIO:
+				close_audio_file()
 		holding.close()
 		book_title.visible = true
 		return true
@@ -106,11 +114,14 @@ func close() -> bool:
 		return false
 
 const image_exts = ["png", "jpg", "jpeg", "svg", "svgz", "bmp", "tga", "webp", "exr", "hdr", "qoi", "dds", "ktx", "ktx2", "pvr"]
+const valid_audio_exts = ["mp3", "wav", "ogg"]
 
 func detect_book_kind(path: String) -> BookKind:
 	var ext = path.get_extension()
 	if ext in image_exts:
 		return BookKind.IMAGE
+	elif ext in valid_audio_exts:
+		return BookKind.AUDIO
 	#if is_text_file(path):
 	#	return BookKind.TEXT
 	#else:
@@ -158,6 +169,21 @@ func open_image_file(file_path: String) -> void:
 	current_right_page = page_provider.add_preset_at_once("EmptyPage", "EmptyPage.0")
 	swap_left_page = page_provider.add_preset_at_once("EmptyPage", "EmptyPage.1")
 	swap_right_page = page_provider.add_preset_at_once("EmptyPage", "EmptyPage.2")
+
+var audio_page: PageBase
+func open_audio_file(file_path: String) -> void:
+	var file_name = file_path.get_file()
+	audio_page = page_provider.add_preset_at_once("AudioPage", file_name)
+	var spectrum_page = page_provider.add_preset_at_once("AudioSpectrumPage")
+	audio_page.set_contents_from_path(file_path)
+	current_left_page = audio_page
+	current_right_page = spectrum_page
+	swap_left_page = page_provider.add_preset_at_once("EmptyPage", "EmptyPage.1")
+	swap_right_page = spectrum_page
+func close_audio_file() -> void:
+	if audio_page:
+		(audio_page.audio as AudioStreamPlayer).stop()
+		audio_page = null
 
 func open_sample_file(_path: String) -> void:
 	current_left_page = page_provider.add_preset_at_once("SamplePage", "SamplePage.0")

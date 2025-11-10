@@ -1,0 +1,76 @@
+[gd_scene load_steps=6 format=3 uid="uid://ci4jkt7yojqyj"]
+
+[ext_resource type="Script" uid="uid://dca5cfxdvt8cn" path="res://page/audio page/audio_page.gd" id="1_bgy0p"]
+[ext_resource type="Texture2D" uid="uid://0lxm1gqy4odn" path="res://page/audio page/speaker-0-svgrepo-com.svg" id="2_opip2"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_bgy0p"]
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_opip2"]
+font_size = 32
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_1jxpl"]
+font_color = Color(0, 0, 0, 1)
+
+[node name="AudioPage" type="SubViewport"]
+transparent_bg = true
+size = Vector2i(716, 1024)
+script = ExtResource("1_bgy0p")
+
+[node name="Audio" type="AudioStreamPlayer" parent="."]
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Directory" type="Label" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(512, 0)
+layout_mode = 2
+text = "PATH/TO/FILE/"
+label_settings = SubResource("LabelSettings_bgy0p")
+autowrap_mode = 2
+
+[node name="File" type="Label" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+text = "FILE_NAME.txt"
+label_settings = SubResource("LabelSettings_opip2")
+autowrap_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("2_opip2")
+expand_mode = 1
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="Index" type="Label" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_top = -24.0
+offset_right = 5.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0"
+label_settings = SubResource("LabelSettings_1jxpl")
+horizontal_alignment = 1

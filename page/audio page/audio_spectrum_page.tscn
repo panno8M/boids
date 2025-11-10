@@ -1,0 +1,44 @@
+[gd_scene load_steps=4 format=3 uid="uid://n35qmimyuf21"]
+
+[ext_resource type="Script" uid="uid://2t0gwa0cuivt" path="res://page/page_base.gd" id="1_os27l"]
+[ext_resource type="Script" uid="uid://bqfwmr27171t5" path="res://page/audio page/audio_spectrum.gd" id="2_rm52x"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_1jxpl"]
+font_color = Color(0, 0, 0, 1)
+
+[node name="AudioPage" type="SubViewport"]
+transparent_bg = true
+size = Vector2i(716, 1024)
+script = ExtResource("1_os27l")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="AudioSpectrum" type="Control" parent="MarginContainer"]
+layout_mode = 2
+script = ExtResource("2_rm52x")
+metadata/_custom_type_script = "uid://bqfwmr27171t5"
+
+[node name="Index" type="Label" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_top = -24.0
+offset_right = 5.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0"
+label_settings = SubResource("LabelSettings_1jxpl")
+horizontal_alignment = 1
