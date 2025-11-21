@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://7apek8i7if0b"]
+
+[ext_resource type="Shader" uid="uid://c4nv1cnt8qksq" path="res://book/uv_pick.gdshader" id="1_xbns4"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_xbns4")
+shader_parameter/object_id = 2.0
