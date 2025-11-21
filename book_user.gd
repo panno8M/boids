@@ -45,19 +45,17 @@ func update_page(right_page, left_page: PageBase, kind: BookKind, index: int) ->
 			left_page.scroll_page()
 			right_page.scroll_page()
 
-func flush_page(right_page, left_page: PageBase, index: int) -> void:
-	update_page(right_page, left_page, book_kind, index)
-	swap_pages()
-
 func page_left() -> void:
+	swap_pages()
 	if holding.page_left(current_right_page.material, current_left_page.material):
 		page_index -= 1
-		flush_page(current_right_page, current_left_page, page_index)
+		update_page(current_right_page, current_left_page, book_kind, page_index)
 
 func page_right() -> void:
+	swap_pages()
 	if holding.page_right(current_right_page.material, current_left_page.material):
 		page_index += 1
-		flush_page(current_right_page, current_left_page, page_index)
+		update_page(current_right_page, current_left_page, book_kind, page_index)
 
 func hold(book: Bookfly) -> bool:
 	if book and not holding:
@@ -96,7 +94,7 @@ func open() -> bool:
 				open_audio_file(holding.path)
 				
 		holding.open(current_right_page.material, current_left_page.material)
-		call_deferred("flush_page", current_right_page, current_left_page, page_index)
+		call_deferred("update_page", current_right_page, current_left_page, book_kind, page_index)
 		book_title.visible = false
 		return true
 	else:

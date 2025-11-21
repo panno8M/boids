@@ -150,9 +150,11 @@ proc pageLeft*(self: Bookfly; rightPage, leftPage: gdref Material): Bool {.gdsyn
 proc animationFinished*(self: Bookfly; anim_name: StringName) {.gdsync, rename: toGodotInternalFuncCase.} =
   if anim_name == self.pageRightName:
     self.player.playBackwards(self.openName)
+    self.player.seek(0)
     self.player.pause()
     self.leftPage.material[0] = self.freePage.material[0]
   if anim_name == self.pageLeftName:
     self.player.playBackwards(self.openName)
+    self.player.seek(0)
     self.player.pause()
     self.rightPage.material[0] = self.freePage.material[1]
