@@ -2,6 +2,7 @@ extends Node3D
 class_name BookUser
 
 enum BookKind {SAMPLE, TEXT, IMAGE, AUDIO}
+enum State {IDLE, HOLD, VIEW}
 
 @export var book_title: Label
 
@@ -13,6 +14,7 @@ var current_left_page: PageBase
 var swap_left_page: PageBase
 
 var holding: Bookfly
+var state: State
 var book_kind: BookKind
 var page_index: int
 
@@ -63,6 +65,7 @@ func hold(book: Bookfly) -> bool:
 		holding.transfer(self)
 		book_title.text = holding.path.get_file().get_basename()
 		book_title.visible = true
+		state = State.HOLD
 		return true
 	else:
 		return false
@@ -75,6 +78,7 @@ func release(controller: BoidController3D) -> bool:
 		holding.release(controller)
 		book_title.visible = false
 		holding = null
+		state = State.IDLE
 		return true
 	else:
 		return false
@@ -96,6 +100,7 @@ func open() -> bool:
 		holding.open(current_right_page.material, current_left_page.material)
 		call_deferred("update_page", current_right_page, current_left_page, book_kind, page_index)
 		book_title.visible = false
+		state = State.VIEW
 		return true
 	else:
 		return false
@@ -107,6 +112,7 @@ func close() -> bool:
 				close_audio_file()
 		holding.close()
 		book_title.visible = true
+		state = State.HOLD
 		return true
 	else:
 		return false

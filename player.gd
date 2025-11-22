@@ -36,7 +36,7 @@ func get_closest_agent(camera: Camera3D, distance: float = 1000.0, mask: int = 0
 		return result.collider.get_parent() as BoidAgent3D
 	return null
 
-func _input(event):
+func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		yaw -= event.relative.x * mouse_sensitivity
 		pitch -= event.relative.y * mouse_sensitivity
@@ -53,10 +53,10 @@ func _input(event):
 						mode = Input.MOUSE_MODE_CAPTURED
 					Input.set_mouse_mode(mode)
 			KEY_LEFT:
-				if event.pressed and mouse_left_command == book_command_viewing:
+				if event.pressed and book_user.state == BookUser.State.VIEW:
 					book_user.page_left()
 			KEY_RIGHT:
-				if event.pressed and mouse_left_command == book_command_viewing:
+				if event.pressed and book_user.state == BookUser.State.VIEW:
 					book_user.page_right()
 
 	if event is InputEventMouseButton:

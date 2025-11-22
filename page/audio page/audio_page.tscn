@@ -15,6 +15,7 @@ font_color = Color(0, 0, 0, 1)
 
 [node name="AudioPage" type="SubViewport"]
 transparent_bg = true
+handle_input_locally = false
 size = Vector2i(716, 1024)
 script = ExtResource("1_bgy0p")
 

@@ -13,12 +13,12 @@ font_color = Color(0, 0, 0, 1)
 
 [node name="TextPage" type="SubViewport"]
 transparent_bg = true
+handle_input_locally = false
 size = Vector2i(716, 1024)
 script = ExtResource("1_506bp")
 
 [node name="Text" type="TextEdit" parent="."]
 custom_minimum_size = Vector2(32, 32)
-anchors_preset = -1
 offset_left = 40.0
 offset_top = 40.0
 offset_right = 676.0
