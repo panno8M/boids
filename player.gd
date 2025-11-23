@@ -37,27 +37,21 @@ func get_closest_agent(camera: Camera3D, distance: float = 1000.0, mask: int = 0
 	return null
 
 func _unhandled_input(event):
-	if event is InputEventMouseMotion:
-		yaw -= event.relative.x * mouse_sensitivity
-		pitch -= event.relative.y * mouse_sensitivity
-		pitch = clamp(pitch, -89, 89)
-		rotation_degrees = Vector3(pitch, yaw, 0)
-	if event is InputEventKey:
-		match event.keycode:
-			KEY_ESCAPE:
+	match book_user.state:
+		BookUser.State.VIEW:
+			if event is InputEventKey:
 				if event.pressed:
-					var mode: int
-					if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-						mode = Input.MOUSE_MODE_VISIBLE
-					else:
-						mode = Input.MOUSE_MODE_CAPTURED
-					Input.set_mouse_mode(mode)
-			KEY_LEFT:
-				if event.pressed and book_user.state == BookUser.State.VIEW:
-					book_user.page_left()
-			KEY_RIGHT:
-				if event.pressed and book_user.state == BookUser.State.VIEW:
-					book_user.page_right()
+					match event.keycode:
+						KEY_LEFT:
+							book_user.page_left()
+						KEY_RIGHT:
+							book_user.page_right()
+		_:
+			if event is InputEventMouseMotion:
+				yaw -= event.relative.x * mouse_sensitivity
+				pitch -= event.relative.y * mouse_sensitivity
+				pitch = clamp(pitch, -89, 89)
+				rotation_degrees = Vector3(pitch, yaw, 0)
 
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:

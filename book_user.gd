@@ -79,6 +79,7 @@ func release(controller: BoidController3D) -> bool:
 		book_title.visible = false
 		holding = null
 		state = State.IDLE
+		CursorManager.mouse_mode = CursorManager.MouseMode.CAPTURED
 		return true
 	else:
 		return false
@@ -101,6 +102,7 @@ func open() -> bool:
 		call_deferred("update_page", current_right_page, current_left_page, book_kind, page_index)
 		book_title.visible = false
 		state = State.VIEW
+		CursorManager.mouse_mode = CursorManager.MouseMode.HIDDEN
 		return true
 	else:
 		return false
@@ -113,6 +115,7 @@ func close() -> bool:
 		holding.close()
 		book_title.visible = true
 		state = State.HOLD
+		CursorManager.mouse_mode = CursorManager.MouseMode.CAPTURED
 		return true
 	else:
 		return false

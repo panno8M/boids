@@ -14,7 +14,6 @@ signal item_selected(item: Variant)
 func _ready():
 	initialize(item_list)
 	visible = false
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _draw():
 	if not visible: return
@@ -52,6 +51,12 @@ func _process(_delta):
 	if not visible: return
 	queue_redraw()
 
+func _input(event):
+	if event is InputEventKey:
+		if event.pressed and event.keycode == KEY_ESCAPE:
+			mouse_begin = Vector2.ZERO
+			confirm()
+
 func initialize(item_list: Dictionary[String, Variant]) -> void:
 	var keys = item_list.keys()
 	for i in range(keys.size()):
@@ -72,7 +77,7 @@ func initialize(item_list: Dictionary[String, Variant]) -> void:
 
 func begin(title: String = ""):
 	if visible: return
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	CursorManager.mouse_mode_override = CursorManager.MouseMode.HIDDEN
 	mouse_begin = get_global_mouse_position()
 	if title.length() != 0:
 		text = title
@@ -84,7 +89,7 @@ func confirm() -> Variant:
 	if not visible: return
 	var choice = get_selecting_item()
 	visible = false	
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	CursorManager.mouse_mode_override = CursorManager.MouseMode.INHERIT
 	
 	if choice == -1:
 		return ""
@@ -94,6 +99,8 @@ func confirm() -> Variant:
 		return result
 
 func get_selecting_item() -> int:
+	if mouse_begin == Vector2.ZERO:
+		return -1
 	var mouse_pos = get_global_mouse_position()
 	var delta = mouse_pos - mouse_begin
 	if delta.length_squared() < threshold * threshold:
