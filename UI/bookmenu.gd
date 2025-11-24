@@ -15,6 +15,8 @@ func _process(_delta: float) -> void:
 	closest_book = get_closest_book()
 	if closest_book:
 		latest_book = closest_book
+	if player.state == Player.State.IDLE and not visible:
+		item_list = presets["Idle" if closest_book else "Global"]
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
@@ -23,6 +25,9 @@ func _unhandled_input(event):
 				if closest_book:
 					title = closest_book.path.get_file()
 					begin(closest_book)
+				else:
+					title = "Global Menu"
+					begin(null)
 			else:
 				var item = confirm()
 				match typeof(item.selection):

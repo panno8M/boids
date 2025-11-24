@@ -11,19 +11,22 @@ horizontal_alignment = 1
 text_overrun_behavior = 3
 script = ExtResource("1_mn4p0")
 presets = {
+&"Global": {
+"Open Vellum": &"open_vellum",
+},
 &"Hold": {
 "Execute": &"execute",
 "Release": &"release",
 "Open": &"open"
 },
+&"Idle": {
+"Execute": &"execute",
+"Take": &"take"
+},
 &"View": {
 "Execute": &"execute",
 "Release": &"release",
 "Close": &"close"
-},
-&"Idle": {
-"Execute": &"execute",
-"Take": &"take"
 }
 }
 default_preset = &"Idle"
