@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://bvaeaalnhv4wb"]
+
+[ext_resource type="PackedScene" uid="uid://c1xcy4s8lhvjw" path="res://book/book_base.tscn" id="1_fb8kr"]
+[ext_resource type="Script" uid="uid://cydu3cx2s21xp" path="res://book/image/image_book.gd" id="2_lqck4"]
+
+[node name="ImageBook" instance=ExtResource("1_fb8kr")]
+script = ExtResource("2_lqck4")

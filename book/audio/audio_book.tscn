@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://bd8ig36buaog1"]
+
+[ext_resource type="PackedScene" uid="uid://c1xcy4s8lhvjw" path="res://book/book_base.tscn" id="1_3nmdx"]
+[ext_resource type="Script" uid="uid://btxoc5y46ccgf" path="res://book/audio/audio_book.gd" id="2_w4dxx"]
+
+[node name="AudioBook" instance=ExtResource("1_3nmdx")]
+script = ExtResource("2_w4dxx")

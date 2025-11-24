@@ -2,7 +2,7 @@ extends Control
 class_name EventBridge
 
 @export var main_camera: Camera3D
-@export var book_user: BookUser
+@export var player: Player
 var image: Image
 @onready var last_position: Vector2
 var last_event_time: float
@@ -16,7 +16,7 @@ func _process(_delta: float) -> void:
 	$SubViewport/Camera3D.global_transform = main_camera.global_transform
 
 func _gui_input(input_event: InputEvent) -> void:
-	if book_user.state != BookUser.State.VIEW: return
+	if player.state != Player.State.VIEW: return
 	image = get_image()
 	var page_id = pick_page_id(get_viewport().get_mouse_position())
 	var page = id_to_page(page_id)
@@ -48,12 +48,13 @@ func pick_page_id(screen_pos: Vector2) -> int:
 	return int(round(image.get_pixelv(screen_pos).b * 10))
 
 func id_to_page(id: int) -> PageBase:
+	if not player.holding: return null
 	match id:
 		# FIXME: It does not function correctly during page scrolling.
-		1: return book_user.current_left_page
-		2: return book_user.swap_left_page
-		3: return book_user.swap_right_page
-		4: return book_user.current_right_page
+		1: return player.holding.current_left_page
+		2: return player.holding.swap_left_page
+		3: return player.holding.swap_right_page
+		4: return player.holding.current_right_page
 		_: return null
 		
 func pick_page(screen_pos: Vector2) -> PageBase:

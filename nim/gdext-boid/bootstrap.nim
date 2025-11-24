@@ -16,5 +16,6 @@ import nabula/archives
 proc set_formatters {.execon: EntryPoint.} =
   defaultPropertyFormatter = toSnakeCase
   defaultFunctionFormatter = toSnakeCase
+  defaultVirtualMethodFormatter = toGodotInternalFuncCase
 
 GDExtensionEntryPoint

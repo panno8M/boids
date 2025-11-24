@@ -8,10 +8,11 @@ import gdext/classes/gdTexture2D
 import gdext/classes/gdMeshInstance3D
 import gdext/classes/gdStandardMaterial3D
 import gdext/classes/gdMesh
+import gdext/classes/gdPackedScene
 
 import classes/gdBoidController3D
-import classes/gdBoidSpawner3D
 
+import global
 import shell
 
 type Bookfly* {.gdsync.} = ptr object of BoidAgent3D
@@ -26,9 +27,15 @@ type Bookfly* {.gdsync.} = ptr object of BoidAgent3D
   leftPage* {.gdexport.}: MeshInstance3D
   freePage* {.gdexport.}: MeshInstance3D
 
-type BookSpawner* {.gdsync.} = ptr object of BoidSpawner3D
+type BookFactory* {.gdsync.} = ptr object of Resource
+
+type BookSpawner* {.gdsync.} = ptr object of BoidModule3D
+    factory* {.gdexport.}: gdref BookFactory
+    range* {.gdexport: Appearance.range(0, 100).}: float = 15
     spawnSyncRequired*: bool
     rootDir: String
+
+method create*(self: BookFactory; controller: BoidController3D; path: String): Bookfly {.gdsync, base.} = discard
 
 gdexport "root_directory",
   getter= proc(self: BookSpawner): String = self.rootDir,
@@ -81,9 +88,25 @@ proc init*(self: Bookfly) =
   discard self.player.connect("animation_finished", self.callable"_animation_finished")
 
 proc spawn*(self: BookSpawner; path: String): Bookfly =
-  result = self.spawn() as Bookfly
-  init result
+  result = self.factory[].create(self.controller, path)
+  self.addChild result
+  result.p = Vector3.signedRand * self.range
+  result.v = Vector3.signedRand.normalized.map(self.controller.controlMinSpeed..self.controller.controlMaxSpeed)
+  result.a = Vector3.Zero
+  result.cell = self.controller.cellMapStatus.localToMap(result.p)
+  result.position = result.p
   result.path = path
+  self.controller.boids.add result
+  self.controller.cellMap.addBoid(result.cell, result)
+
+  init result
+
+proc despawnLast*(self: BookSpawner) =
+  if self.controller.boids.len == 0: return
+  let boid = self.controller.boids[^1]
+  queueFree boid
+  self.controller.cellMap.removeBoidUnsafe(boid.cell, boid)
+  discard self.controller.boids.pop()
 
 proc spawnSync*(self: BookSpawner) =
   for i in 0..self.controller.boids.high:
@@ -103,7 +126,7 @@ method process(self: BookSpawner; delta: float64) {.gdsync.} =
 proc execute*(self: Bookfly) {.gdsync.} =
   discard cd".".startProcess("xdg-open", [$self.path])
 
-proc transfer*(self: Bookfly; newParent: Node3D) {.gdsync.} =
+proc playHold*(self: Bookfly; newParent: Node3D) {.gdsync.} =
   self.enabled = false
   self.getParent.removeChild(self)
   newParent.addChild(self)
@@ -111,7 +134,7 @@ proc transfer*(self: Bookfly; newParent: Node3D) {.gdsync.} =
   self.transform = Transform3D(origin: self.p)
   self.player.pause(self.openName)
 
-proc release*(self: Bookfly; newParent: Node3D) {.gdsync.} =
+proc playRelease*(self: Bookfly; newParent: Node3D) {.gdsync.} =
   self.enabled = true
   let global = self.globalTransform
   self.getParent.removeChild(self)
@@ -123,15 +146,15 @@ proc release*(self: Bookfly; newParent: Node3D) {.gdsync.} =
   self.leftPage.material.clearOverride
   self.freePage.material.clearOverride
 
-proc open*(self: Bookfly; rightPage, leftPage: gdref Material) {.gdsync.} =
+proc playOpen*(self: Bookfly; rightPage, leftPage: gdref Material) {.gdsync.} =
   self.player.play(self.openName)
   self.rightPage.material[0] = rightPage
   self.leftPage.material[0] = leftPage
 
-proc close*(self: Bookfly) {.gdsync.} =
+proc playClose*(self: Bookfly) {.gdsync.} =
   self.player.playBackwards(self.openName)
 
-proc pageRight*(self: Bookfly; rightPage, leftPage: gdref Material): Bool {.gdsync.} =
+proc playPageRight*(self: Bookfly; rightPage, leftPage: gdref Material): Bool {.gdsync.} =
   if self.player.isPlaying: return false
   self.freePage.material[1] = self.rightPage.material[0]
   self.freePage.material[0] = leftPage
@@ -139,7 +162,7 @@ proc pageRight*(self: Bookfly; rightPage, leftPage: gdref Material): Bool {.gdsy
   self.player.play(self.pageRightName)
   return true
 
-proc pageLeft*(self: Bookfly; rightPage, leftPage: gdref Material): Bool {.gdsync.} =
+proc playPageLeft*(self: Bookfly; rightPage, leftPage: gdref Material): Bool {.gdsync.} =
   if self.player.isPlaying: return false
   self.freePage.material[0] = self.leftPage.material[0]
   self.freePage.material[1] = rightPage

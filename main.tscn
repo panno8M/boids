@@ -1,13 +1,17 @@
-[gd_scene load_steps=16 format=3 uid="uid://bpwugrpfc2agh"]
+[gd_scene load_steps=21 format=3 uid="uid://bpwugrpfc2agh"]
 
-[ext_resource type="PackedScene" uid="uid://c1xcy4s8lhvjw" path="res://book/bookfly.tscn" id="3_7mycd"]
 [ext_resource type="PackedScene" uid="uid://cuxresj1risim" path="res://player.tscn" id="3_h2yge"]
-[ext_resource type="PackedScene" uid="uid://b8u5t6id3x1en" path="res://book_user.tscn" id="4_5vw27"]
+[ext_resource type="Script" uid="uid://b1c4ht2qgoumb" path="res://UI/book_title.gd" id="3_w48qg"]
 [ext_resource type="PackedScene" uid="uid://b17idx2wi2vgm" path="res://debug_status.tscn" id="4_7mycd"]
 [ext_resource type="Material" uid="uid://dj52uxdnanxxa" path="res://dust_particle_process_material.tres" id="5_7mycd"]
+[ext_resource type="Script" uid="uid://c1p6pbisg4ulf" path="res://book/my_factory.gd" id="5_kek77"]
 [ext_resource type="Script" uid="uid://bhpuheestwkir" path="res://piemenu.gd" id="5_lquwl"]
+[ext_resource type="PackedScene" uid="uid://0gwan3pqj4op" path="res://book/sample/sample_book.tscn" id="5_ycdy4"]
 [ext_resource type="QuadMesh" uid="uid://deegmffpba3cq" path="res://dust_quad_mesh.tres" id="6_272bh"]
 [ext_resource type="Script" uid="uid://cr8iggt0n7pg" path="res://page/sample page/mouse_pointer.gd" id="6_kek77"]
+[ext_resource type="PackedScene" uid="uid://dtfpbvqwd3k7r" path="res://book/text/text_book.tscn" id="6_w48qg"]
+[ext_resource type="PackedScene" uid="uid://bvaeaalnhv4wb" path="res://book/image/image_book.tscn" id="7_vivmo"]
+[ext_resource type="PackedScene" uid="uid://bd8ig36buaog1" path="res://book/audio/audio_book.tscn" id="8_2cqfq"]
 [ext_resource type="PackedScene" uid="uid://cn4qb3nke24vn" path="res://event_bridge.tscn" id="8_5vw27"]
 
 [sub_resource type="Gradient" id="Gradient_272bh"]
@@ -26,6 +30,16 @@ font_size = 32
 outline_size = 12
 outline_color = Color(0.24477637, 0.2447764, 0.24477637, 1)
 
+[sub_resource type="BookFactory" id="BookFactory_4c57u"]
+script = ExtResource("5_kek77")
+blueprints = Dictionary[int, PackedScene]({
+0: ExtResource("5_ycdy4"),
+1: ExtResource("6_w48qg"),
+2: ExtResource("7_vivmo"),
+3: ExtResource("8_2cqfq")
+})
+metadata/_custom_type_script = "uid://c1p6pbisg4ulf"
+
 [sub_resource type="BoxMesh" id="BoxMesh_h2yge"]
 size = Vector3(2, 2, 2)
 
@@ -40,9 +54,9 @@ item/0/navigation_layers = 1
 
 [node name="Main" type="Node"]
 
-[node name="EventBridge" parent="." node_paths=PackedStringArray("main_camera", "book_user") instance=ExtResource("8_5vw27")]
+[node name="EventBridge" parent="." node_paths=PackedStringArray("main_camera", "player") instance=ExtResource("8_5vw27")]
 main_camera = NodePath("../Player/Camera3D")
-book_user = NodePath("../Player/BookUser")
+player = NodePath("../Player")
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -119,7 +133,7 @@ item_list = Dictionary[String, Variant]({
 "Close": &"close"
 })
 
-[node name="BookTitle" type="Label" parent="UI"]
+[node name="BookTitle" type="Label" parent="UI" node_paths=PackedStringArray("player")]
 visible = false
 layout_mode = 0
 offset_left = 760.0
@@ -130,6 +144,8 @@ text = "Book Title"
 label_settings = SubResource("LabelSettings_7mycd")
 horizontal_alignment = 1
 autowrap_mode = 3
+script = ExtResource("3_w48qg")
+player = NodePath("../../Player")
 
 [node name="MousePointer" type="Control" parent="UI"]
 anchors_preset = 0
@@ -149,8 +165,8 @@ uv_picking_viewport = NodePath("../EventBridge/SubViewport")
 cell_map = NodePath("../GridMap")
 
 [node name="BookSpawner" type="BookSpawner" parent="BoidController3D"]
+factory = SubResource("BookFactory_4c57u")
 root_directory = "/home/panno/Documents/godot-projects/boids"
-blueprint = ExtResource("3_7mycd")
 
 [node name="BoidRuleSeparation3D" type="BoidRuleSeparation3D" parent="BoidController3D"]
 range = 2
@@ -170,15 +186,11 @@ enable_y = false
 mesh_library = SubResource("MeshLibrary_1bvp3")
 metadata/_editor_floor_ = Vector3(-17, -17, 16)
 
-[node name="Player" parent="." node_paths=PackedStringArray("book_command", "book_command_holding", "book_command_viewing", "controller", "book_title") instance=ExtResource("3_h2yge")]
+[node name="Player" parent="." node_paths=PackedStringArray("book_command", "book_command_holding", "book_command_viewing", "controller") instance=ExtResource("3_h2yge")]
 book_command = NodePath("../UI/BookCommand")
 book_command_holding = NodePath("../UI/BookCommandHolding")
 book_command_viewing = NodePath("../UI/BookCommandViewing")
 controller = NodePath("../BoidController3D")
-book_title = NodePath("../UI/BookTitle")
-
-[node name="BookUser" parent="Player" node_paths=PackedStringArray("book_title") instance=ExtResource("4_5vw27")]
-book_title = NodePath("../../UI/BookTitle")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)

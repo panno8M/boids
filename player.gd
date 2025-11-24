@@ -1,6 +1,18 @@
 extends Node3D
 class_name Player
 
+enum State {IDLE, HOLD, VIEW}
+
+signal state_changed(old_state: State, new_state: State)
+
+var holding: BookBase
+var _state: State
+var state: State:
+	get: return _state
+	set(value):
+		state_changed.emit(_state, value)
+		_state = value
+
 var move_speed := 10.0
 var mouse_sensitivity := 0.2
 var yaw := 0.0
@@ -12,9 +24,6 @@ var velocity := Vector3.ZERO
 @export var book_command_holding: PieMenu
 @export var book_command_viewing: PieMenu
 @export var controller: BoidController3D
-@export var book_title: Label
-
-@onready var book_user = $BookUser
 
 var mouse_left_command: PieMenu
 
@@ -37,15 +46,15 @@ func get_closest_agent(camera: Camera3D, distance: float = 1000.0, mask: int = 0
 	return null
 
 func _unhandled_input(event):
-	match book_user.state:
-		BookUser.State.VIEW:
+	match state:
+		State.VIEW:
 			if event is InputEventKey:
 				if event.pressed:
 					match event.keycode:
 						KEY_LEFT:
-							book_user.page_left()
+							holding.page_left()
 						KEY_RIGHT:
-							book_user.page_right()
+							holding.page_right()
 		_:
 			if event is InputEventMouseMotion:
 				yaw -= event.relative.x * mouse_sensitivity
@@ -72,19 +81,32 @@ func execute():
 		book.execute()
 
 func take():
-	if book_user.hold(latest_agent):
+	if latest_agent and not holding:
+		holding = latest_agent
+		holding.play_hold(self)
+		state = State.HOLD
 		mouse_left_command = book_command_holding
 
 func release():
-	if book_user.release(controller):
+	if holding:
+		holding.release()
+		holding = null
+		state = State.IDLE
+		CursorManager.mouse_mode = CursorManager.MouseMode.CAPTURED
 		mouse_left_command = book_command
 
 func open():
-	if book_user.open():
+	if holding:
+		holding.open()
+		state = State.VIEW
+		CursorManager.mouse_mode = CursorManager.MouseMode.VISIBLE
 		mouse_left_command = book_command_viewing
-
+		
 func close():
-	if book_user.close():
+	if holding:
+		holding.close()
+		state = State.HOLD
+		CursorManager.mouse_mode = CursorManager.MouseMode.CAPTURED
 		mouse_left_command = book_command_holding
 
 func _process(delta):

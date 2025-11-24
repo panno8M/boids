@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://c1xcy4s8lhvjw"]
+[gd_scene load_steps=9 format=3 uid="uid://c1xcy4s8lhvjw"]
 
+[ext_resource type="Script" uid="uid://cv3po6kkw6s13" path="res://book/book_base.gd" id="1_48jhu"]
 [ext_resource type="PackedScene" uid="uid://xq73bbo1st2t" path="res://book/Book.glb" id="1_eabwy"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_xu20i"]
@@ -32,11 +33,12 @@ height = 0.04
 radial_segments = 16
 rings = 8
 
-[node name="Boid3D" type="Bookfly" node_paths=PackedStringArray("right_page", "left_page", "free_page")]
+[node name="BookBase" type="Bookfly" node_paths=PackedStringArray("right_page", "left_page", "free_page")]
 animation_player = NodePath("Book/AnimationPlayer")
 right_page = NodePath("Book/Armature/Skeleton3D/Page_Right")
 left_page = NodePath("Book/Armature/Skeleton3D/Page_Left")
 free_page = NodePath("Book/Armature/Skeleton3D/Page_Free")
+script = ExtResource("1_48jhu")
 
 [node name="Area3D" type="Area3D" parent="."]
 collision_mask = 0
