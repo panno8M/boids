@@ -1,14 +1,30 @@
-[gd_scene load_steps=18 format=3 uid="uid://bpwugrpfc2agh"]
+[gd_scene load_steps=17 format=3 uid="uid://bpwugrpfc2agh"]
 
 [ext_resource type="PackedScene" uid="uid://c1xcy4s8lhvjw" path="res://book/bookfly.tscn" id="3_7mycd"]
 [ext_resource type="PackedScene" uid="uid://cuxresj1risim" path="res://player.tscn" id="3_h2yge"]
 [ext_resource type="PackedScene" uid="uid://b8u5t6id3x1en" path="res://book_user.tscn" id="4_5vw27"]
-[ext_resource type="PackedScene" uid="uid://b17idx2wi2vgm" path="res://Status.tscn" id="4_7mycd"]
+[ext_resource type="PackedScene" uid="uid://b17idx2wi2vgm" path="res://debug_status.tscn" id="4_7mycd"]
 [ext_resource type="Material" uid="uid://dj52uxdnanxxa" path="res://dust_particle_process_material.tres" id="5_7mycd"]
 [ext_resource type="Script" uid="uid://bhpuheestwkir" path="res://piemenu.gd" id="5_lquwl"]
 [ext_resource type="QuadMesh" uid="uid://deegmffpba3cq" path="res://dust_quad_mesh.tres" id="6_272bh"]
 [ext_resource type="Script" uid="uid://cr8iggt0n7pg" path="res://page/sample page/mouse_pointer.gd" id="6_kek77"]
 [ext_resource type="PackedScene" uid="uid://cn4qb3nke24vn" path="res://event_bridge.tscn" id="8_5vw27"]
+
+[sub_resource type="Gradient" id="Gradient_272bh"]
+offsets = PackedFloat32Array(0, 0.05, 0.95, 1)
+colors = PackedColorArray(0.12955841, 0.1295585, 0.12955844, 1, 0.23, 0.23, 0.23, 0, 0.23137255, 0.23137255, 0.23137255, 0, 0.12941177, 0.12941177, 0.12941177, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5vw27"]
+gradient = SubResource("Gradient_272bh")
+fill_from = Vector2(1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_lquwl"]
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_7mycd"]
+font_size = 32
+outline_size = 12
+outline_color = Color(0.24477637, 0.2447764, 0.24477637, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
 transparency = 3
@@ -29,26 +45,112 @@ item/0/shapes = []
 item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/0/navigation_layers = 1
 
-[sub_resource type="Gradient" id="Gradient_272bh"]
-offsets = PackedFloat32Array(0, 0.05, 0.95, 1)
-colors = PackedColorArray(0.12955841, 0.1295585, 0.12955844, 1, 0.23, 0.23, 0.23, 0, 0.23137255, 0.23137255, 0.23137255, 0, 0.12941177, 0.12941177, 0.12941177, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_5vw27"]
-gradient = SubResource("Gradient_272bh")
-fill_from = Vector2(1, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_lquwl"]
-font_size = 32
-
-[sub_resource type="LabelSettings" id="LabelSettings_7mycd"]
-font_size = 32
-outline_size = 12
-outline_color = Color(0.24477637, 0.2447764, 0.24477637, 1)
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_272bh"]
-viewport_path = NodePath("EventBridge/SubViewport")
-
 [node name="Main" type="Node"]
+
+[node name="EventBridge" parent="." node_paths=PackedStringArray("main_camera", "book_user") instance=ExtResource("8_5vw27")]
+main_camera = NodePath("../Player/Camera3D")
+book_user = NodePath("../Player/BookUser")
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Letterbox" type="TextureRect" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_5vw27")
+
+[node name="CrossHair" type="Label" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "+"
+label_settings = SubResource("LabelSettings_lquwl")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BookCommand" type="Label" parent="UI"]
+visible = false
+layout_mode = 0
+offset_right = 256.0
+offset_bottom = 69.0
+text = "Book Command"
+horizontal_alignment = 1
+text_overrun_behavior = 3
+script = ExtResource("5_lquwl")
+item_list = Dictionary[String, Variant]({
+"Execute": &"execute",
+"Take": &"take"
+})
+
+[node name="BookCommandHolding" type="Label" parent="UI"]
+visible = false
+layout_mode = 0
+offset_right = 256.0
+offset_bottom = 69.0
+text = "Book Command"
+horizontal_alignment = 1
+text_overrun_behavior = 3
+script = ExtResource("5_lquwl")
+item_list = Dictionary[String, Variant]({
+"Execute": &"execute",
+"Open": &"open",
+"Release": &"release"
+})
+
+[node name="BookCommandViewing" type="Label" parent="UI"]
+visible = false
+layout_mode = 0
+offset_right = 256.0
+offset_bottom = 69.0
+text = "Book Command"
+horizontal_alignment = 1
+text_overrun_behavior = 3
+script = ExtResource("5_lquwl")
+item_list = Dictionary[String, Variant]({
+"Close": &"close",
+"Execute": &"execute",
+"Release": &"release"
+})
+
+[node name="BookTitle" type="Label" parent="UI"]
+visible = false
+layout_mode = 0
+offset_left = 760.0
+offset_top = 300.0
+offset_right = 1160.0
+offset_bottom = 537.0
+text = "Book Title"
+label_settings = SubResource("LabelSettings_7mycd")
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="MousePointer" type="Control" parent="UI"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 1
+script = ExtResource("6_kek77")
+metadata/_custom_type_script = "uid://cr8iggt0n7pg"
+
+[node name="Debug UI" parent="." node_paths=PackedStringArray("controller", "player", "uv_picking_viewport") instance=ExtResource("4_7mycd")]
+mouse_filter = 2
+controller = NodePath("../BoidController3D")
+player = NodePath("../Player")
+uv_picking_viewport = NodePath("../EventBridge/SubViewport")
 
 [node name="BoidController3D" type="BoidController3D" parent="." node_paths=PackedStringArray("cell_map")]
 cell_map = NodePath("../GridMap")
@@ -80,129 +182,19 @@ data = {
 metadata/_editor_floor_ = Vector3(17, 16, -17)
 
 [node name="Player" parent="." node_paths=PackedStringArray("book_command", "book_command_holding", "book_command_viewing", "controller", "book_title") instance=ExtResource("3_h2yge")]
-book_command = NodePath("../HUD/BookCommand")
-book_command_holding = NodePath("../HUD/BookCommandHolding")
-book_command_viewing = NodePath("../HUD/BookCommandViewing")
+book_command = NodePath("../UI/BookCommand")
+book_command_holding = NodePath("../UI/BookCommandHolding")
+book_command_viewing = NodePath("../UI/BookCommandViewing")
 controller = NodePath("../BoidController3D")
-book_title = NodePath("../HUD/BookTitle")
+book_title = NodePath("../UI/BookTitle")
 
 [node name="BookUser" parent="Player" node_paths=PackedStringArray("book_title") instance=ExtResource("4_5vw27")]
-book_title = NodePath("../../HUD/BookTitle")
+book_title = NodePath("../../UI/BookTitle")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
 light_color = Color(0.7578687, 0.8880022, 0.99999994, 1)
 light_specular = 10.0
-
-[node name="HUD" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-
-[node name="Letterbox" type="TextureRect" parent="HUD"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = SubResource("GradientTexture2D_5vw27")
-
-[node name="Stat" parent="HUD" node_paths=PackedStringArray("controller", "player") instance=ExtResource("4_7mycd")]
-layout_mode = 1
-mouse_filter = 2
-controller = NodePath("../../BoidController3D")
-player = NodePath("../../Player")
-
-[node name="CrossHair" type="Label" parent="HUD"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "+"
-label_settings = SubResource("LabelSettings_lquwl")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="BookCommand" type="Label" parent="HUD"]
-visible = false
-layout_mode = 0
-offset_right = 256.0
-offset_bottom = 69.0
-text = "Book Command"
-horizontal_alignment = 1
-text_overrun_behavior = 3
-script = ExtResource("5_lquwl")
-item_list = Dictionary[String, Variant]({
-"Execute": &"execute",
-"Take": &"take"
-})
-
-[node name="BookCommandHolding" type="Label" parent="HUD"]
-visible = false
-layout_mode = 0
-offset_right = 256.0
-offset_bottom = 69.0
-text = "Book Command"
-horizontal_alignment = 1
-text_overrun_behavior = 3
-script = ExtResource("5_lquwl")
-item_list = Dictionary[String, Variant]({
-"Execute": &"execute",
-"Release": &"release",
-"Open": &"open"
-})
-
-[node name="BookCommandViewing" type="Label" parent="HUD"]
-visible = false
-layout_mode = 0
-offset_right = 256.0
-offset_bottom = 69.0
-text = "Book Command"
-horizontal_alignment = 1
-text_overrun_behavior = 3
-script = ExtResource("5_lquwl")
-item_list = Dictionary[String, Variant]({
-"Execute": &"execute",
-"Release": &"release",
-"Close": &"close"
-})
-
-[node name="BookTitle" type="Label" parent="HUD"]
-visible = false
-layout_mode = 0
-offset_left = 760.0
-offset_top = 300.0
-offset_right = 1160.0
-offset_bottom = 537.0
-text = "Book Title"
-label_settings = SubResource("LabelSettings_7mycd")
-horizontal_alignment = 1
-autowrap_mode = 3
-
-[node name="EventBridgePreview" type="TextureRect" parent="HUD"]
-visible = false
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -40.0
-offset_bottom = 40.0
-grow_horizontal = 0
-texture = SubResource("ViewportTexture_272bh")
-
-[node name="MousePointer" type="Control" parent="HUD"]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("6_kek77")
-metadata/_custom_type_script = "uid://cr8iggt0n7pg"
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
 amount = 1000
@@ -212,7 +204,3 @@ randomness = 1.0
 transform_align = 1
 process_material = ExtResource("5_7mycd")
 draw_pass_1 = ExtResource("6_272bh")
-
-[node name="EventBridge" parent="." node_paths=PackedStringArray("main_camera", "book_user") instance=ExtResource("8_5vw27")]
-main_camera = NodePath("../Player/Camera3D")
-book_user = NodePath("../Player/BookUser")

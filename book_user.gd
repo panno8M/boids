@@ -100,7 +100,7 @@ func open() -> bool:
 		call_deferred("update_page", current_right_page, current_left_page, book_kind, page_index)
 		book_title.visible = false
 		state = State.VIEW
-		CursorManager.mouse_mode = CursorManager.MouseMode.HIDDEN
+		CursorManager.mouse_mode = CursorManager.MouseMode.VISIBLE
 		return true
 	else:
 		return false
