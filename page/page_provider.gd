@@ -1,7 +1,13 @@
 extends Node
-class_name PageProvider
 
-@export var page_presets: Dictionary[StringName, PackedScene]
+var page_presets: Dictionary[StringName, PackedScene] = {
+	&"SamplePage": preload("res://page/sample page/sample_page.tscn"),
+	&"EmptyPage": preload("res://page/empty page/empty_page.tscn"),
+	&"TextPage": preload("res://page/text page/text_page.tscn"),
+	&"ImagePage": preload("res://page/image page/image_page.tscn"),
+	&"AudioPage": preload("res://page/audio page/audio_page.tscn"),
+	&"AudioSpectrumPage": preload("res://page/audio page/audio_spectrum_page.tscn"),
+}
 
 var pages: Dictionary[StringName, PageBase]
 

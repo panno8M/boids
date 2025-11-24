@@ -6,8 +6,6 @@ enum State {IDLE, HOLD, VIEW}
 
 @export var book_title: Label
 
-@onready var page_provider: PageProvider = $PageProvider
-
 var current_right_page: PageBase
 var swap_right_page: PageBase
 var current_left_page: PageBase
@@ -31,7 +29,7 @@ func swap_pages() -> void:
 	swap_left_page = tmp
 
 func init_pages() -> void:
-	var page = page_provider.add_preset("EmptyPage")
+	var page = PageProvider.add_preset("EmptyPage")
 	
 	current_left_page = page
 	current_right_page = page
@@ -157,11 +155,11 @@ func is_text_file(path: String) -> bool:
 
 func open_text_file(file_path: String) -> void:
 	var file_name = file_path.get_file()
-	var req_init = not page_provider.has_page(file_name + ".0")
-	current_left_page = page_provider.add_preset_at_once("TextPage", file_name + ".0")
-	current_right_page = page_provider.add_preset_at_once("TextPage", file_name + ".1")
-	swap_left_page = page_provider.add_preset_at_once("TextPage", file_name + ".2")
-	swap_right_page = page_provider.add_preset_at_once("TextPage", file_name + ".3")
+	var req_init = not PageProvider.has_page(file_name + ".0")
+	current_left_page = PageProvider.add_preset_at_once("TextPage", file_name + ".0")
+	current_right_page = PageProvider.add_preset_at_once("TextPage", file_name + ".1")
+	swap_left_page = PageProvider.add_preset_at_once("TextPage", file_name + ".2")
+	swap_right_page = PageProvider.add_preset_at_once("TextPage", file_name + ".3")
 	if req_init:
 		var text = FileAccess.get_file_as_string(holding.path)
 		current_left_page.set_contents_from_string(text)
@@ -171,21 +169,21 @@ func open_text_file(file_path: String) -> void:
 
 func open_image_file(file_path: String) -> void:
 	var file_name = file_path.get_file()
-	current_left_page = page_provider.add_preset_at_once("ImagePage", file_name)
+	current_left_page = PageProvider.add_preset_at_once("ImagePage", file_name)
 	current_left_page.set_contents_from_image_path(file_path)
-	current_right_page = page_provider.add_preset_at_once("EmptyPage", "EmptyPage.0")
-	swap_left_page = page_provider.add_preset_at_once("EmptyPage", "EmptyPage.1")
-	swap_right_page = page_provider.add_preset_at_once("EmptyPage", "EmptyPage.2")
+	current_right_page = PageProvider.add_preset_at_once("EmptyPage", "EmptyPage.0")
+	swap_left_page = PageProvider.add_preset_at_once("EmptyPage", "EmptyPage.1")
+	swap_right_page = PageProvider.add_preset_at_once("EmptyPage", "EmptyPage.2")
 
 var audio_page: PageBase
 func open_audio_file(file_path: String) -> void:
 	var file_name = file_path.get_file()
-	audio_page = page_provider.add_preset_at_once("AudioPage", file_name)
-	var spectrum_page = page_provider.add_preset_at_once("AudioSpectrumPage")
+	audio_page = PageProvider.add_preset_at_once("AudioPage", file_name)
+	var spectrum_page = PageProvider.add_preset_at_once("AudioSpectrumPage")
 	audio_page.set_contents_from_path(file_path)
 	current_left_page = audio_page
 	current_right_page = spectrum_page
-	swap_left_page = page_provider.add_preset_at_once("EmptyPage", "EmptyPage.1")
+	swap_left_page = PageProvider.add_preset_at_once("EmptyPage", "EmptyPage.1")
 	swap_right_page = spectrum_page
 func close_audio_file() -> void:
 	if audio_page:
@@ -193,7 +191,7 @@ func close_audio_file() -> void:
 		audio_page = null
 
 func open_sample_file(_path: String) -> void:
-	current_left_page = page_provider.add_preset_at_once("SamplePage", "SamplePage.0")
-	current_right_page = page_provider.add_preset_at_once("SamplePage", "SamplePage.1")
-	swap_left_page = page_provider.add_preset_at_once("SamplePage", "SamplePage.2")
-	swap_right_page = page_provider.add_preset_at_once("SamplePage", "SamplePage.3")
+	current_left_page = PageProvider.add_preset_at_once("SamplePage", "SamplePage.0")
+	current_right_page = PageProvider.add_preset_at_once("SamplePage", "SamplePage.1")
+	swap_left_page = PageProvider.add_preset_at_once("SamplePage", "SamplePage.2")
+	swap_right_page = PageProvider.add_preset_at_once("SamplePage", "SamplePage.3")

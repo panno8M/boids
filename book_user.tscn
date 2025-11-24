@@ -1,9 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://b8u5t6id3x1en"]
+[gd_scene load_steps=2 format=3 uid="uid://b8u5t6id3x1en"]
 
 [ext_resource type="Script" uid="uid://44fdkapah2dd" path="res://book_user.gd" id="1_d0kbr"]
-[ext_resource type="PackedScene" uid="uid://cikeoyjuodwyw" path="res://page/page_provider.tscn" id="2_wbaa7"]
 
 [node name="BookUser" type="Node3D"]
 script = ExtResource("1_d0kbr")
-
-[node name="PageProvider" parent="." instance=ExtResource("2_wbaa7")]
