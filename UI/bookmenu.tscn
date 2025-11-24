@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3 uid="uid://dhanldu7wrbo0"]
+
+[ext_resource type="Script" uid="uid://cycf3mrgmhkxq" path="res://UI/bookmenu.gd" id="1_mn4p0"]
+
+[node name="BookMenu" type="Label"]
+visible = false
+offset_right = 256.0
+offset_bottom = 69.0
+text = "Book Command"
+horizontal_alignment = 1
+text_overrun_behavior = 3
+script = ExtResource("1_mn4p0")
+presets = {
+&"Hold": {
+"Execute": &"execute",
+"Release": &"release",
+"Open": &"open"
+},
+&"View": {
+"Execute": &"execute",
+"Release": &"release",
+"Close": &"close"
+},
+&"Idle": {
+"Execute": &"execute",
+"Take": &"take"
+}
+}
+default_preset = &"Idle"

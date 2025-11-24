@@ -18,32 +18,7 @@ var mouse_sensitivity := 0.2
 var yaw := 0.0
 var pitch := 0.0
 var velocity := Vector3.ZERO
-@export var closest_agent: BoidAgent3D
-@export var latest_agent: BoidAgent3D
-@export var book_command: PieMenu
-@export var book_command_holding: PieMenu
-@export var book_command_viewing: PieMenu
 @export var controller: BoidController3D
-
-var mouse_left_command: PieMenu
-
-func _ready() -> void:
-	mouse_left_command = book_command
-
-func get_closest_agent(camera: Camera3D, distance: float = 1000.0, mask: int = 0xFFFFFFFF) -> BoidAgent3D:
-	var screen_center = get_viewport().size / 2
-
-	var from = camera.project_ray_origin(screen_center)
-	var to = from + camera.project_ray_normal(screen_center) * distance
-
-	var query = PhysicsRayQueryParameters3D.create(from, to)
-	query.collision_mask = mask
-	query.collide_with_areas = true
-
-	var result = get_world_3d().direct_space_state.intersect_ray(query)
-	if result:
-		return result.collider.get_parent() as BoidAgent3D
-	return null
 
 func _unhandled_input(event):
 	match state:
@@ -62,52 +37,33 @@ func _unhandled_input(event):
 				pitch = clamp(pitch, -89, 89)
 				rotation_degrees = Vector3(pitch, yaw, 0)
 
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed:
-				if closest_agent:
-					mouse_left_command.begin(closest_agent.path.get_file().get_basename())
-			else:
-				var item = mouse_left_command.confirm()
-				match typeof(item):
-					TYPE_STRING_NAME:
-						if has_method(item):
-							call(item)
+func execute(book: BookBase):
+	if book: book.execute()
 
-func execute():
-	if latest_agent:
-		var book = latest_agent as Bookfly
-		print(book.path)
-		book.execute()
-
-func take():
-	if latest_agent and not holding:
-		holding = latest_agent
+func take(book: BookBase):
+	if book and not holding:
+		holding = book
 		holding.play_hold(self)
 		state = State.HOLD
-		mouse_left_command = book_command_holding
 
-func release():
+func release(_book: BookBase):
 	if holding:
 		holding.release()
 		holding = null
 		state = State.IDLE
 		CursorManager.mouse_mode = CursorManager.MouseMode.CAPTURED
-		mouse_left_command = book_command
 
-func open():
+func open(_book: BookBase):
 	if holding:
 		holding.open()
 		state = State.VIEW
 		CursorManager.mouse_mode = CursorManager.MouseMode.VISIBLE
-		mouse_left_command = book_command_viewing
 		
-func close():
+func close(_book: BookBase):
 	if holding:
 		holding.close()
 		state = State.HOLD
 		CursorManager.mouse_mode = CursorManager.MouseMode.CAPTURED
-		mouse_left_command = book_command_holding
 
 func _process(delta):
 	var acc = Vector3.ZERO
@@ -133,7 +89,3 @@ func _process(delta):
 		velocity = velocity.limit_length(max(0, velocity.length()-power))
 	if velocity != Vector3.ZERO:
 		translate(velocity * move_speed * delta)
-
-	closest_agent = get_closest_agent($Camera3D)
-	if closest_agent:
-		latest_agent = closest_agent

@@ -1,18 +1,24 @@
 extends Label
 class_name PieMenu
 
-@export var action: StringName
-@export var item_list: Dictionary[String, Variant]
+@export var presets: Dictionary
+@export var default_preset: Variant
 @export var threshold: float = 20.0
 @export var radius: float = 100.0
-@export var selected_item: Variant
+var selected_item: Variant
+var item_list: Dictionary
 var labels: Array[Label] = []
 var mouse_begin: Vector2
+var user_data
+
+var title: String:
+	get: return text
+	set(value): text = value
 
 signal item_selected(item: Variant)
 
 func _ready():
-	initialize(item_list)
+	item_list = presets.get(default_preset, presets.values()[0])
 	visible = false
 
 func _draw():
@@ -40,24 +46,16 @@ func _draw():
 		var end = center + mouse_normalized * (r - w/2)
 		draw_line(start, end, Color.WHITE, 1, true)
 
-func _unhandled_input(event):
-	if not action.is_empty():
-		if event.is_action_pressed(action):
-			begin()
-		elif event.is_action_released(action):
-			selected_item = confirm()
-
-func _process(_delta):
-	if not visible: return
-	queue_redraw()
-
 func _input(event):
+	if event is InputEventMouseMotion:
+		if visible:
+			queue_redraw()
 	if event is InputEventKey:
 		if event.pressed and event.keycode == KEY_ESCAPE:
 			mouse_begin = Vector2.ZERO
 			confirm()
 
-func initialize(item_list: Dictionary[String, Variant]) -> void:
+func initialize() -> void:
 	var keys = item_list.keys()
 	for i in range(keys.size()):
 		var item = keys[i]
@@ -75,26 +73,32 @@ func initialize(item_list: Dictionary[String, Variant]) -> void:
 	for i in range(item_list.size(), labels.size()):
 		labels[i].visible = false
 
-func begin(title: String = ""):
+func set_item_list_from_presets(key):
+	item_list = presets[key]
+
+func begin(data = null):
 	if visible: return
+	user_data = data
 	CursorManager.mouse_mode_override = CursorManager.MouseMode.HIDDEN
 	mouse_begin = get_global_mouse_position()
-	if title.length() != 0:
-		text = title
 	position = mouse_begin - size/2
-	initialize(item_list)
+	initialize()
 	visible = true
 
-func confirm() -> Variant:
-	if not visible: return
+func confirm() -> Dictionary:
+	var result = {
+		data = user_data,
+		selection = null,
+	}
+	if not visible: return result
 	var choice = get_selecting_item()
 	visible = false	
 	CursorManager.mouse_mode_override = CursorManager.MouseMode.INHERIT
-	
+
 	if choice == -1:
-		return ""
+		return result
 	else:
-		var result = item_list[item_list.keys()[choice]]
+		result.selection = item_list[item_list.keys()[choice]]
 		item_selected.emit(result)
 		return result
 
