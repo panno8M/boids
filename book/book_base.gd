@@ -32,7 +32,7 @@ func close() -> void:
 func release() -> void:
 	if loaded:
 		close_callback()
-		play_release(owner_controller)
+	play_release(owner_controller)
 
 func navigate(new_index: int) -> void:
 	if loaded:
