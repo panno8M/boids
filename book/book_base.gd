@@ -1,8 +1,6 @@
 extends Bookfly
 class_name BookBase
 
-var owner_controller: BoidController3D
-
 var loaded: bool
 var current_page: int
 var current_right_page: PageBase
@@ -32,7 +30,7 @@ func close() -> void:
 func release() -> void:
 	if loaded:
 		close_callback()
-	play_release(owner_controller)
+	play_release()
 
 func navigate(new_index: int) -> void:
 	if loaded:

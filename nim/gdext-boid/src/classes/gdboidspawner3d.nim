@@ -12,6 +12,7 @@ type
 proc spawn*(self: BoidSpawner3D): BoidAgent3D =
   result = instantiate(self.blueprint[]) as BoidAgent3D
   self.addChild result
+  result.controller = self.controller
   result.p = Vector3.signedRand * self.range
   result.v = Vector3.signedRand.normalized.map(self.controller.controlMinSpeed..self.controller.controlMaxSpeed)
   result.a = Vector3.Zero

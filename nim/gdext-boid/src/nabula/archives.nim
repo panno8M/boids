@@ -90,6 +90,7 @@ proc init*(self: Bookfly) =
 proc spawn*(self: BookSpawner; path: String): Bookfly =
   result = self.factory[].create(self.controller, path)
   self.addChild result
+  result.controller = self.controller
   result.p = Vector3.signedRand * self.range
   result.v = Vector3.signedRand.normalized.map(self.controller.controlMinSpeed..self.controller.controlMaxSpeed)
   result.a = Vector3.Zero
@@ -134,11 +135,11 @@ proc playHold*(self: Bookfly; newParent: Node3D) {.gdsync.} =
   self.transform = Transform3D(origin: self.p)
   self.player.pause(self.openName)
 
-proc playRelease*(self: Bookfly; newParent: Node3D) {.gdsync.} =
+proc playRelease*(self: Bookfly) {.gdsync.} =
   self.enabled = true
   let global = self.globalTransform
   self.getParent.removeChild(self)
-  newParent.addChild(self)
+  self.controller.addChild(self)
   self.globalTransform = global
   self.p = self.position
   self.player.play(self.flyName)

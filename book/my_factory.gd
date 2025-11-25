@@ -7,7 +7,6 @@ enum BookKind {SAMPLE, TEXT, IMAGE, AUDIO}
 
 func _create(controller: BoidController3D, path: String) -> Bookfly:
 	var result = blueprints[detect_book_kind(path)].instantiate() as BookBase
-	result.owner_controller = controller
 	return result
 
 const image_exts = ["png", "jpg", "jpeg", "svg", "svgz", "bmp", "tga", "webp", "exr", "hdr", "qoi", "dds", "ktx", "ktx2", "pvr"]
