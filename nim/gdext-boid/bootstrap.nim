@@ -10,6 +10,7 @@ import classes/gdBoidRuleAlignment3D
 import classes/gdBoidRuleAvoidGrid3D
 import classes/gdBoidRuleStayInBounds3D
 import classes/gdBoidRuleInteractNode3D
+import classes/gdBoidRuleFollowNode3D
 import classes/gdBoidRulePostureLookAt3D
 import nabula/archives
 
