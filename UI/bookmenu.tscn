@@ -12,7 +12,7 @@ text_overrun_behavior = 3
 script = ExtResource("1_mn4p0")
 presets = {
 &"Global": {
-"Open Vellum": &"open_vellum",
+"Vellum": &"vellum",
 },
 &"Hold": {
 "Execute": &"execute",
