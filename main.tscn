@@ -137,7 +137,8 @@ range = 2
 [node name="BoidRuleStayInBounds3D" type="BoidRuleStayInBounds3D" parent="BoidController3D"]
 bounds = AABB(-25, -25, -25, 50, 50, 50)
 
-[node name="BoidRuleInterestNode3D" type="BoidRuleInterestNode3D" parent="BoidController3D" node_paths=PackedStringArray("target")]
+[node name="BoidRuleInteractNode3D" type="BoidRuleInteractNode3D" parent="BoidController3D" node_paths=PackedStringArray("target")]
+factor = 0.05
 target = NodePath("../../Player")
 
 [node name="BoidRulePostureLookAt3D" type="BoidRulePostureLookAt3D" parent="BoidController3D"]
