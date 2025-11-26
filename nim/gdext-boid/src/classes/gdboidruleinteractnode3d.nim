@@ -9,7 +9,7 @@ type BoidRuleInteractNode3D* {.gdsync.} = ptr object of BoidModule3D
   squaredRange: float = 100
   target*: Node3D
 
-gdexport BoidRuleInteractNode3D.factor, Appearance.range(-1, 1)
+gdexport BoidRuleInteractNode3D.factor, Appearance.range(0, 5)
 gdexport "range",
   proc(self: BoidRuleInteractNode3D): float = self.range,
   proc(self: BoidRuleInteractNode3D; value: float) =

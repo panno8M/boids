@@ -124,21 +124,31 @@ uv_picking_viewport = NodePath("../EventBridge/SubViewport")
 
 [node name="BoidController3D" type="BoidController3D" parent="." node_paths=PackedStringArray("cell_map")]
 cell_map = NodePath("../GridMap")
+controlMinSpeed = 0.001
+controlMaxSpeed = 5.0
 
 [node name="BookSpawner" type="BookSpawner" parent="BoidController3D"]
 factory = SubResource("BookFactory_4c57u")
 root_directory = "/home/panno/Documents/godot-projects/boids"
 
+[node name="BoidRuleCohesion3D" type="BoidRuleCohesion3D" parent="BoidController3D"]
+factor = 0.2
+range = 3
+
 [node name="BoidRuleSeparation3D" type="BoidRuleSeparation3D" parent="BoidController3D"]
+factor = 0.4
 range = 2
 
 [node name="BoidRuleAlignment3D" type="BoidRuleAlignment3D" parent="BoidController3D"]
+factor = 0.005
 
 [node name="BoidRuleStayInBounds3D" type="BoidRuleStayInBounds3D" parent="BoidController3D"]
-bounds = AABB(-25, -25, -25, 50, 50, 50)
+factor = 1.0
+bounds = AABB(-20, -20, -20, 40, 40, 40)
+threshold = 5.0
 
 [node name="BoidRuleInteractNode3D" type="BoidRuleInteractNode3D" parent="BoidController3D" node_paths=PackedStringArray("target")]
-factor = 0.05
+factor = 0.2
 target = NodePath("../../Player")
 
 [node name="BoidRulePostureLookAt3D" type="BoidRulePostureLookAt3D" parent="BoidController3D"]

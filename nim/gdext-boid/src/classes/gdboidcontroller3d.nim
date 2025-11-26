@@ -17,10 +17,8 @@ type
     cellMapInstance*: GridMap
     controlMinSpeed*: float = 5
     controlMaxSpeed*: float = 15
-    controlMaxAcceleration*: float = 75
 
   BoidModule3D* {.gdsync.} = ptr object of Node3D
-    enabled* {.gdexport.}: bool = true
     controller*: BoidController3D
 
   BoidAgent3D* {.gdsync.} = ptr object of Node3D
@@ -60,7 +58,6 @@ gdexport "pausing",
 gdexport[BoidController3D] "Control", Appearance.group("control")
 gdexport BoidController3D.controlMinSpeed
 gdexport BoidController3D.controlMaxSpeed
-gdexport BoidController3D.controlMaxAcceleration
 
 proc getAgentCount*(self: BoidController3D): Int {.gdsync.} =
   Int(self.boids.len)
@@ -103,7 +100,7 @@ method ready*(self: BoidController3D) {.gdsync.} =
 
 method update*(self: BoidModule3D; phase: ProcessPhase) {.gdsync, base.} = discard
 proc onPhasedProcess*(self: BoidModule3D; phase: ProcessPhase) {.gdsync, name: "_on_phased_process".} =
-  if self.enabled:
+  if self.visible:
     self.update(phase)
 
 method enterTree*(self: BoidModule3D) {.gdsync.} =
@@ -121,16 +118,17 @@ method process*(self: BoidController3D; delta: float64) {.gdsync.} =
       discard self.phasedProcess(ProcessPhaseAcceleration)
 
       for boid in self.boids:
-        boid.a = boid.a.limitLength(self.controlMaxAcceleration * delta)
-        boid.v += boid.a
+        if likely(boid.enabled):
+          boid.v += boid.a * delta
 
       discard self.phasedProcess(ProcessPhaseVelocity)
 
       for boid in self.boids:
         if likely(boid.enabled):
-          let length = boid.v.length
-          if length < self.controlMinSpeed or self.controlMaxSpeed < length:
-            boid.v = (boid.v/length) * length.clamp(self.controlMinSpeed, self.controlMaxSpeed)
+          let len2 = boid.v.lengthSquared
+          if likely(len2 != 0):
+            let len = len2.sqrt
+            boid.v = boid.v/len * len.clamp(self.controlMinSpeed, self.controlMaxSpeed)
           boid.p += boid.v * delta
 
       discard self.phasedProcess(ProcessPhasePosture)

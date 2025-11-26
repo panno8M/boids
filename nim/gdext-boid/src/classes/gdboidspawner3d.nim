@@ -14,7 +14,7 @@ proc spawn*(self: BoidSpawner3D): BoidAgent3D =
   self.addChild result
   result.controller = self.controller
   result.p = Vector3.signedRand * self.range
-  result.v = Vector3.signedRand.normalized.map(self.controller.controlMinSpeed..self.controller.controlMaxSpeed)
+  result.v = Vector3.signedRand.normalized * randfRange(self.controller.controlMinSpeed, self.controller.controlMaxSpeed)
   result.a = Vector3.Zero
   result.cell = self.controller.cellMapStatus.localToMap(result.p)
   result.position = result.p
