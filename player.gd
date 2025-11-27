@@ -19,6 +19,7 @@ var yaw := 0.0
 var pitch := 0.0
 var velocity := Vector3.ZERO
 @export var controller: BoidController3D
+@export var vellum_spawner: VellumSpawner
 
 func _unhandled_input(event):
 	match state:
@@ -64,6 +65,9 @@ func close(_book: BookBase):
 		holding.close()
 		state = State.HOLD
 		CursorManager.mouse_mode = CursorManager.MouseMode.CAPTURED
+
+func vellum(_data):
+	take(vellum_spawner.vellum)
 
 func _process(delta):
 	var acc = Vector3.ZERO

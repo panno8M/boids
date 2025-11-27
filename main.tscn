@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bpwugrpfc2agh"]
+[gd_scene load_steps=22 format=3 uid="uid://bpwugrpfc2agh"]
 
 [ext_resource type="PackedScene" uid="uid://dhanldu7wrbo0" path="res://UI/bookmenu.tscn" id="2_w48qg"]
 [ext_resource type="PackedScene" uid="uid://cuxresj1risim" path="res://player.tscn" id="3_h2yge"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://bvaeaalnhv4wb" path="res://book/image/image_book.tscn" id="7_vivmo"]
 [ext_resource type="PackedScene" uid="uid://bd8ig36buaog1" path="res://book/audio/audio_book.tscn" id="8_2cqfq"]
 [ext_resource type="PackedScene" uid="uid://cn4qb3nke24vn" path="res://event_bridge.tscn" id="8_5vw27"]
+[ext_resource type="PackedScene" uid="uid://blk14chws8q28" path="res://book/vellum/vellum.tscn" id="12_w48qg"]
 
 [sub_resource type="Gradient" id="Gradient_272bh"]
 offsets = PackedFloat32Array(0, 0.05, 0.95, 1)
@@ -154,12 +155,33 @@ target = NodePath("../../Player")
 [node name="BoidRulePostureLookAt3D" type="BoidRulePostureLookAt3D" parent="BoidController3D"]
 enable_y = false
 
+[node name="VellumController" type="BoidController3D" parent="." node_paths=PackedStringArray("cell_map")]
+cell_map = NodePath("../GridMap")
+controlMinSpeed = 0.001
+controlMaxSpeed = 5.0
+
+[node name="VellumSpawner" type="VellumSpawner" parent="VellumController"]
+blueprint = ExtResource("12_w48qg")
+
+[node name="BoidRuleStayInBounds3D" type="BoidRuleStayInBounds3D" parent="VellumController"]
+factor = 1.0
+bounds = AABB(-20, -20, -20, 40, 40, 40)
+threshold = 5.0
+
+[node name="BoidRuleFollowNode3D" type="BoidRuleFollowNode3D" parent="VellumController" node_paths=PackedStringArray("target")]
+factor = 0.5
+target = NodePath("../../Player")
+
+[node name="BoidRulePostureLookAt3D" type="BoidRulePostureLookAt3D" parent="VellumController"]
+enable_y = false
+
 [node name="GridMap" type="GridMap" parent="."]
 mesh_library = SubResource("MeshLibrary_1bvp3")
 metadata/_editor_floor_ = Vector3(-17, -17, 16)
 
-[node name="Player" parent="." node_paths=PackedStringArray("controller") instance=ExtResource("3_h2yge")]
+[node name="Player" parent="." node_paths=PackedStringArray("controller", "vellum_spawner") instance=ExtResource("3_h2yge")]
 controller = NodePath("../BoidController3D")
+vellum_spawner = NodePath("../VellumController/VellumSpawner")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)

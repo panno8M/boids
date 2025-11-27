@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://blk14chws8q28"]
+
+[ext_resource type="PackedScene" uid="uid://c1xcy4s8lhvjw" path="res://book/book_base.tscn" id="1_73ma7"]
+[ext_resource type="Script" uid="uid://dm3hp4a6xnuhw" path="res://book/vellum/vellum.gd" id="2_rcleu"]
+
+[node name="Vellum" instance=ExtResource("1_73ma7")]
+script = ExtResource("2_rcleu")

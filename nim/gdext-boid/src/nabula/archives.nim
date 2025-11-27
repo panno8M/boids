@@ -35,6 +35,10 @@ type BookSpawner* {.gdsync.} = ptr object of BoidModule3D
     spawnSyncRequired*: bool
     rootDir: String
 
+type VellumSpawner* {.gdsync.} = ptr object of BoidModule3D
+    blueprint* {.gdexport.}: gdref PackedScene
+    vellum* {.gdexport.}: Bookfly
+
 method create*(self: BookFactory; controller: BoidController3D; path: String): Bookfly {.gdsync, base.} = discard
 
 gdexport "root_directory",
@@ -123,6 +127,21 @@ method process(self: BookSpawner; delta: float64) {.gdsync.} =
   if self.spawnSyncRequired:
     self.spawnSync()
     self.spawnSyncRequired = false
+
+method process(self: VellumSpawner; delta: float64) {.gdsync.} =
+  once:
+    self.vellum = self.blueprint[].instantiate() as Bookfly
+    self.addChild self.vellum
+    self.vellum.controller = self.controller
+    self.vellum.p = Vector3.Zero
+    self.vellum.v = Vector3.signedRand.normalized * randfRange(self.controller.controlMinSpeed, self.controller.controlMaxSpeed)
+    self.vellum.a = Vector3.Zero
+    self.vellum.cell = self.controller.cellMapStatus.localToMap(self.vellum.p)
+    self.vellum.position = self.vellum.p
+    self.controller.boids.add self.vellum
+    self.controller.cellMap.addBoid(self.vellum.cell, self.vellum)
+
+    init self.vellum
 
 proc execute*(self: Bookfly) {.gdsync.} =
   discard cd".".startProcess("xdg-open", [$self.path])
