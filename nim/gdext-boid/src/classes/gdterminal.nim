@@ -6,60 +6,71 @@ import gdext/classes/[gdCodeEdit, gdLabel]
 
 import shell
 
-type Terminal* {.gdsync.} = ptr object of Control
-  viewBuffer* {.gdexport.}: CodeEdit
-  writeBuffer* {.gdexport.}: CodeEdit
-  pwd* {.gdexport.}: Label
+type Terminal* {.gdsync.} = ptr object of CodeEdit
+  resultBuffer* {.gdexport.}: CodeEdit
   env: ShellEnv
   prevdir: string
   process: Process
 
 method ready(self: Terminal) {.gdsync.} =
-  discard self.writeBuffer.connect("text_changed", self.callable"_on_write_buffer_text_changed")
+  if self.resultBuffer.isNil: self.resultBuffer = self
+  discard self.connect("text_changed", self.callable"_on_write_buffer_text_changed")
   self.env.pwd = expandFileName(".")
-  self.pwd.text = self.env.pwd
+  self.text = String(self.env.pwd & " $")
+  self.setCaretColumn(10000)
+  self.setCaretLine(10000)
 
 method process(self: Terminal; delta: float64) {.gdsync.} =
   if self.process != nil:
     if self.process.running:
-      self.viewBuffer.insertTextAtCaret self.process.readAvailable
+      self.resultBuffer.text = self.resultBuffer.text + String(self.process.readAvailable)
     else:
       if not self.process.outputStream.atEnd:
-        self.viewBuffer.insertTextAtCaret self.process.outputStream.readAll
-      self.writeBuffer.editable = true
+        self.resultBuffer.text = self.resultBuffer.text + String(self.process.outputStream.readAll)
+      self.editable = true
       self.process = nil
+      self.text = self.text + String(self.env.pwd & " $")
+      self.setCaretColumn(10000)
+      self.setCaretLine(10000)
+
+proc cd(self: Terminal; cmd: string, args: seq[string]) =
+  let path =
+    case args.len
+    of 0: "~"
+    of 1: args[0]
+    else:
+      self.resultBuffer.insertTextAtCaret "Too many args for cd command\n"
+      return
+  case path
+  of "~":
+    self.prevdir = self.env.pwd
+    self.env.pwd = getHomeDir()
+  of "-":
+    if self.prevdir.len != 0:
+      swap(self.env.pwd, self.prevdir)
+  elif path.isAbsolute:
+    self.prevdir = self.env.pwd
+    self.env.pwd = expandFilename(path)
+  else:
+    self.prevdir = self.env.pwd
+    self.env.pwd = expandFilename(self.env.pwd/path)
+
+  self.text = self.text + String(self.env.pwd & " $")
+  self.setCaretColumn(10000)
+  self.setCaretLine(10000)
 
 proc embeddedProcess(self: Terminal; cmd: string, args: seq[string]): bool =
   result = true
   case cmd
   of "cd":
-    let path =
-      case args.len
-      of 0: "~"
-      of 1: args[0]
-      else:
-        self.viewBuffer.insertTextAtCaret "Too many args for cd command\n"
-        return
-    case path
-    of "~":
-      self.prevdir = self.env.pwd
-      self.env.pwd = getHomeDir()
-    of "-":
-      if self.prevdir.len != 0:
-        swap(self.env.pwd, self.prevdir)
-    elif path.isAbsolute:
-      self.prevdir = self.env.pwd
-      self.env.pwd = expandFilename(path)
-    else:
-      self.prevdir = self.env.pwd
-      self.env.pwd = expandFilename(self.env.pwd/path)
-    self.pwd.text = self.env.pwd
+    cd(self, cmd, args)
   else:
     result = false
 
 proc onWriteBufferTextChanged(self: Terminal) {.gdsync, rename: toGodotInternalFuncCase.} =
-  if self.writeBuffer.text.endsWith("\n"):
-    let s = ($self.writeBuffer.text)
+  if self.text.endsWith("\n"):
+    let s = ($self.text)
+      .split({'$'})[^1]
       .strip(chars = {'\n', ' '})
       .split(' ')
     let cmd = s[0]
@@ -67,6 +78,4 @@ proc onWriteBufferTextChanged(self: Terminal) {.gdsync, rename: toGodotInternalF
     if not self.embeddedProcess(cmd, args):
       self.process = self.env.startProcess(cmd, args)
       self.process.setNonBlock()
-      self.writeBuffer.editable = false
-    self.viewBuffer.insertTextAtCaret self.writeBuffer.text
-    self.writeBuffer.text = ""
+      self.editable = false
