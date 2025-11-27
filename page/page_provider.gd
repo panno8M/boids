@@ -7,6 +7,7 @@ var page_presets: Dictionary[StringName, PackedScene] = {
 	&"ImagePage": preload("res://page/image page/image_page.tscn"),
 	&"AudioPage": preload("res://page/audio page/audio_page.tscn"),
 	&"AudioSpectrumPage": preload("res://page/audio page/audio_spectrum_page.tscn"),
+	&"TerminalPage": preload("res://page/terminal page/terminal_page.tscn"),
 }
 
 var pages: Dictionary[StringName, PageBase]
