@@ -16,16 +16,14 @@ func _process(_delta: float) -> void:
 	$SubViewport/Camera3D.global_transform = main_camera.global_transform
 
 func _gui_input(input_event: InputEvent) -> void:
+	if not is_mouse_event(input_event):
+		return
 	if player.state != Player.State.VIEW: return
 	image = get_image()
 	var page_id = pick_page_id(get_viewport().get_mouse_position())
 	var page = id_to_page(page_id)
-	var page_changed = page != last_page
-	if page_changed:
-		if page: page.propagate_notification(NOTIFICATION_VP_MOUSE_ENTER)
-		if last_page: last_page.propagate_notification(NOTIFICATION_VP_MOUSE_EXIT)
-		last_event_time = 0
-		last_position = Vector2.ZERO
+	if page != last_page:
+		on_page_changed(page)
 	if page:
 		stash_input(input_event)
 		modify_input(input_event, page)
@@ -33,17 +31,39 @@ func _gui_input(input_event: InputEvent) -> void:
 		restore_input(input_event)
 	last_page = page
 
+func _input(input_event: InputEvent) -> void:
+	if is_mouse_event(input_event):
+		return
+	if player.state != Player.State.VIEW: return
+	image = get_image()
+	var page_id = pick_page_id(get_viewport().get_mouse_position())
+	var page = id_to_page(page_id)
+	if page != last_page:
+		on_page_changed(page)
+	if page:
+		page.push_input(input_event)
+	last_page = page
+
 func _on_window_size_changed() -> void:
 	$SubViewport.size = get_window().size
-	
+
+func is_mouse_event(input_event: InputEvent) -> bool:
+	return input_event is InputEventMouse or input_event is InputEventScreenDrag or input_event is InputEventScreenTouch
+
+func on_page_changed(page: PageBase) -> void:
+	if page: page.propagate_notification(NOTIFICATION_VP_MOUSE_ENTER)
+	if last_page: last_page.propagate_notification(NOTIFICATION_VP_MOUSE_EXIT)
+	last_event_time = 0
+	last_position = Vector2.ZERO
+
 func get_image() -> Image:
 	var tex = $SubViewport.get_texture()
 	return tex.get_image()
-	
+
 func pick_uv(screen_pos: Vector2) -> Vector2:
 	var color = image.get_pixelv(screen_pos)
 	return Vector2(color.r, color.g)
-	
+
 func pick_page_id(screen_pos: Vector2) -> int:
 	return int(round(image.get_pixelv(screen_pos).b * 10))
 
@@ -56,7 +76,7 @@ func id_to_page(id: int) -> PageBase:
 		3: return player.holding.swap_right_page
 		4: return player.holding.current_right_page
 		_: return null
-		
+
 func pick_page(screen_pos: Vector2) -> PageBase:
 	return id_to_page(pick_page_id(screen_pos))
 
