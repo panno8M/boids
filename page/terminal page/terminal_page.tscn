@@ -15,7 +15,7 @@
 script = ExtResource("2_iyw5j")
 
 [node name="Terminal" type="Terminal" parent="." index="1"]
-anchors_preset = -1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 40.0
@@ -24,9 +24,13 @@ offset_right = -40.0
 offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/caret_color = Color(0, 0, 0, 1)
+theme_override_colors/caret_background_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_readonly_color = Color(0, 0, 0, 1)
+theme_override_constants/caret_width = 2
+theme_override_constants/line_spacing = -4
 theme_override_styles/normal = SubResource("StyleBoxEmpty_iyw5j")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_sl3lb")
 theme_override_styles/read_only = SubResource("StyleBoxEmpty_ehbtq")
 theme_override_styles/completion = SubResource("StyleBoxEmpty_diklw")
-caret_type = 1
