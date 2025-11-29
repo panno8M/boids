@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://bpwugrpfc2agh"]
+[gd_scene load_steps=23 format=3 uid="uid://bpwugrpfc2agh"]
 
 [ext_resource type="PackedScene" uid="uid://dhanldu7wrbo0" path="res://UI/bookmenu.tscn" id="2_w48qg"]
 [ext_resource type="PackedScene" uid="uid://cuxresj1risim" path="res://player.tscn" id="3_h2yge"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://bvaeaalnhv4wb" path="res://book/image/image_book.tscn" id="7_vivmo"]
 [ext_resource type="PackedScene" uid="uid://bd8ig36buaog1" path="res://book/audio/audio_book.tscn" id="8_2cqfq"]
 [ext_resource type="PackedScene" uid="uid://cn4qb3nke24vn" path="res://event_bridge.tscn" id="8_5vw27"]
+[ext_resource type="Script" uid="uid://b81ndv3lvmh7x" path="res://book_spawner.gd" id="11_vivmo"]
 [ext_resource type="PackedScene" uid="uid://blk14chws8q28" path="res://book/vellum/vellum.tscn" id="12_w48qg"]
 
 [sub_resource type="Gradient" id="Gradient_272bh"]
@@ -131,6 +132,7 @@ controlMaxSpeed = 5.0
 [node name="BookSpawner" type="BookSpawner" parent="BoidController3D"]
 factory = SubResource("BookFactory_4c57u")
 root_directory = "/home/panno/Documents/godot-projects/boids"
+script = ExtResource("11_vivmo")
 
 [node name="BoidRuleCohesion3D" type="BoidRuleCohesion3D" parent="BoidController3D"]
 factor = 0.2
