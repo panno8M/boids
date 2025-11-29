@@ -44,7 +44,7 @@ proc insertPrompt(self: Terminal) =
   self.promptStartAt = self.getCaret
   self.scrollVertical = float self.promptStartAt.line
 
-method customProcess*(self: Terminal; cmd: String; args: PackedStringArray): Bool {.gdsync, base.} =
+method customProcess*(self: Terminal; pwd: String; cmd: String; args: PackedStringArray): Bool {.gdsync, base.} =
   discard
 
 method ready(self: Terminal) {.gdsync.} =
@@ -120,7 +120,7 @@ proc onTextChanged(self: Terminal) {.gdsync, rename: toGodotInternalFuncCase.} =
       .split(' ')
     let cmd = s[0]
     let args = s[1..^1]
-    if self.customProcess(cmd, newPackedStringArray(args.map(newGdString))):
+    if self.customProcess(self.env.pwd, cmd, newPackedStringArray(args.map(newGdString))):
       self.insertPrompt
     elif self.embeddedProcess(cmd, args):
       self.insertPrompt
