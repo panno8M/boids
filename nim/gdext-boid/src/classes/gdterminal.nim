@@ -1,8 +1,9 @@
-import os, osproc, strutils, sequtils, streams, strformat
+import os, osproc, strutils, sequtils, strformat
 
 import gdext
 import gdext/nameformats
 import gdext/classes/[gdCodeEdit, gdLabel]
+import gdext/classes/gdInputEventKey
 
 import shell
 
@@ -28,9 +29,9 @@ proc setCaretWithFill(self: TextEdit; c: Caret) =
 
 type Terminal* {.gdsync.} = ptr object of CodeEdit
   resultBuffer* {.gdexport.}: CodeEdit
-  env: ShellEnv
+  env: Shell
   prevdir: string
-  process: Process
+  front: tuple[process: Process; thread: Thread[Process]]
   promptStartAt: Caret
   caret_prev: Caret
 
@@ -55,18 +56,17 @@ method ready(self: Terminal) {.gdsync.} =
   self.insertPrompt
 
 method process(self: Terminal; delta: float64) {.gdsync.} =
-  if self.process != nil:
-    if self.process.running:
-      let output = self.process.readAvailable
-      if output.len != 0:
-        self.resultBuffer.insertTextAtCaret output
-    else:
-      if not self.process.outputStream.atEnd:
-        let output = self.process.outputStream.readAll
-        if output.len != 0:
-          self.resultBuffer.insertTextAtCaret output
-      self.process = nil
-      self.insertPrompt
+  if self.front.process != nil:
+    while true:
+      let (available, msg) = channel.tryRecv()
+      if available:
+        case msg.stream:
+        of "stdout", "stderr":
+          self.resultBuffer.insertTextAtCaret msg.line & "\n"
+        of "done":
+          self.insertPrompt
+      else:
+        break
 
 proc cd(self: Terminal; cmd: string, args: seq[string]) =
   let path =
@@ -112,8 +112,9 @@ proc onCaretChanged(self: Terminal) {.gdsync, rename: toGodotInternalFuncCase.} 
   else:
     self.caret_prev = caret
 
-proc onTextChanged(self: Terminal) {.gdsync, rename: toGodotInternalFuncCase.} =
-  if self.text.endsWith("\n"):
+method guiInput(self: Terminal; event: gdref InputEvent) {.gdsync.} =
+  let keyevent = event as gdref InputEventKey
+  if keyevent[] != nil and keyevent[].keycode == keyEnter and keyevent[].pressed:
     let s = ($self.text)
       .split({'$'})[^1]
       .strip(chars = {'\n', ' '})
@@ -125,8 +126,7 @@ proc onTextChanged(self: Terminal) {.gdsync, rename: toGodotInternalFuncCase.} =
     elif self.embeddedProcess(cmd, args):
       self.insertPrompt
     elif findExe(cmd).len != 0:
-      self.process = self.env.startProcess(cmd, args)
-      self.process.setNonBlock()
+      self.front.process = self.env.runProcess(cmd, args, self.front.thread)
     else:
       self.resultBuffer.insertTextAtCaret "Unknown command: " & cmd & "\n"
       self.insertPrompt

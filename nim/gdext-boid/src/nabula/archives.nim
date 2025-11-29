@@ -149,7 +149,7 @@ method process(self: VellumSpawner; delta: float64) {.gdsync.} =
     init self.vellum
 
 proc execute*(self: Bookfly) {.gdsync.} =
-  discard cd".".startProcess("xdg-open", [$self.path])
+  discard Shell().startProcess("xdg-open", [$self.path])
 
 proc playHold*(self: Bookfly; newParent: Node3D) {.gdsync.} =
   self.enabled = false
