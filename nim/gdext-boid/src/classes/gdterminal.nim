@@ -1,4 +1,4 @@
-import os, osproc, strutils, streams, strformat
+import os, osproc, strutils, sequtils, streams, strformat
 
 import gdext
 import gdext/nameformats
@@ -43,6 +43,9 @@ proc insertPrompt(self: Terminal) =
   self.insertTextAtCaret self.prompt
   self.promptStartAt = self.getCaret
   self.scrollVertical = float self.promptStartAt.line
+
+method customProcess*(self: Terminal; cmd: String; args: PackedStringArray): Bool {.gdsync, base.} =
+  discard
 
 method ready(self: Terminal) {.gdsync.} =
   if self.resultBuffer.isNil: self.resultBuffer = self
@@ -94,8 +97,6 @@ proc embeddedProcess(self: Terminal; cmd: string, args: seq[string]): bool =
     cd(self, cmd, args)
   else:
     result = false
-  if result:
-    self.insertPrompt
 
 proc isInvalidCaretChange(self: Terminal; c: Caret): bool =
   case cmp(c.line, self.promptStartAt.line):
@@ -119,8 +120,10 @@ proc onTextChanged(self: Terminal) {.gdsync, rename: toGodotInternalFuncCase.} =
       .split(' ')
     let cmd = s[0]
     let args = s[1..^1]
-    if self.embeddedProcess(cmd, args):
-      discard
+    if self.customProcess(cmd, newPackedStringArray(args.map(newGdString))):
+      self.insertPrompt
+    elif self.embeddedProcess(cmd, args):
+      self.insertPrompt
     elif findExe(cmd).len != 0:
       self.process = self.env.startProcess(cmd, args)
       self.process.setNonBlock()
