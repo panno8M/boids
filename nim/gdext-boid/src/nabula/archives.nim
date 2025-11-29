@@ -1,4 +1,5 @@
 import std/os
+import std/tables
 
 import gdext
 import gdext/nameformats
@@ -34,6 +35,7 @@ type BookSpawner* {.gdsync.} = ptr object of BoidModule3D
     range* {.gdexport: Appearance.range(0, 100).}: float = 15
     spawnSyncRequired*: bool
     rootDir: String
+    spawned: Table[String, Bookfly]
 
 type VellumSpawner* {.gdsync.} = ptr object of BoidModule3D
     blueprint* {.gdexport.}: gdref PackedScene
@@ -91,8 +93,11 @@ proc init*(self: Bookfly) =
   self.player.playRandom(self.flyName)
   discard self.player.connect("animation_finished", self.callable"_animation_finished")
 
-proc spawn*(self: BookSpawner; path: String): Bookfly =
+proc spawn*(self: BookSpawner; path: String): Bookfly {.gdsync.} =
+  result = self.spawned.getOrDefault(path, nil)
+  if result != nil: return
   result = self.factory[].create(self.controller, path)
+  self.spawned[result.path] = result
   self.addChild result
   result.controller = self.controller
   result.p = Vector3.signedRand * self.range
