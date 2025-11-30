@@ -7,6 +7,8 @@ import gdext/classes/gdInputEventKey
 
 import shell
 
+const FlushSpeed = 5
+
 type Caret = object
   line: int32
   column: int32
@@ -56,17 +58,23 @@ method ready(self: Terminal) {.gdsync.} =
   self.insertPrompt
 
 method process(self: Terminal; delta: float64) {.gdsync.} =
+  var buffer {.global.}: string = newStringOfCap(512)
   if self.front.process != nil:
-    while true:
+    buffer.setLen(0)
+    for i in 0..<FlushSpeed:
       let (available, msg) = channel.tryRecv()
       if available:
         case msg.stream:
         of "stdout", "stderr":
-          self.resultBuffer.insertTextAtCaret msg.line & "\n"
+          buffer.add msg.line & "\n"
         of "done":
-          self.insertPrompt
+          self.front.process = nil
       else:
         break
+    if buffer.len != 0:
+      self.resultBuffer.insertTextAtCaret buffer
+    if self.front.process == nil:
+      self.insertPrompt
 
 proc cd(self: Terminal; cmd: string, args: seq[string]) =
   let path =
@@ -126,7 +134,11 @@ method guiInput(self: Terminal; event: gdref InputEvent) {.gdsync.} =
     elif self.embeddedProcess(cmd, args):
       self.insertPrompt
     elif findExe(cmd).len != 0:
-      self.front.process = self.env.runProcess(cmd, args, self.front.thread)
+      if self.front.process == nil:
+        self.front.process = self.env.runProcess(cmd, args, self.front.thread)
+      else:
+        self.resultBuffer.insertTextAtCaret "Another process is already running.\n"
+        self.insertPrompt
     else:
       self.resultBuffer.insertTextAtCaret "Unknown command: " & cmd & "\n"
       self.insertPrompt
