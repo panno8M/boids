@@ -127,16 +127,13 @@ uv_picking_viewport = NodePath("../EventBridge/SubViewport")
 [node name="BoidController3D" type="BoidController3D" parent="." node_paths=PackedStringArray("cell_map")]
 cell_map = NodePath("../GridMap")
 controlMinSpeed = 0.001
-controlMaxSpeed = 5.0
+controlMaxSpeed = 0.5
 
 [node name="BookSpawner" type="BookSpawner" parent="BoidController3D"]
 factory = SubResource("BookFactory_4c57u")
+range = 1.0
 root_directory = "/home/panno/Documents/godot-projects/boids"
 script = ExtResource("11_vivmo")
-
-[node name="BoidRuleCohesion3D" type="BoidRuleCohesion3D" parent="BoidController3D"]
-factor = 0.2
-range = 3
 
 [node name="BoidRuleSeparation3D" type="BoidRuleSeparation3D" parent="BoidController3D"]
 factor = 0.4
@@ -147,11 +144,12 @@ factor = 0.005
 
 [node name="BoidRuleStayInBounds3D" type="BoidRuleStayInBounds3D" parent="BoidController3D"]
 factor = 1.0
-bounds = AABB(-20, -20, -20, 40, 40, 40)
-threshold = 5.0
+bounds = AABB(-2, 0.5, -2, 4, 4, 4)
+threshold = 0.5
 
 [node name="BoidRuleInteractNode3D" type="BoidRuleInteractNode3D" parent="BoidController3D" node_paths=PackedStringArray("target")]
 factor = 0.2
+range = 1.0
 target = NodePath("../../Player")
 
 [node name="BoidRulePostureLookAt3D" type="BoidRulePostureLookAt3D" parent="BoidController3D"]
@@ -167,23 +165,27 @@ blueprint = ExtResource("12_w48qg")
 
 [node name="BoidRuleStayInBounds3D" type="BoidRuleStayInBounds3D" parent="VellumController"]
 factor = 1.0
-bounds = AABB(-20, -20, -20, 40, 40, 40)
-threshold = 5.0
+bounds = AABB(-2, 0, -2, 4, 4.5, 4)
+threshold = 0.5
 
 [node name="BoidRuleFollowNode3D" type="BoidRuleFollowNode3D" parent="VellumController" node_paths=PackedStringArray("target")]
 factor = 0.5
-target = NodePath("../../Player")
+target = NodePath("../../Player/Marker3D")
 
 [node name="BoidRulePostureLookAt3D" type="BoidRulePostureLookAt3D" parent="VellumController"]
 enable_y = false
 
 [node name="GridMap" type="GridMap" parent="."]
 mesh_library = SubResource("MeshLibrary_1bvp3")
+cell_size = Vector3(0.2, 0.2, 0.2)
 metadata/_editor_floor_ = Vector3(-17, -17, 16)
 
 [node name="Player" parent="." node_paths=PackedStringArray("controller", "vellum_spawner") instance=ExtResource("3_h2yge")]
 controller = NodePath("../BoidController3D")
 vellum_spawner = NodePath("../VellumController/VellumSpawner")
+
+[node name="Marker3D" type="Marker3D" parent="Player"]
+transform = Transform3D(0.998645, 0, -0.052039653, 0, 1, 0, 0.052039653, 0, 0.998645, 0.46139026, 0.35494912, -0.36232984)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)

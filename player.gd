@@ -13,7 +13,7 @@ var state: State:
 		state_changed.emit(_state, value)
 		_state = value
 
-var move_speed := 10.0
+@export var move_speed := 1.0
 var mouse_sensitivity := 0.2
 var yaw := 0.0
 var pitch := 0.0
@@ -36,7 +36,8 @@ func _unhandled_input(event):
 				yaw -= event.relative.x * mouse_sensitivity
 				pitch -= event.relative.y * mouse_sensitivity
 				pitch = clamp(pitch, -89, 89)
-				rotation_degrees = Vector3(pitch, yaw, 0)
+				$Camera3D.rotation_degrees = Vector3(pitch, 0, 0)
+				rotation_degrees = Vector3(0, yaw, 0)
 
 func execute(book: BookBase):
 	if book: book.execute()
@@ -44,7 +45,7 @@ func execute(book: BookBase):
 func take(book: BookBase):
 	if book and not holding:
 		holding = book
-		holding.play_hold(self)
+		holding.play_hold($Camera3D)
 		state = State.HOLD
 
 func release(_book: BookBase):
