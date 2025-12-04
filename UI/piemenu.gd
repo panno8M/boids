@@ -79,7 +79,7 @@ func set_item_list_from_presets(key):
 func begin(data = null):
 	if visible: return
 	user_data = data
-	CursorManager.mouse_mode_override = CursorManager.MouseMode.HIDDEN
+	Input2.mouse_mode_override = Input2.MouseMode.HIDDEN
 	mouse_begin = get_global_mouse_position()
 	position = mouse_begin - size/2
 	initialize()
@@ -93,7 +93,7 @@ func confirm() -> Dictionary:
 	if not visible: return result
 	var choice = get_selecting_item()
 	visible = false	
-	CursorManager.mouse_mode_override = CursorManager.MouseMode.INHERIT
+	Input2.mouse_mode_override = Input2.MouseMode.INHERIT
 
 	if choice == -1:
 		return result

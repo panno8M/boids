@@ -53,19 +53,19 @@ func release(_book: BookBase):
 		holding.release()
 		holding = null
 		state = State.IDLE
-		CursorManager.mouse_mode = CursorManager.MouseMode.CAPTURED
+		Input2.mouse_mode = Input2.MouseMode.CAPTURED
 
 func open(_book: BookBase):
 	if holding:
 		holding.open()
 		state = State.VIEW
-		CursorManager.mouse_mode = CursorManager.MouseMode.VISIBLE
-		
+		Input2.mouse_mode = Input2.MouseMode.VISIBLE
+
 func close(_book: BookBase):
 	if holding:
 		holding.close()
 		state = State.HOLD
-		CursorManager.mouse_mode = CursorManager.MouseMode.CAPTURED
+		Input2.mouse_mode = Input2.MouseMode.CAPTURED
 
 func vellum(_data):
 	take(vellum_spawner.vellum)
