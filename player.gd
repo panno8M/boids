@@ -1,4 +1,4 @@
-extends Node3D
+extends CharacterBody3D
 class_name Player
 
 enum State {IDLE, HOLD, VIEW}
@@ -17,9 +17,10 @@ var state: State:
 var mouse_sensitivity := 0.2
 var yaw := 0.0
 var pitch := 0.0
-var velocity := Vector3.ZERO
 @export var controller: BoidController3D
 @export var vellum_spawner: VellumSpawner
+var gravity := Vector3(0, -9.8/2, 0)
+var gravity_enabled := true
 
 func _unhandled_input(event):
 	match state:
@@ -70,27 +71,27 @@ func close(_book: BookBase):
 func vellum(_data):
 	take(vellum_spawner.vellum)
 
-func _process(delta):
-	var acc = Vector3.ZERO
+func _physics_process(delta):
+	var input_dir = Vector3.ZERO
+	
+	if Input2.is_action_double_pressed(&"character_move_upward"):
+		gravity_enabled = not gravity_enabled
 
-	if Input.is_key_pressed(KEY_W):
-		acc.z -= 1
-	if Input.is_key_pressed(KEY_S):
-		acc.z += 1
-	if Input.is_key_pressed(KEY_A):
-		acc.x -= 1
-	if Input.is_key_pressed(KEY_D):
-		acc.x += 1
-	if Input.is_key_pressed(KEY_SPACE):
-		acc.y += 1
-	if Input.is_key_pressed(KEY_SHIFT):
-		acc.y -= 1
+	if Input2.is_action_pressed(&"character_move_forward"):  input_dir.z -= 1
+	if Input2.is_action_pressed(&"character_move_backward"): input_dir.z += 1
+	if Input2.is_action_pressed(&"character_move_left"):     input_dir.x -= 1
+	if Input2.is_action_pressed(&"character_move_right"):    input_dir.x += 1
+	if Input2.is_action_pressed(&"character_move_upward"):   input_dir.y += 1
+	if Input2.is_action_pressed(&"character_move_downward"): input_dir.y -= 1
 
-	const power := 0.05
+	if input_dir != Vector3.ZERO:
+		input_dir = input_dir.normalized()
 
-	if acc != Vector3.ZERO:
-		velocity = (velocity + acc.limit_length(power)).limit_length()
-	else:
-		velocity = velocity.limit_length(max(0, velocity.length()-power))
-	if velocity != Vector3.ZERO:
-		translate(velocity * move_speed * delta)
+	var direction = (transform.basis * input_dir).normalized()
+
+	velocity = direction * move_speed
+
+	if gravity_enabled:
+		velocity += gravity
+
+	move_and_slide()

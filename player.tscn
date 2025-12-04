@@ -1,20 +1,29 @@
-[gd_scene load_steps=4 format=3 uid="uid://cuxresj1risim"]
+[gd_scene load_steps=5 format=3 uid="uid://cuxresj1risim"]
 
 [ext_resource type="Script" uid="uid://caunji8imw0wb" path="res://player.gd" id="1_4flbx"]
 [ext_resource type="Environment" uid="uid://dptnq4x4nhko" path="res://water_environment.tres" id="2_i3pqv"]
 [ext_resource type="CameraAttributesPractical" uid="uid://b2vxwwvedde8t" path="res://water_camera_attributes_practical.tres" id="3_hqtel"]
 
-[node name="Player" type="Node3D"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_i3pqv"]
+height = 1.5
+
+[node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_4flbx")
 move_speed = 2.0
+metadata/_custom_type_script = "uid://caunji8imw0wb"
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 cull_mask = 524287
 environment = ExtResource("2_i3pqv")
 attributes = ExtResource("3_hqtel")
+current = true
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Camera3D"]
 light_energy = 0.1
 spot_range = 1.1039253
 spot_angle = 58.296062
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+shape = SubResource("CapsuleShape3D_i3pqv")
