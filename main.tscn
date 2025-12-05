@@ -113,8 +113,7 @@ controller = NodePath("../BoidController3D")
 book_menu = NodePath("../UI/BookMenu")
 uv_picking_viewport = NodePath("../EventBridge/SubViewport")
 
-[node name="BoidController3D" type="BoidController3D" parent="." node_paths=PackedStringArray("cell_map")]
-cell_map = NodePath("")
+[node name="BoidController3D" type="BoidController3D" parent="."]
 controlMinSpeed = 0.001
 controlMaxSpeed = 0.5
 
@@ -144,8 +143,7 @@ target = NodePath("../../Player")
 [node name="BoidRulePostureLookAt3D" type="BoidRulePostureLookAt3D" parent="BoidController3D"]
 enable_y = false
 
-[node name="VellumController" type="BoidController3D" parent="." node_paths=PackedStringArray("cell_map")]
-cell_map = NodePath("")
+[node name="VellumController" type="BoidController3D" parent="."]
 controlMinSpeed = 0.001
 controlMaxSpeed = 5.0
 

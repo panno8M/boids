@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://uwxrrv56cra3"]
 
-[ext_resource type="PackedScene" uid="uid://wh7xqhxvtpd5" path="res://Piano.blend" id="1_6eo5e"]
+[ext_resource type="PackedScene" uid="uid://cbdqw3syu25ym" path="res://assets-dev/Piano.blend" id="1_6eo5e"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_h2yge"]
 size = Vector3(2, 2, 2)

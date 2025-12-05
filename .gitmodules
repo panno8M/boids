@@ -1,0 +1,3 @@
+[submodule "assets-dev"]
+	path = assets-dev
+	url = https://github.com/panno8M/Nabula-Assets-Source

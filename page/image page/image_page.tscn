@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://rmod3anhrlnn"]
+[gd_scene load_steps=4 format=3 uid="uid://rmod3anhrlnn"]
 
 [ext_resource type="Script" uid="uid://b47u3huwrktp4" path="res://page/image page/image_page.gd" id="1_shw5x"]
-[ext_resource type="Texture2D" uid="uid://dac5suo53jua5" path="res://test/panno_icon.jpg" id="2_mou1m"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_mou1m"]
 font_size = 32
@@ -33,7 +32,6 @@ alignment = 1
 
 [node name="Image" type="TextureRect" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-texture = ExtResource("2_mou1m")
 expand_mode = 4
 stretch_mode = 5
 
