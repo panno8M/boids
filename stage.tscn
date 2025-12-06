@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://uwxrrv56cra3"]
+[gd_scene load_steps=7 format=3 uid="uid://uwxrrv56cra3"]
 
 [ext_resource type="PackedScene" uid="uid://cbdqw3syu25ym" path="res://assets-dev/Piano.blend" id="1_6eo5e"]
+[ext_resource type="Script" uid="uid://cn8nthavd2elb" path="res://piano/piano.gd" id="2_aees8"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_h2yge"]
 size = Vector3(2, 2, 2)
@@ -27,6 +28,7 @@ metadata/_editor_floor_ = Vector3(-17, -17, 16)
 
 [node name="Piano" parent="." instance=ExtResource("1_6eo5e")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 9.970575, -59.195587, 29.286093)
+script = ExtResource("2_aees8")
 
 [node name="Wall" type="StaticBody3D" parent="Piano"]
 
