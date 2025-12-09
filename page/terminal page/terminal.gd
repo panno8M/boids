@@ -1,9 +1,11 @@
 extends Terminal
 
-func _custom_process(pwd: String, cmd: String, _args: PackedStringArray) -> bool:
+func _custom_process(pwd: String, cmd: String, args: PackedStringArray) -> bool:
 	match cmd:
 		"spawn":
-			BookSpawner2.singleton.spawn("test/Book_Albedo.png")
+			for arg in args:
+				if BookSpawner2.singleton.spawn(pwd + "/" + arg).size() == 0:
+					error("spawn => error: \"", arg, "\" is not exists in ", pwd, ".")
 			return true
 		_:
 			return false

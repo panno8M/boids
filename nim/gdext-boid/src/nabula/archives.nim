@@ -93,7 +93,10 @@ proc init*(self: Bookfly) =
   self.player.playRandom(self.flyName)
   discard self.player.connect("animation_finished", self.callable"_animation_finished")
 
-proc spawn*(self: BookSpawner; path: String): Bookfly {.gdsync.} =
+proc fileExists*(_: typedesc[BookSpawner]; path: String): Bool {.gdsync.} =
+  fileExists($path)
+
+proc spawnSingle*(self: BookSpawner; path: string): Bookfly =
   result = self.spawned.getOrDefault(path, nil)
   if result != nil: return
   result = self.factory[].create(self.controller, path)
@@ -111,6 +114,18 @@ proc spawn*(self: BookSpawner; path: String): Bookfly {.gdsync.} =
 
   init result
 
+proc spawn(self: BookSpawner; path: string; recursiveCount: int): seq[Bookfly] =
+  if fileExists(path):
+    result.add self.spawnSingle(path)
+  elif recursiveCount == 0:
+    return
+  elif dirExists(path):
+    for kind, filepath in path.walkDir:
+      result.add self.spawn(filepath, recursiveCount.pred)
+
+proc spawn_script*(self: BookSpawner; path: String; recursiveCount: int = -1): Array[Bookfly] {.gdsync, name: "spawn".} =
+  newArray[Bookfly](self.spawn($path, recursiveCount))
+
 proc despawnLast*(self: BookSpawner) =
   if self.controller.boids.len == 0: return
   let boid = self.controller.boids[^1]
@@ -121,12 +136,7 @@ proc despawnLast*(self: BookSpawner) =
 proc spawnSync*(self: BookSpawner) =
   for i in 0..self.controller.boids.high:
     self.despawnLast()
-  for kind, filepath in self.rootDir.`$`.walkDir:
-    case kind
-    of pcFile:
-      discard self.spawn(filepath)
-    else:
-      discard
+  discard self.spawn($self.rootDir, 1)
 
 method process(self: BookSpawner; delta: float64) {.gdsync.} =
   if self.spawnSyncRequired:
