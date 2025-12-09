@@ -13,6 +13,13 @@ type Caret = object
   line: int32
   column: int32
 
+template EOF(_: typedesc[Caret]): Caret =
+  Caret(line: int32.high, column: int32.high)
+
+proc once(b: var bool): bool =
+  result = b
+  b = false
+
 proc getCaret(self: TextEdit): Caret =
   result.line = self.getCaretLine
   result.column = self.getCaretColumn
@@ -36,6 +43,7 @@ type Terminal* {.gdsync.} = ptr object of CodeEdit
   front: tuple[process: Process; thread: Thread[Process]]
   promptStartAt: Caret
   caret_prev: Caret
+  shouldExecute: bool
 
 proc prompt(self: Terminal): string = &"""
 
@@ -46,6 +54,14 @@ proc insertPrompt(self: Terminal) =
   self.insertTextAtCaret self.prompt
   self.promptStartAt = self.getCaret
   self.scrollVertical = float self.promptStartAt.line
+
+proc error(self: Terminal; arg: varargs[string, `$`]) =
+  for arg in arg:
+    self.insertTextAtCaret arg.get(String)
+  self.insertTextAtCaret "\n"
+
+proc error_script*(self: Terminal; arg: varargs[Variant, variant]) {.gdsync, name: "error".} =
+  self.error(arg.mapIt it.get(string))
 
 method customProcess*(self: Terminal; pwd: String; cmd: String; args: PackedStringArray): Bool {.gdsync, base.} =
   discard
@@ -120,9 +136,8 @@ proc onCaretChanged(self: Terminal) {.gdsync, rename: toGodotInternalFuncCase.} 
   else:
     self.caret_prev = caret
 
-method guiInput(self: Terminal; event: gdref InputEvent) {.gdsync.} =
-  let keyevent = event as gdref InputEventKey
-  if keyevent[] != nil and keyevent[].keycode == keyEnter and keyevent[].pressed:
+proc onTextChanged(self: Terminal) {.gdsync, rename: toGodotInternalFuncCase.} =
+  if once self.shouldExecute:
     let s = ($self.text)
       .split({'$'})[^1]
       .strip(chars = {'\n', ' '})
@@ -142,3 +157,8 @@ method guiInput(self: Terminal; event: gdref InputEvent) {.gdsync.} =
     else:
       self.resultBuffer.insertTextAtCaret "Unknown command: " & cmd & "\n"
       self.insertPrompt
+
+method guiInput(self: Terminal; event: gdref InputEvent) {.gdsync.} =
+  let keyevent = event as gdref InputEventKey
+  if keyevent[] != nil and keyevent[].keycode == keyEnter and keyevent[].pressed:
+    self.shouldExecute = true
