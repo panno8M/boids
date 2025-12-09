@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://bpwugrpfc2agh"]
+[gd_scene load_steps=24 format=3 uid="uid://bpwugrpfc2agh"]
 
 [ext_resource type="PackedScene" uid="uid://dhanldu7wrbo0" path="res://UI/bookmenu.tscn" id="2_w48qg"]
 [ext_resource type="PackedScene" uid="uid://cuxresj1risim" path="res://player.tscn" id="3_h2yge"]
@@ -16,6 +16,8 @@
 [ext_resource type="Script" uid="uid://b81ndv3lvmh7x" path="res://book_spawner.gd" id="11_vivmo"]
 [ext_resource type="PackedScene" uid="uid://blk14chws8q28" path="res://book/vellum/vellum.tscn" id="12_w48qg"]
 [ext_resource type="PackedScene" uid="uid://uwxrrv56cra3" path="res://stage.tscn" id="13_2cqfq"]
+[ext_resource type="Environment" uid="uid://dptnq4x4nhko" path="res://water_environment.tres" id="17_074og"]
+[ext_resource type="CameraAttributesPractical" uid="uid://b2vxwwvedde8t" path="res://water_camera_attributes_practical.tres" id="18_cegan"]
 
 [sub_resource type="Gradient" id="Gradient_272bh"]
 offsets = PackedFloat32Array(0, 0.05, 0.95, 1)
@@ -174,9 +176,12 @@ vellum_spawner = NodePath("../VellumController/VellumSpawner")
 transform = Transform3D(0.998645, 0, -0.052039653, 0, 1, 0, 0.052039653, 0, 0.998645, 0.46139026, 0.35494912, -0.36232984)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
-light_color = Color(0.7578687, 0.8880022, 0.99999994, 1)
+transform = Transform3D(0.7264907, 0, 0.6871762, -0.6871762, 0, 0.7264907, 0, -1, 0, 0, 4, 0)
+light_color = Color(0.6, 0.5, 0.075, 1)
 light_specular = 10.0
+shadow_enabled = true
+shadow_blur = 1.5
+sky_mode = 1
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
 amount = 1000
@@ -186,3 +191,7 @@ randomness = 1.0
 transform_align = 1
 process_material = ExtResource("5_7mycd")
 draw_pass_1 = ExtResource("6_272bh")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("17_074og")
+camera_attributes = ExtResource("18_cegan")

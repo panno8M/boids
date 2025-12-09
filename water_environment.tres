@@ -4,6 +4,7 @@
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_1deh2"]
 panorama = ExtResource("1_1deh2")
+energy_multiplier = 0.35
 
 [sub_resource type="Sky" id="Sky_bbqii"]
 sky_material = SubResource("PanoramaSkyMaterial_1deh2")
@@ -12,11 +13,12 @@ sky_material = SubResource("PanoramaSkyMaterial_1deh2")
 background_mode = 2
 background_color = Color(0.4, 0.28266668, 0.224, 1)
 sky = SubResource("Sky_bbqii")
-ambient_light_source = 3
-ambient_light_color = Color(1, 1, 1, 1)
 glow_enabled = true
+glow_bloom = 0.1
 fog_enabled = true
-fog_light_color = Color(0.7765884, 0.53539115, 0.43745962, 1)
-fog_light_energy = 0.86
+fog_mode = 1
+fog_light_color = Color(0.96999997, 0.8, 1, 1)
+fog_light_energy = 1.41
 fog_sun_scatter = 0.25
-fog_density = 0.002
+fog_density = 0.4
+fog_depth_curve = 2.0000005

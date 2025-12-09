@@ -30,6 +30,12 @@ metadata/_editor_floor_ = Vector3(-17, -17, 16)
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 9.970575, -59.195587, 29.286093)
 script = ExtResource("2_aees8")
 
+[node name="Bone_001" parent="Piano/Armature/Bone" index="0"]
+transform = Transform3D(0.86529624, -0.5012608, 4.291534e-06, 0.5012608, 0.86529624, -6.312805e-07, -3.397012e-06, 2.6974224e-06, 1, 0, 8.338397, -1.653018e-08)
+
+[node name="Bone_002" parent="Piano/Armature/Bone/Bone_001" index="0"]
+transform = Transform3D(1, 4.291534e-06, 1.875889e-13, 0, -4.371139e-08, 1, 4.291534e-06, -1, -4.371139e-08, -5.333782e-07, 0.69260776, 1.2245982e-07)
+
 [node name="Wall" type="StaticBody3D" parent="Piano"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Piano/Wall"]
@@ -41,3 +47,5 @@ shape = SubResource("BoxShape3D_yaehf")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Piano/Floor"]
 transform = Transform3D(0.99828815, 0, -0.058487497, 0, 1, 0, 0.058487497, 0, 0.99828815, 0.08878875, 19.50311, -24.28788)
 shape = SubResource("BoxShape3D_2cqfq")
+
+[editable path="Piano"]
