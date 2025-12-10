@@ -12,7 +12,7 @@ type BoidRuleAvoidGrid3D* {.gdsync.} = ptr object of BoidModule3D
   sensingShape*: GridShape = GridShape.sphere(2)
   collisionMap: HashSet[Vector3i]
 
-gdexport BoidRuleAvoidGrid3D.factor, Appearance.range(0, 1)
+gdexport BoidRuleAvoidGrid3D.factor, Appearance.range(0, 100)
 gdexport "range",
   getter= proc(self: BoidRuleAvoidGrid3D): int = self.range,
   setter= proc(self: BoidRuleAvoidGrid3D; value: int) =
@@ -33,7 +33,7 @@ proc avoidGrid(self: BoidRuleAvoidGrid3D; boid: BoidAgent3D) =
       move -= delta
 
   if move != Vector3.Zero:
-    boid.a += move * self.factor
+    boid.a += move.normalized * self.factor
 
 method update(self: BoidRuleAvoidGrid3D; phase: ProcessPhase) {.gdsync.} =
   if unlikely(self.factor != 0): return
