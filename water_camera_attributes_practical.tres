@@ -1,7 +1,7 @@
 [gd_resource type="CameraAttributesPractical" format=3 uid="uid://b2vxwwvedde8t"]
 
 [resource]
-auto_exposure_enabled = true
+exposure_multiplier = 0.8
 auto_exposure_scale = 0.35
 dof_blur_far_enabled = true
 dof_blur_far_distance = 45.0
