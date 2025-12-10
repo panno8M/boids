@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://bvaeaalnhv4wb" path="res://book/image/image_book.tscn" id="7_vivmo"]
 [ext_resource type="PackedScene" uid="uid://bd8ig36buaog1" path="res://book/audio/audio_book.tscn" id="8_2cqfq"]
 [ext_resource type="PackedScene" uid="uid://cn4qb3nke24vn" path="res://event_bridge.tscn" id="8_5vw27"]
-[ext_resource type="Script" uid="uid://b81ndv3lvmh7x" path="res://book_spawner.gd" id="11_vivmo"]
+[ext_resource type="Script" path="res://book_spawner.gd" id="11_vivmo"]
 [ext_resource type="PackedScene" uid="uid://blk14chws8q28" path="res://book/vellum/vellum.tscn" id="12_w48qg"]
 [ext_resource type="PackedScene" uid="uid://uwxrrv56cra3" path="res://stage.tscn" id="13_2cqfq"]
 [ext_resource type="Environment" uid="uid://dptnq4x4nhko" path="res://water_environment.tres" id="17_074og"]
@@ -145,6 +145,10 @@ target = NodePath("../../Player")
 
 [node name="BoidRulePostureLookAt3D" type="BoidRulePostureLookAt3D" parent="BoidController3D"]
 enable_y = false
+
+[node name="BoidRuleAvoidGrid3D" type="BoidRuleAvoidGrid3D" parent="BoidController3D"]
+factor = 40.0
+range = 3
 
 [node name="VellumController" type="BoidController3D" parent="." node_paths=PackedStringArray("cell_map")]
 cell_map = NodePath("../Stage")
