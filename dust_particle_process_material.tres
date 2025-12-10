@@ -23,8 +23,10 @@ curve = SubResource("Curve_272bh")
 
 [resource]
 emission_shape = 1
-emission_sphere_radius = 58.8
-direction = Vector3(0, -1, 0)
+emission_sphere_radius = 20.0
+angle_min = -720.0
+angle_max = 720.0
+direction = Vector3(0, -0.1, 0)
 initial_velocity_max = 0.5
 gravity = Vector3(0, 0, 0)
 scale_curve = SubResource("CurveTexture_lquwl")
@@ -32,7 +34,7 @@ color_ramp = SubResource("GradientTexture1D_lquwl")
 hue_variation_min = -2.2351742e-08
 hue_variation_max = -2.2351742e-08
 turbulence_enabled = true
-turbulence_noise_strength = 0.4
+turbulence_noise_strength = 0.2
 turbulence_noise_scale = 47.255
 turbulence_influence_min = 0.0
 turbulence_influence_max = 0.015000001

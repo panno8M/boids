@@ -165,7 +165,7 @@ threshold = 0.5
 
 [node name="BoidRuleFollowNode3D" type="BoidRuleFollowNode3D" parent="VellumController" node_paths=PackedStringArray("target")]
 factor = 0.5
-target = NodePath("../../Player/Marker3D")
+target = NodePath("../../Player/Camera3D/Marker3D")
 
 [node name="BoidRulePostureLookAt3D" type="BoidRulePostureLookAt3D" parent="VellumController"]
 enable_y = false
@@ -176,8 +176,16 @@ enable_y = false
 controller = NodePath("../BoidController3D")
 vellum_spawner = NodePath("../VellumController/VellumSpawner")
 
-[node name="Marker3D" type="Marker3D" parent="Player"]
-transform = Transform3D(0.998645, 0, -0.052039653, 0, 1, 0, 0.052039653, 0, 0.998645, 0.46139026, 0.35494912, -0.36232984)
+[node name="Marker3D" type="Marker3D" parent="Player/Camera3D" index="1"]
+transform = Transform3D(0.998645, 0, -0.052039653, 0, 1, 0, 0.052039653, 0, 0.998645, 0.46139026, 0.29351425, -0.5085567)
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="Player/Camera3D" index="2"]
+amount = 1000
+lifetime = 8.0
+preprocess = 8.0
+randomness = 1.0
+process_material = ExtResource("5_7mycd")
+draw_pass_1 = ExtResource("6_272bh")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.7264907, 0, 0.6871762, -0.6871762, 0, 0.7264907, 0, -1, 0, 0, 4, 0)
@@ -187,15 +195,8 @@ shadow_enabled = true
 shadow_blur = 1.5
 sky_mode = 1
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
-amount = 1000
-lifetime = 8.0
-preprocess = 8.0
-randomness = 1.0
-transform_align = 1
-process_material = ExtResource("5_7mycd")
-draw_pass_1 = ExtResource("6_272bh")
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("17_074og")
 camera_attributes = ExtResource("18_cegan")
+
+[editable path="Player"]
