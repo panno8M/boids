@@ -53,6 +53,6 @@ method update(self: BoidRuleStayInBounds3D; phase: ProcessPhase) {.gdsync.} =
   if unlikely(self.factor == 0): return
   if phase != ProcessPhaseAcceleration: return
 
-  for boid in self.controller.boids:
+  for boid in self.controller.boids.alive:
     if likely(boid.enabled):
       self.stayInBounds(boid)

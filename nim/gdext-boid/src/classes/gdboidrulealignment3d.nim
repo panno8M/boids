@@ -37,6 +37,6 @@ method update(self: BoidRuleAlignment3D; phase: ProcessPhase) {.gdsync.} =
   if phase != ProcessPhaseVelocity: return
 
   let flock = self.getFlock
-  for boid in self.controller.boids:
+  for boid in self.controller.boids.alive:
     if likely(boid.enabled):
       self.alignment(flock, boid)

@@ -35,6 +35,6 @@ method update(self: BoidRuleSeparation3D; phase: ProcessPhase) {.gdsync.} =
   if phase != ProcessPhaseAcceleration: return
 
   let flock = self.getFlock
-  for boid in self.controller.boids:
+  for boid in self.controller.boids.alive:
     if likely(boid.enabled):
       self.separation(flock, boid)

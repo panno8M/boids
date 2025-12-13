@@ -109,21 +109,26 @@ method enterTree*(self: BoidModule3D) {.gdsync.} =
 
 proc phasedProcess*(self: BoidController3D; phase: ProcessPhase): Error {.gdsync, signal.}
 
+iterator alive*(s: seq[BoidAgent3D]): BoidAgent3D =
+  for boid in s:
+    if boid != nil:
+      yield boid
+
 method process*(self: BoidController3D; delta: float64) {.gdsync.} =
   if not Engine.isEditorHint:
     if self.running:
-      for boid in self.boids:
+      for boid in self.boids.alive:
         reset boid.a
 
       discard self.phasedProcess(ProcessPhaseAcceleration)
 
-      for boid in self.boids:
+      for boid in self.boids.alive:
         if likely(boid.enabled):
           boid.v += boid.a * delta
 
       discard self.phasedProcess(ProcessPhaseVelocity)
 
-      for boid in self.boids:
+      for boid in self.boids.alive:
         if likely(boid.enabled):
           let len2 = boid.v.lengthSquared
           if likely(len2 != 0):
@@ -133,7 +138,7 @@ method process*(self: BoidController3D; delta: float64) {.gdsync.} =
 
       discard self.phasedProcess(ProcessPhasePosture)
 
-      for boid in self.boids:
+      for boid in self.boids.alive:
           let newcell = self.cellMapStatus.localToMap(boid.p)
           if boid.cell != newcell:
             self.cellMap.moveBoid(boid.cell, newcell, boid)

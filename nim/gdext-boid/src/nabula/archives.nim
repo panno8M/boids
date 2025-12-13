@@ -18,6 +18,7 @@ import shell
 
 type Bookfly* {.gdsync.} = ptr object of BoidAgent3D
   path* {.gdexport.}: String
+  id*: int
   animationPlayer* {.gdexport.}: NodePath
   player: AnimationPlayer
   flyName* {.gdexport.}: StringName = "Fly"
@@ -36,6 +37,7 @@ type BookSpawner* {.gdsync.} = ptr object of BoidModule3D
     spawnSyncRequired*: bool
     rootDir: String
     spawned: Table[String, Bookfly]
+    freeIds: seq[int]
 
 type VellumSpawner* {.gdsync.} = ptr object of BoidModule3D
     blueprint* {.gdexport.}: gdref PackedScene
@@ -109,7 +111,13 @@ proc spawnSingle*(self: BookSpawner; path: string): Bookfly =
   result.cell = self.controller.cellMapStatus.localToMap(result.p)
   result.position = result.p
   result.path = path
-  self.controller.boids.add result
+  if self.freeIds.len > 0:
+    let idx = self.freeIds.pop()
+    self.controller.boids[idx] = result
+    result.id = idx
+  else:
+    self.controller.boids.add result
+    result.id = self.controller.boids.high
   self.controller.cellMap.addBoid(result.cell, result)
 
   init result
@@ -126,16 +134,37 @@ proc spawn(self: BookSpawner; path: string; recursiveCount: int): seq[Bookfly] =
 proc spawn_script*(self: BookSpawner; path: String; recursiveCount: int = -1): Array[Bookfly] {.gdsync, name: "spawn".} =
   newArray[Bookfly](self.spawn($path, recursiveCount))
 
-proc despawnLast*(self: BookSpawner) =
+proc despawnAt(self: BookSpawner; idx: int) =
   if self.controller.boids.len == 0: return
-  let boid = self.controller.boids[^1]
-  queueFree boid
+  let boid = self.controller.boids[idx].Bookfly
+  if boid == nil: return
+  self.controller.boids[idx] = nil
+  self.freeIds.add idx
   self.controller.cellMap.removeBoidUnsafe(boid.cell, boid)
-  discard self.controller.boids.pop()
+  self.spawned.del(boid.path)
+  queueFree boid
 
-proc spawnSync*(self: BookSpawner) =
+proc despawnByPath(self: BookSpawner; path: String): Bool =
+  let boid = self.spawned.getOrDefault(path, nil)
+  if boid != nil:
+    self.despawnAt(boid.id)
+    result = true
+
+proc despawnAll(self: BookSpawner) =
   for i in 0..self.controller.boids.high:
-    self.despawnLast()
+    self.despawnAt(i)
+
+proc despawn_script*(self: BookSpawner; path: String): Bool {.gdsync, name: "despawn".} =
+  if path == String"*":
+    self.despawnAll()
+    true
+  elif self.despawnByPath(path):
+    true
+  else:
+    false
+
+proc spawnSync(self: BookSpawner) =
+  self.despawnAll()
   discard self.spawn($self.rootDir, 1)
 
 method process(self: BookSpawner; delta: float64) {.gdsync.} =

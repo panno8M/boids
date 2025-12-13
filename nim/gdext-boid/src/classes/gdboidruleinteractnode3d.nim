@@ -27,6 +27,6 @@ method update(self: BoidRuleInteractNode3D; phase: ProcessPhase) {.gdsync.} =
   if phase != ProcessPhaseAcceleration: return
 
   let targetpos = self.target.position
-  for boid in self.controller.boids:
+  for boid in self.controller.boids.alive:
     if likely(boid.enabled):
       self.interact(targetpos, boid)

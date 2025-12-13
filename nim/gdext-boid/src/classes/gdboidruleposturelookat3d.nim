@@ -22,6 +22,6 @@ method update(self: BoidRulePostureLookAt3D; phase: ProcessPhase) {.gdsync.} =
   let rot = rotater[self.enableX][self.enableY][self.enableZ]
   if rot.isNil: return
 
-  for boid in self.controller.boids:
+  for boid in self.controller.boids.alive:
     if likely(boid.enabled):
       boid.rot(boid.p, boid.v)
