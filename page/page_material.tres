@@ -1,12 +1,12 @@
 [gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://1j1ssackxy4b"]
 
-[ext_resource type="Shader" uid="uid://ccrevbfsl553j" path="res://page/page.gdshader" id="1_6kta2"]
-[ext_resource type="Texture2D" uid="uid://dghe8unve73d5" path="res://page/Paper-Texture-3-1024x768.jpg" id="2_fjgn0"]
+[ext_resource type="Shader" uid="uid://ccrevbfsl553j" path="res://page/page.gdshader" id="1_rrbgv"]
+[ext_resource type="Texture2D" uid="uid://dghe8unve73d5" path="res://page/Paper-Texture-3-1024x768.jpg" id="2_ltl6i"]
 
 [resource]
 render_priority = 0
-shader = ExtResource("1_6kta2")
-shader_parameter/paper_tex = ExtResource("2_fjgn0")
+shader = ExtResource("1_rrbgv")
+shader_parameter/paper_tex = ExtResource("2_ltl6i")
 shader_parameter/overlay_strength = 0.8
 shader_parameter/paper_brightness = 1.0
 shader_parameter/paper_roughness = 1.0

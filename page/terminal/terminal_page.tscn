@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://di4afvm3pvi3r"]
+
+[ext_resource type="PackedScene" uid="uid://de7x47uthejdn" path="res://page/empty/empty_page.tscn" id="1_c5oxc"]
+[ext_resource type="Script" uid="uid://cmc1ide3kyb1c" path="res://page/terminal/terminal_page.gd" id="2_iyw5j"]
+[ext_resource type="StyleBox" uid="uid://dgowa1eyigy0q" path="res://page/style_box_page.tres" id="3_ehbtq"]
+[ext_resource type="Script" uid="uid://puybbf612ak2" path="res://page/terminal/terminal.gd" id="3_sl3lb"]
+
+[node name="TerminalPage" instance=ExtResource("1_c5oxc")]
+script = ExtResource("2_iyw5j")
+
+[node name="Terminal" type="Terminal" parent="." index="1"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 40.0
+offset_right = -40.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/caret_color = Color(0, 0, 0, 1)
+theme_override_colors/caret_background_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_readonly_color = Color(0, 0, 0, 1)
+theme_override_constants/caret_width = 2
+theme_override_constants/line_spacing = -4
+theme_override_styles/normal = ExtResource("3_ehbtq")
+theme_override_styles/focus = ExtResource("3_ehbtq")
+theme_override_styles/read_only = ExtResource("3_ehbtq")
+theme_override_styles/completion = ExtResource("3_ehbtq")
+theme_override_styles/panel = ExtResource("3_ehbtq")
+script = ExtResource("3_sl3lb")

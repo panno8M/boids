@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://c1p6pbisg4ulf" path="res://book/my_factory.gd" id="5_kek77"]
 [ext_resource type="PackedScene" uid="uid://0gwan3pqj4op" path="res://book/sample/sample_book.tscn" id="5_ycdy4"]
 [ext_resource type="QuadMesh" uid="uid://deegmffpba3cq" path="res://dust_quad_mesh.tres" id="6_272bh"]
-[ext_resource type="Script" uid="uid://cr8iggt0n7pg" path="res://page/sample page/mouse_pointer.gd" id="6_kek77"]
+[ext_resource type="Script" uid="uid://cr8iggt0n7pg" path="res://page/sample/mouse_pointer.gd" id="6_kek77"]
 [ext_resource type="PackedScene" uid="uid://dtfpbvqwd3k7r" path="res://book/text/text_book.tscn" id="6_w48qg"]
 [ext_resource type="PackedScene" uid="uid://bvaeaalnhv4wb" path="res://book/image/image_book.tscn" id="7_vivmo"]
 [ext_resource type="PackedScene" uid="uid://bd8ig36buaog1" path="res://book/audio/audio_book.tscn" id="8_2cqfq"]

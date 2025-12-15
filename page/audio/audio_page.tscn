@@ -1,0 +1,56 @@
+[gd_scene load_steps=6 format=3 uid="uid://bu2fe285dx22v"]
+
+[ext_resource type="Script" uid="uid://dca5cfxdvt8cn" path="res://page/audio/audio_page.gd" id="1_bgy0p"]
+[ext_resource type="PackedScene" uid="uid://de7x47uthejdn" path="res://page/empty/empty_page.tscn" id="1_ty6ps"]
+[ext_resource type="Texture2D" uid="uid://0lxm1gqy4odn" path="res://page/audio/speaker-0-svgrepo-com.svg" id="2_opip2"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_bgy0p"]
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_opip2"]
+font_size = 32
+font_color = Color(0, 0, 0, 1)
+
+[node name="AudioPage" instance=ExtResource("1_ty6ps")]
+script = ExtResource("1_bgy0p")
+
+[node name="Audio" type="AudioStreamPlayer" parent="." index="1"]
+
+[node name="MarginContainer" type="MarginContainer" parent="." index="2"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" index="0"]
+layout_mode = 2
+
+[node name="Directory" type="Label" parent="MarginContainer/VBoxContainer" index="0"]
+custom_minimum_size = Vector2(512, 0)
+layout_mode = 2
+text = "PATH/TO/FILE/"
+label_settings = SubResource("LabelSettings_bgy0p")
+autowrap_mode = 2
+
+[node name="File" type="Label" parent="MarginContainer/VBoxContainer" index="1"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+text = "FILE_NAME.txt"
+label_settings = SubResource("LabelSettings_opip2")
+autowrap_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" index="2"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer" index="0"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("2_opip2")
+expand_mode = 1
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/HBoxContainer" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4

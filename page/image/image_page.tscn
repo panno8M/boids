@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=3 uid="uid://rmod3anhrlnn"]
+
+[ext_resource type="PackedScene" uid="uid://de7x47uthejdn" path="res://page/empty/empty_page.tscn" id="1_mou1m"]
+[ext_resource type="Script" uid="uid://b47u3huwrktp4" path="res://page/image/image_page.gd" id="1_shw5x"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_mou1m"]
+font_size = 32
+font_color = Color(0, 0, 0, 1)
+
+[node name="ImagePage" instance=ExtResource("1_mou1m")]
+script = ExtResource("1_shw5x")
+
+[node name="MarginContainer" type="MarginContainer" parent="." index="1"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" index="0"]
+layout_mode = 2
+alignment = 1
+
+[node name="Image" type="TextureRect" parent="MarginContainer/VBoxContainer" index="0"]
+layout_mode = 2
+expand_mode = 4
+stretch_mode = 5
+
+[node name="Description" type="Label" parent="MarginContainer/VBoxContainer" index="1"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+text = "DESCRIPTION"
+label_settings = SubResource("LabelSettings_mou1m")
+horizontal_alignment = 1
+autowrap_mode = 3

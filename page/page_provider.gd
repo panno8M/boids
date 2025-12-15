@@ -1,13 +1,13 @@
 extends Node
 
 var page_presets: Dictionary[StringName, PackedScene] = {
-	&"SamplePage": preload("res://page/sample page/sample_page.tscn"),
-	&"EmptyPage": preload("res://page/empty page/empty_page.tscn"),
-	&"TextPage": preload("res://page/text page/text_page.tscn"),
-	&"ImagePage": preload("res://page/image page/image_page.tscn"),
-	&"AudioPage": preload("res://page/audio page/audio_page.tscn"),
-	&"AudioSpectrumPage": preload("res://page/audio page/audio_spectrum_page.tscn"),
-	&"TerminalPage": preload("res://page/terminal page/terminal_page.tscn"),
+	&"SamplePage": preload("res://page/sample/sample_page.tscn"),
+	&"EmptyPage": preload("res://page/empty/empty_page.tscn"),
+	&"TextPage": preload("res://page/text/text_page.tscn"),
+	&"ImagePage": preload("res://page/image/image_page.tscn"),
+	&"AudioPage": preload("res://page/audio/audio_page.tscn"),
+	&"AudioSpectrumPage": preload("res://page/audio/audio_spectrum_page.tscn"),
+	&"TerminalPage": preload("res://page/terminal/terminal_page.tscn"),
 }
 
 var pages: Dictionary[StringName, PageBase]

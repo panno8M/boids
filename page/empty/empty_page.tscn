@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://de7x47uthejdn"]
 
-[ext_resource type="Script" uid="uid://2t0gwa0cuivt" path="res://page/page_base.gd" id="1_w60o2"]
+[ext_resource type="Script" uid="uid://2t0gwa0cuivt" path="res://page/page_base.gd" id="1_8kx88"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_1jxpl"]
 font_color = Color(0, 0, 0, 1)
@@ -9,7 +9,7 @@ font_color = Color(0, 0, 0, 1)
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(716, 1024)
-script = ExtResource("1_w60o2")
+script = ExtResource("1_8kx88")
 
 [node name="Index" type="Label" parent="."]
 anchors_preset = 7

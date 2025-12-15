@@ -1,23 +1,14 @@
-[gd_scene load_steps=6 format=3 uid="uid://duq61pvxwscka"]
+[gd_scene load_steps=4 format=3 uid="uid://duq61pvxwscka"]
 
-[ext_resource type="Script" uid="uid://6dcp41neupcs" path="res://page/text page/text_page.gd" id="1_506bp"]
+[ext_resource type="Script" uid="uid://6dcp41neupcs" path="res://page/text/text_page.gd" id="1_506bp"]
+[ext_resource type="PackedScene" uid="uid://de7x47uthejdn" path="res://page/empty/empty_page.tscn" id="1_if5ep"]
+[ext_resource type="StyleBox" uid="uid://dgowa1eyigy0q" path="res://page/style_box_page.tres" id="3_munrl"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_506bp"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_te2ug"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_if5ep"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_1jxpl"]
-font_color = Color(0, 0, 0, 1)
-
-[node name="TextPage" type="SubViewport"]
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(716, 1024)
+[node name="TextPage" instance=ExtResource("1_if5ep")]
 script = ExtResource("1_506bp")
+page_lines = 35
 
-[node name="Text" type="TextEdit" parent="."]
+[node name="Text" type="TextEdit" parent="." index="1"]
 custom_minimum_size = Vector2(32, 32)
 offset_left = 40.0
 offset_top = 40.0
@@ -25,25 +16,9 @@ offset_right = 676.0
 offset_bottom = 984.0
 theme_override_colors/font_color = Color(0.09803922, 0.09803922, 0.09803922, 1)
 theme_override_colors/font_readonly_color = Color(0.09803922, 0.09803922, 0.09803922, 1)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_506bp")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_te2ug")
-theme_override_styles/read_only = SubResource("StyleBoxEmpty_if5ep")
+theme_override_styles/normal = ExtResource("3_munrl")
+theme_override_styles/focus = ExtResource("3_munrl")
+theme_override_styles/read_only = ExtResource("3_munrl")
 text = "Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text "
 editable = false
 wrap_mode = 1
-
-[node name="Index" type="Label" parent="."]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -5.0
-offset_top = -24.0
-offset_right = 5.0
-offset_bottom = -1.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "0"
-label_settings = SubResource("LabelSettings_1jxpl")
-horizontal_alignment = 1

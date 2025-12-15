@@ -1,0 +1,81 @@
+[gd_scene load_steps=9 format=3 uid="uid://thdlyhp663w4"]
+
+[ext_resource type="Texture2D" uid="uid://71gb6l12pnmw" path="res://icon.svg" id="1_3l1bu"]
+[ext_resource type="PackedScene" uid="uid://de7x47uthejdn" path="res://page/empty/empty_page.tscn" id="1_tvt2d"]
+[ext_resource type="StyleBox" uid="uid://dgowa1eyigy0q" path="res://page/style_box_page.tres" id="2_312np"]
+[ext_resource type="Script" uid="uid://iibudepve783" path="res://page/sample/sprite_2d.gd" id="2_qnvqa"]
+[ext_resource type="Script" uid="uid://cr8iggt0n7pg" path="res://page/sample/mouse_pointer.gd" id="3_tvt2d"]
+[ext_resource type="Script" uid="uid://dqiu6kivu4uk2" path="res://page/sample/input_logger.gd" id="4_qur4v"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_272bh"]
+font_size = 53
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_qur4v"]
+font_size = 32
+font_color = Color(0, 0, 0, 1)
+
+[node name="SamplePage" instance=ExtResource("1_tvt2d")]
+
+[node name="ColorRect" type="ColorRect" parent="." index="1"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0, 0, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="." index="2"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" index="0"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer" index="0"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 0
+text = "Page View Placeholder
+Enter Text..."
+label_settings = SubResource("LabelSettings_272bh")
+autowrap_mode = 3
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer" index="1"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Event Log:"
+label_settings = SubResource("LabelSettings_qur4v")
+
+[node name="InputLogger" type="TextEdit" parent="MarginContainer/VBoxContainer" index="2"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = ExtResource("2_312np")
+theme_override_styles/focus = ExtResource("2_312np")
+theme_override_styles/read_only = ExtResource("2_312np")
+wrap_mode = 1
+script = ExtResource("4_qur4v")
+
+[node name="MousePointer" type="Control" parent="." index="3"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("3_tvt2d")
+color = Color(0, 0, 0, 1)
+radius = 20.0
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="4"]
+position = Vector2(169, 300)
+texture = ExtResource("1_3l1bu")
+centered = false
+script = ExtResource("2_qnvqa")
+region = Rect2(0, 0, 716, 1024)
