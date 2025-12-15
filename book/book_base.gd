@@ -3,6 +3,7 @@ class_name BookBase
 
 var loaded: bool
 var current_page: int
+@export var max_page: int = -1
 var current_right_page: PageBase
 var swap_right_page: PageBase
 var current_left_page: PageBase
@@ -39,12 +40,16 @@ func navigate(new_index: int) -> void:
 		navigate_callback(new_index)
 
 func page_right() -> void:
+	if max_page != -1 and max_page <= current_page:
+		return
 	if play_page_right(swap_right_page.material, swap_left_page.material):
 		swap_pages()
 		current_page += 1
 		navigate(current_page)
 		
 func page_left() -> void:
+	if current_page <= 0:
+		return
 	if play_page_left(swap_right_page.material, swap_left_page.material):
 		swap_pages()
 		current_page -= 1
