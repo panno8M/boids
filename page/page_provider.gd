@@ -62,9 +62,6 @@ func preset(key: StringName) -> PageBase:
 	return page_presets[key].instantiate()
 
 func create_material(viewport: SubViewport) -> ShaderMaterial:
-	var mat = ShaderMaterial.new()
-	mat.shader = preload("res://page/page.gdshader")
-	mat.set_shader_parameter("paper_tex", preload("res://page/Paper-Texture-3-1024x768.jpg"))
+	var mat = preload("res://page/page_material.tres").duplicate()
 	mat.set_shader_parameter("overlay_tex", viewport.get_texture())
-	mat.set_shader_parameter("paper_roughness", 1)
 	return mat
