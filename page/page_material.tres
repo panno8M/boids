@@ -1,0 +1,18 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://1j1ssackxy4b"]
+
+[ext_resource type="Shader" uid="uid://ccrevbfsl553j" path="res://page/page.gdshader" id="1_6kta2"]
+[ext_resource type="Texture2D" uid="uid://dghe8unve73d5" path="res://page/Paper-Texture-3-1024x768.jpg" id="2_fjgn0"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_6kta2")
+shader_parameter/paper_tex = ExtResource("2_fjgn0")
+shader_parameter/overlay_strength = 0.8
+shader_parameter/paper_brightness = 1.0
+shader_parameter/paper_roughness = 1.0
+shader_parameter/paper_metallic = 0.0
+shader_parameter/bump_strength = 0.02
+shader_parameter/vignette_strength = 0.3
+shader_parameter/vignette_radius = 1.0
+shader_parameter/vignette_center = Vector2(0.5, 0.5)
+shader_parameter/tint_color = Color(1, 1, 1, 1)
