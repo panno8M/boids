@@ -20,8 +20,9 @@ attributes = ExtResource("3_hqtel")
 current = true
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Camera3D"]
-light_energy = 0.1
-spot_range = 1.1039253
+light_color = Color(1, 0.87333333, 0.8, 1)
+light_energy = 0.3
+spot_range = 1.0
 spot_angle = 58.296062
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
