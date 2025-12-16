@@ -22,6 +22,21 @@ var pitch := 0.0
 var gravity := Vector3(0, -9.8/2, 0)
 var gravity_enabled := true
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		if event.pressed:
+			match event.keycode:
+				KEY_ESCAPE:
+					match Input2.mouse_mode_override:
+						Input2.MouseMode.INHERIT:
+							match Input2.mouse_mode:
+								Input2.MouseMode.CAPTURED:
+									Input2.mouse_mode_override = Input2.MouseMode.VISIBLE
+								Input2.MouseMode.VISIBLE:
+									Input2.mouse_mode_override = Input2.MouseMode.CAPTURED
+						_:
+							Input2.mouse_mode_override = Input2.MouseMode.INHERIT
+
 func _unhandled_input(event):
 	match state:
 		State.VIEW:
@@ -33,12 +48,13 @@ func _unhandled_input(event):
 						KEY_RIGHT:
 							holding.page_right()
 		_:
-			if event is InputEventMouseMotion:
-				yaw -= event.relative.x * mouse_sensitivity
-				pitch -= event.relative.y * mouse_sensitivity
-				pitch = clamp(pitch, -89, 89)
-				$Camera3D.rotation_degrees = Vector3(pitch, 0, 0)
-				rotation_degrees = Vector3(0, yaw, 0)
+			if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+				if event is InputEventMouseMotion:
+					yaw -= event.relative.x * mouse_sensitivity
+					pitch -= event.relative.y * mouse_sensitivity
+					pitch = clamp(pitch, -89, 89)
+					$Camera3D.rotation_degrees = Vector3(pitch, 0, 0)
+					rotation_degrees = Vector3(0, yaw, 0)
 
 func execute(book: BookBase):
 	if book: book.execute()
