@@ -4,6 +4,7 @@ var page_presets: Dictionary[StringName, PackedScene] = {
 	&"SamplePage": preload("res://page/sample/sample_page.tscn"),
 	&"EmptyPage": preload("res://page/empty/empty_page.tscn"),
 	&"TextPage": preload("res://page/text/text_page.tscn"),
+	&"TextAtlasPage": preload("res://page/text_atlas/text_atlas_page.tscn"),
 	&"ImagePage": preload("res://page/image/image_page.tscn"),
 	&"AudioPage": preload("res://page/audio/audio_page.tscn"),
 	&"AudioSpectrumPage": preload("res://page/audio/audio_spectrum_page.tscn"),

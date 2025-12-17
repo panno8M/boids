@@ -15,6 +15,8 @@ func close_callback() -> void:
 	pass
 func navigate_callback(_new_index: int) -> void:
 	pass
+func navigate_end_callback() -> void:
+	pass
 
 func open() -> void:
 	if not loaded:
@@ -71,3 +73,8 @@ func init_pages() -> void:
 	current_right_page = page
 	swap_left_page = page
 	swap_right_page = page
+
+func _on_animation_player_animation_finished(anim_name: StringName) -> void:
+	match anim_name:
+		&"PagingR2L", &"PagingL2R":
+			navigate_end_callback()
