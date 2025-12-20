@@ -71,10 +71,8 @@ func id_to_page(id: int) -> PageBase:
 	if not player.holding: return null
 	match id:
 		# FIXME: It does not function correctly during page scrolling.
-		1: return player.holding.current_left_page
-		2: return player.holding.swap_left_page
-		3: return player.holding.swap_right_page
-		4: return player.holding.current_right_page
+		1: return player.holding.curr_page().left
+		4: return player.holding.curr_page().right
 		_: return null
 
 func pick_page(screen_pos: Vector2) -> PageBase:

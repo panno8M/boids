@@ -19,8 +19,7 @@ import shell
 type Bookfly* {.gdsync.} = ptr object of BoidAgent3D
   path* {.gdexport.}: String
   id*: int
-  animationPlayer* {.gdexport.}: NodePath
-  player: AnimationPlayer
+  animationPlayer* {.gdexport.}: AnimationPlayer
   flyName* {.gdexport.}: StringName = "Fly"
   openName* {.gdexport.}: StringName = "Open"
   pageRightName* {.gdexport.}: StringName = "PagingR2L"
@@ -89,11 +88,10 @@ proc clearOverride(selector: MaterialSelector) =
     selector[i] = default(gdref Material)
 
 proc init*(self: Bookfly) =
-  self.player = self/self.animationPlayer as AnimationPlayer
-  var fly = self.player.getAnimation(self.flyName)
+  var fly = self.animationPlayer.getAnimation(self.flyName)
   fly[].loopMode = Animation_LoopMode.loopLinear
-  self.player.playRandom(self.flyName)
-  discard self.player.connect("animation_finished", self.callable"_animation_finished")
+  self.animationPlayer.playRandom(self.flyName)
+  discard self.animationPlayer.connect("animation_finished", self.callable"_animation_finished")
 
 proc fileExists*(_: typedesc[BookSpawner]; path: String): Bool {.gdsync.} =
   fileExists($path)
@@ -119,7 +117,6 @@ proc spawnSingle*(self: BookSpawner; path: string): Bookfly =
     self.controller.boids.add result
     result.id = self.controller.boids.high
   self.controller.cellMap.addBoid(result.cell, result)
-
   init result
 
 proc spawn(self: BookSpawner; path: string; recursiveCount: int): seq[Bookfly] =
@@ -184,7 +181,6 @@ method process(self: VellumSpawner; delta: float64) {.gdsync.} =
     self.vellum.position = self.vellum.p
     self.controller.boids.add self.vellum
     self.controller.cellMap.addBoid(self.vellum.cell, self.vellum)
-
     init self.vellum
 
 proc execute*(self: Bookfly) {.gdsync.} =
@@ -196,7 +192,7 @@ proc playHold*(self: Bookfly; newParent: Node3D) {.gdsync.} =
   newParent.addChild(self)
   self.p = vector3(0, 0, -0.18)
   self.transform = Transform3D(origin: self.p)
-  self.player.pause(self.openName)
+  self.animationPlayer.pause(self.openName)
 
 proc playRelease*(self: Bookfly) {.gdsync.} =
   self.enabled = true
@@ -205,43 +201,43 @@ proc playRelease*(self: Bookfly) {.gdsync.} =
   self.controller.addChild(self)
   self.globalTransform = global
   self.p = self.position
-  self.player.play(self.flyName)
+  self.animationPlayer.play(self.flyName)
   self.rightPage.material.clearOverride
   self.leftPage.material.clearOverride
   self.freePage.material.clearOverride
 
 proc playOpen*(self: Bookfly; rightPage, leftPage: gdref Material) {.gdsync.} =
-  self.player.play(self.openName)
+  self.animationPlayer.play(self.openName)
   self.rightPage.material[0] = rightPage
   self.leftPage.material[0] = leftPage
 
 proc playClose*(self: Bookfly) {.gdsync.} =
-  self.player.playBackwards(self.openName)
+  self.animationPlayer.playBackwards(self.openName)
 
-proc playPageRight*(self: Bookfly; rightPage, leftPage: gdref Material): Bool {.gdsync.} =
-  if self.player.isPlaying: return false
+proc setPageMaterial*(self: Bookfly; rightPage, leftPage: gdref Material) {.gdsync.} =
+  self.rightPage.material[0] = rightPage
+  self.leftPage.material[0] = leftPage
+
+proc playPageRight*(self: Bookfly; rightPage, leftPage: gdref Material) {.gdsync.} =
   self.freePage.material[1] = self.rightPage.material[0]
   self.freePage.material[0] = leftPage
   self.rightPage.material[0] = rightPage
-  self.player.play(self.pageRightName)
-  return true
+  self.animationPlayer.play(self.pageRightName)
 
-proc playPageLeft*(self: Bookfly; rightPage, leftPage: gdref Material): Bool {.gdsync.} =
-  if self.player.isPlaying: return false
+proc playPageLeft*(self: Bookfly; rightPage, leftPage: gdref Material) {.gdsync.} =
   self.freePage.material[0] = self.leftPage.material[0]
   self.freePage.material[1] = rightPage
   self.leftPage.material[0] = leftPage
-  self.player.play(self.pageLeftName)
-  return true
+  self.animationPlayer.play(self.pageLeftName)
 
 proc animationFinished*(self: Bookfly; anim_name: StringName) {.gdsync, rename: toGodotInternalFuncCase.} =
   if anim_name == self.pageRightName:
-    self.player.playBackwards(self.openName)
-    self.player.seek(0)
-    self.player.pause()
+    self.animationPlayer.playBackwards(self.openName)
+    self.animationPlayer.seek(0)
+    self.animationPlayer.pause()
     self.leftPage.material[0] = self.freePage.material[0]
   if anim_name == self.pageLeftName:
-    self.player.playBackwards(self.openName)
-    self.player.seek(0)
-    self.player.pause()
+    self.animationPlayer.playBackwards(self.openName)
+    self.animationPlayer.seek(0)
+    self.animationPlayer.pause()
     self.rightPage.material[0] = self.freePage.material[1]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://bpmd0tu5vriyh"]
+[gd_scene load_steps=5 format=3 uid="uid://bpmd0tu5vriyh"]
 
 [ext_resource type="PackedScene" uid="uid://de7x47uthejdn" path="res://page/empty/empty_page.tscn" id="1_x4p3d"]
 [ext_resource type="Script" uid="uid://btmgasnv4f1rv" path="res://page/text_atlas/text_atlas_page.gd" id="2_lte1f"]
@@ -8,10 +8,9 @@
 script = ExtResource("2_lte1f")
 page_lines = 35
 
-[node name="SubViewportReference" type="TextureRect" parent="." index="1" node_paths=PackedStringArray("sub_viewport")]
+[node name="SubViewportReference" type="TextureRect" parent="." index="1"]
 offset_left = 40.0
 offset_top = 40.0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("3_oknvq")
-sub_viewport = NodePath("")
