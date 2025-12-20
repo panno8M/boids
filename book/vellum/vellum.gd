@@ -1,7 +1,7 @@
 extends BookBase
 class_name Vellum
 
-func open_callback() -> void:
+func initialize_callback() -> void:
 	current_left_page = PageProvider.add_preset_at_once("TerminalPage", "Vellum")
 	current_right_page = PageProvider.add_preset_at_once("EmptyPage", "EmptyPage.0")
 	swap_left_page = PageProvider.add_preset_at_once("EmptyPage", "EmptyPage.1")

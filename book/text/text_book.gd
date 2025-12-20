@@ -3,7 +3,7 @@ class_name TextBook
 
 @onready var text_edit = $SubViewport/Text
 
-func open_callback() -> void:
+func initialize_callback() -> void:
 	var file_name = path.get_file()
 	current_left_page = PageProvider.add_preset_at_once("TextAtlasPage", file_name + ".0")
 	current_right_page = PageProvider.add_preset_at_once("TextAtlasPage", file_name + ".1")

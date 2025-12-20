@@ -1,7 +1,7 @@
 extends BookBase
 class_name ImageBook
 
-func open_callback() -> void:
+func initialize_callback() -> void:
 	var file_name = path.get_file()
 	current_left_page = PageProvider.add_preset_at_once("ImagePage", file_name)
 	current_left_page.set_contents_from_image_path(path)

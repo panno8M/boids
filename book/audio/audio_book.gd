@@ -3,7 +3,7 @@ class_name AudioBook
 
 var audio_page: PageBase
 
-func open_callback() -> void:
+func initialize_callback() -> void:
 	var file_name = path.get_file()
 	audio_page = PageProvider.add_preset_at_once("AudioPage", file_name)
 	var spectrum_page = PageProvider.add_preset_at_once("AudioSpectrumPage")

@@ -9,6 +9,8 @@ var swap_right_page: PageBase
 var current_left_page: PageBase
 var swap_left_page: PageBase
 
+func initialize_callback() -> void:
+	pass
 func open_callback() -> void:
 	pass
 func close_callback() -> void:
@@ -20,8 +22,9 @@ func navigate_end_callback() -> void:
 
 func open() -> void:
 	if not loaded:
-		open_callback()
+		initialize_callback()
 		loaded = true
+	open_callback()
 	play_open(current_right_page.material, current_left_page.material)
 	call_deferred("navigate", current_page)
 
