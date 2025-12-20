@@ -13,5 +13,8 @@ func initialize_callback() -> void:
 	swap_left_page = PageProvider.add_preset_at_once("EmptyPage", "EmptyPage.1")
 	swap_right_page = spectrum_page
 
+func open_callback() -> void:
+	audio_page.audio.play()
+
 func close_callback() -> void:
-	(audio_page.audio as AudioStreamPlayer).stop()
+	audio_page.audio.stop()

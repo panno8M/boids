@@ -17,4 +17,3 @@ func set_contents_from_path(path: String) -> void:
 		_:
 			return
 	audio.bus = &"AudioPreview"
-	audio.play()
