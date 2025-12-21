@@ -1,7 +1,7 @@
 extends BookFactory
 class_name MyBookFactory
 
-enum BookKind {SAMPLE, TEXT, IMAGE, AUDIO}
+enum BookKind {SAMPLE, TEXT, IMAGE, AUDIO, MODEL}
 
 @export var blueprints: Dictionary[BookKind, PackedScene]
 
@@ -11,6 +11,7 @@ func _create(controller: BoidController3D, path: String) -> Bookfly:
 
 const image_exts = ["png", "jpg", "jpeg", "svg", "svgz", "bmp", "tga", "webp", "exr", "hdr", "qoi", "dds", "ktx", "ktx2", "pvr"]
 const valid_audio_exts = ["mp3", "wav", "ogg"]
+const valid_3d_model_exts = ["glb", "gltf", "fbx", "obj"]
 
 func detect_book_kind(path: String) -> BookKind:
 	var ext = path.get_extension()
@@ -18,6 +19,8 @@ func detect_book_kind(path: String) -> BookKind:
 		return BookKind.IMAGE
 	elif ext in valid_audio_exts:
 		return BookKind.AUDIO
+	elif ext in valid_3d_model_exts:
+		return BookKind.MODEL
 	#if is_text_file(path):
 	#	return BookKind.TEXT
 	#else:

@@ -1,0 +1,66 @@
+[gd_scene load_steps=7 format=3 uid="uid://bqx41d7hqwvxh"]
+
+[ext_resource type="PackedScene" uid="uid://de7x47uthejdn" path="res://page/empty/empty_page.tscn" id="1_jb5ai"]
+[ext_resource type="Script" uid="uid://bigw03km36vac" path="res://page/3d-model/camera_controller.gd" id="2_78xvs"]
+[ext_resource type="Script" uid="uid://by7octpg8y238" path="res://page/3d-model/3d_model_page.gd" id="2_va6pq"]
+
+[sub_resource type="Environment" id="Environment_78xvs"]
+background_mode = 1
+background_color = Color(1, 1, 1, 1)
+
+[sub_resource type="World3D" id="World3D_va6pq"]
+environment = SubResource("Environment_78xvs")
+
+[sub_resource type="LabelSettings" id="LabelSettings_78xvs"]
+font_size = 32
+font_color = Color(0, 0, 0, 1)
+
+[node name="3DModelPage" node_paths=PackedStringArray("description") instance=ExtResource("1_jb5ai")]
+own_world_3d = true
+world_3d = SubResource("World3D_va6pq")
+transparent_bg = false
+script = ExtResource("2_va6pq")
+description = NodePath("LetterBoxBottom/Label")
+
+[node name="CameraController" type="Control" parent="." index="2" node_paths=PackedStringArray("camera_origin", "camera")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_78xvs")
+camera_origin = NodePath("../Marker3D")
+camera = NodePath("../Marker3D/Camera3D")
+
+[node name="LetterBoxTop" type="ColorRect" parent="." index="3"]
+custom_minimum_size = Vector2(0, 40)
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="LetterBoxBottom" type="ColorRect" parent="." index="4"]
+custom_minimum_size = Vector2(0, 160)
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Label" type="Label" parent="LetterBoxBottom" index="0"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+label_settings = SubResource("LabelSettings_78xvs")
+autowrap_mode = 3
+
+[node name="Marker3D" type="Marker3D" parent="." index="5"]
+
+[node name="Camera3D" type="Camera3D" parent="Marker3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.748167)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Marker3D/Camera3D" index="0"]

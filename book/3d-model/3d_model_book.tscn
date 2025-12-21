@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://kmieci660mu2"]
+
+[ext_resource type="PackedScene" uid="uid://c1xcy4s8lhvjw" path="res://book/book_base.tscn" id="1_h2bw3"]
+[ext_resource type="Script" uid="uid://bd2oeu6y3w7gw" path="res://book/3d-model/3d_model_book.gd" id="2_7x6dd"]
+
+[node name="3DModelBook" instance=ExtResource("1_h2bw3")]
+script = ExtResource("2_7x6dd")
+
+[editable path="Book"]

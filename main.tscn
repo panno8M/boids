@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://bpwugrpfc2agh"]
+[gd_scene load_steps=25 format=3 uid="uid://bpwugrpfc2agh"]
 
 [ext_resource type="PackedScene" uid="uid://dhanldu7wrbo0" path="res://UI/bookmenu.tscn" id="2_w48qg"]
 [ext_resource type="PackedScene" uid="uid://cuxresj1risim" path="res://player.tscn" id="3_h2yge"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://bvaeaalnhv4wb" path="res://book/image/image_book.tscn" id="7_vivmo"]
 [ext_resource type="PackedScene" uid="uid://bd8ig36buaog1" path="res://book/audio/audio_book.tscn" id="8_2cqfq"]
 [ext_resource type="PackedScene" uid="uid://cn4qb3nke24vn" path="res://event_bridge.tscn" id="8_5vw27"]
+[ext_resource type="PackedScene" uid="uid://kmieci660mu2" path="res://book/3d-model/3d_model_book.tscn" id="10_cegan"]
 [ext_resource type="Script" path="res://book_spawner.gd" id="11_vivmo"]
 [ext_resource type="PackedScene" uid="uid://blk14chws8q28" path="res://book/vellum/vellum.tscn" id="12_w48qg"]
 [ext_resource type="PackedScene" uid="uid://uwxrrv56cra3" path="res://stage.tscn" id="13_2cqfq"]
@@ -41,7 +42,8 @@ blueprints = Dictionary[int, PackedScene]({
 0: ExtResource("5_ycdy4"),
 1: ExtResource("6_w48qg"),
 2: ExtResource("7_vivmo"),
-3: ExtResource("8_2cqfq")
+3: ExtResource("8_2cqfq"),
+4: ExtResource("10_cegan")
 })
 metadata/_custom_type_script = "uid://c1p6pbisg4ulf"
 
