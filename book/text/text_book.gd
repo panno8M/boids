@@ -47,12 +47,12 @@ func initialize_callback() -> void:
 var scroll_vertical: float
 
 func page_left_callback() -> void:
-	set_page_material(pages[1].right.material, pages[1].left.material)
 	scroll_vertical = (current_page_index-1) * page_lines * 2
+	set_page_material(pages[1].left.material, pages[1].right.material)
 
 func page_right_end_callback() -> void:
-	set_page_material(pages[0].right.material, pages[0].left.material)
 	scroll_vertical = current_page_index * page_lines * 2
+	set_page_material(pages[0].left.material, pages[0].right.material)
 
 
 func _process(_delta: float) -> void:

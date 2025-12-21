@@ -32,9 +32,6 @@ func next_page() -> PagePair:
 	else:
 		return pages[current_page_index+1]
 
-func _ready() -> void:
-	animation_player.animation_finished.connect(_on_animation_player_animation_finished)
-
 func curr_page() -> PagePair:
 	return pages[current_page_index]
 
@@ -81,7 +78,7 @@ func page_left() -> void:
 			navigate(prev, current_page_index - 1)
 			play_page_left(prev.right.material, prev.left.material)
 
-func _on_animation_player_animation_finished(anim_name: StringName) -> void:
+func _post_animation_finished(anim_name: StringName) -> void:
 	match anim_name:
 		page_right_name:
 			call_deferred("page_right_end_callback")

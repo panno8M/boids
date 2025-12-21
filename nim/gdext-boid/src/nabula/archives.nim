@@ -214,21 +214,24 @@ proc playOpen*(self: Bookfly; rightPage, leftPage: gdref Material) {.gdsync.} =
 proc playClose*(self: Bookfly) {.gdsync.} =
   self.animationPlayer.playBackwards(self.openName)
 
-proc setPageMaterial*(self: Bookfly; rightPage, leftPage: gdref Material) {.gdsync.} =
-  self.rightPage.material[0] = rightPage
+proc setPageMaterial*(self: Bookfly; leftPage, rightPage: gdref Material) {.gdsync.} =
   self.leftPage.material[0] = leftPage
+  self.rightPage.material[0] = rightPage
 
 proc playPageRight*(self: Bookfly; rightPage, leftPage: gdref Material) {.gdsync.} =
+  self.animationPlayer.play(self.pageRightName)
   self.freePage.material[1] = self.rightPage.material[0]
   self.freePage.material[0] = leftPage
   self.rightPage.material[0] = rightPage
-  self.animationPlayer.play(self.pageRightName)
 
 proc playPageLeft*(self: Bookfly; rightPage, leftPage: gdref Material) {.gdsync.} =
+  self.animationPlayer.play(self.pageLeftName)
   self.freePage.material[0] = self.leftPage.material[0]
   self.freePage.material[1] = rightPage
   self.leftPage.material[0] = leftPage
-  self.animationPlayer.play(self.pageLeftName)
+
+method postAnimationFinished*(self: Bookfly; anim_name: StringName) {.gdsync, base.} =
+  discard
 
 proc animationFinished*(self: Bookfly; anim_name: StringName) {.gdsync, rename: toGodotInternalFuncCase.} =
   if anim_name == self.pageRightName:
@@ -241,3 +244,4 @@ proc animationFinished*(self: Bookfly; anim_name: StringName) {.gdsync, rename: 
     self.animationPlayer.seek(0)
     self.animationPlayer.pause()
     self.rightPage.material[0] = self.freePage.material[1]
+  self.postAnimationFinished(anim_name)
