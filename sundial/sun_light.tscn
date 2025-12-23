@@ -1,0 +1,40 @@
+[gd_scene load_steps=7 format=3 uid="uid://bny4ocs5w73s3"]
+
+[ext_resource type="Script" uid="uid://jhsxj1e5rlgr" path="res://sundial/sun_light.gd" id="1_xe62e"]
+[ext_resource type="Script" uid="uid://04h67tcsmeue" path="res://sundial/cycling_time_source.gd" id="2_xe62e"]
+[ext_resource type="Curve" uid="uid://brvqmfj0bsop0" path="res://sundial/sky_energy_curve.tres" id="3_e4q7e"]
+[ext_resource type="Gradient" uid="uid://m68sxn47cjxb" path="res://sundial/sun_gradient.tres" id="4_gm3pr"]
+[ext_resource type="Curve" uid="uid://r73xh21f3msw" path="res://sundial/sun_energy_curve.tres" id="5_ss62w"]
+
+[sub_resource type="Resource" id="Resource_58w78"]
+script = ExtResource("2_xe62e")
+pausing = true
+metadata/_custom_type_script = "uid://04h67tcsmeue"
+
+[node name="SunLight" type="Node3D"]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
+script = ExtResource("1_xe62e")
+time_source = SubResource("Resource_58w78")
+sky_energy_curve = ExtResource("3_e4q7e")
+sun_gradient = ExtResource("4_gm3pr")
+sun_energy_curve = ExtResource("5_ss62w")
+
+[node name="TiltPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.91775465, -0.3971479, 0, 0.3971479, 0.91775465, 0, 0, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="TiltPivot"]
+transform = Transform3D(0.7264907, 0, 0.6871762, -0.6871762, 0, 0.7264907, 0, -1, 0, 0, 4, 0)
+visible = false
+light_color = Color(0, 0, 0, 1)
+light_energy = 0.0
+light_specular = 10.0
+shadow_enabled = true
+shadow_blur = 1.5
+
+[node name="TimeInfo" type="Label3D" parent="."]
+unique_name_in_owner = true
+pixel_size = 0.002
+billboard = 1
+no_depth_test = true
+fixed_size = true
+text = "Time: 0.0"

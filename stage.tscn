@@ -29,8 +29,11 @@ metadata/_editor_floor_ = Vector3(-5, 0, 16)
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 9.970575, -59.195587, 29.286093)
 script = ExtResource("2_aees8")
 
+[node name="Bone_001" parent="Piano/Armature/Bone" index="0"]
+transform = Transform3D(0.86529624, -0.5012608, 4.291534e-06, 0.5012608, 0.86529624, -6.312805e-07, -3.397012e-06, 2.6974224e-06, 1, 0, 8.338397, -1.653018e-08)
+
 [node name="Bone_002" parent="Piano/Armature/Bone/Bone_001" index="0"]
-transform = Transform3D(1, -4.291535e-06, 1.8758894e-13, 0, -4.371139e-08, -1, 4.291535e-06, 1, -4.371139e-08, -5.333782e-07, 0.69260776, 1.2245982e-07)
+transform = Transform3D(1, 4.291534e-06, 1.875889e-13, 0, -4.371139e-08, 1, 4.291534e-06, -1, -4.371139e-08, -5.333782e-07, 0.69260776, 1.2245982e-07)
 
 [node name="Wall" type="StaticBody3D" parent="Piano"]
 
