@@ -8,6 +8,10 @@ class_name CyclingTimeSource
 @export var pausing: bool
 
 @export_range(0.0, 1.0) var time: float
+@export_range(0, 23) var hour: int:
+	get(): return int(floor(time * 24.0))
+	set(value): time = (float(value) / 24.0)
+
 var _last_ticks_msec: int = 0
 
 func get_time() -> float:

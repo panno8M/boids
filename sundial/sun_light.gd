@@ -1,9 +1,9 @@
 @tool
-extends Node3D
+extends Marker3D
 class_name SunLight
 
-@onready var tilt_pivot: Node3D = $TiltPivot
-@onready var sun_light: DirectionalLight3D = $TiltPivot/DirectionalLight3D
+@onready var pivot: Node3D = $Pivot
+@onready var sun_light: DirectionalLight3D = $Pivot/DirectionalLight3D
 
 @export var time_source: TimeSource
 @export var axial_tilt_deg: float = 23.4
@@ -31,7 +31,6 @@ class_name SunLight
 @export var sun_max_energy: float = 1.0
 
 func _ready():
-	tilt_pivot.rotation.x = deg_to_rad(axial_tilt_deg)
 	# デフォルト注入（未設定時）
 	if time_source == null:
 		time_source = SystemTimeSource.new()
@@ -51,7 +50,9 @@ func update_sun():
 
 	# 正午 = 0°
 	var hour_angle_deg := (time - 0.5) * 360.0
-	rotation.y = deg_to_rad(hour_angle_deg + azimuth_offset_deg)
+	rotation.z = deg_to_rad(axial_tilt_deg)
+	rotation.y = deg_to_rad(azimuth_offset_deg)
+	pivot.rotation.x = -deg_to_rad(hour_angle_deg)
 
 	# 昼夜係数
 	var day_factor := get_day_factor(time)
