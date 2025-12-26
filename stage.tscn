@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://uwxrrv56cra3"]
+[gd_scene load_steps=7 format=3 uid="uid://uwxrrv56cra3"]
 
 [ext_resource type="PackedScene" uid="uid://cbdqw3syu25ym" path="res://assets-dev/Piano.blend" id="1_6eo5e"]
 [ext_resource type="Script" uid="uid://cn8nthavd2elb" path="res://piano/piano.gd" id="2_aees8"]
+[ext_resource type="PackedScene" uid="uid://dpg0td5khilho" path="res://assets-dev/Sundial.blend" id="3_rnkuw"]
 
 [sub_resource type="MeshLibrary" id="MeshLibrary_1bvp3"]
 item/0/name = "Collide"
@@ -49,5 +50,8 @@ shape = SubResource("BoxShape3D_yaehf")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Piano/Floor"]
 transform = Transform3D(0.99828815, 0, -0.058487497, 0, 1, 0, 0.058487497, 0, 0.99828815, 0.08878875, 19.50311, -24.28788)
 shape = SubResource("BoxShape3D_2cqfq")
+
+[node name="Sundial" parent="." instance=ExtResource("3_rnkuw")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -26.68195, 10.19763, -29.603777)
 
 [editable path="Piano"]

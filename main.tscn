@@ -196,8 +196,10 @@ process_material = ExtResource("5_7mycd")
 draw_pass_1 = ExtResource("6_272bh")
 
 [node name="SunLight" parent="." node_paths=PackedStringArray("world_environment") instance=ExtResource("18_getpj")]
-transform = Transform3D(-0.9610005, 0, -0.27654588, 0, 1, 0, 0.27654588, 0, -0.9610005, 0, 0, 0)
+transform = Transform3D(-0.5735763, 0.81915206, -8.742274e-08, 0.81915176, 0.57357645, 0, 5.014363e-08, -7.161255e-08, -0.9999996, 0, 0, 0)
 time_source = SubResource("Resource_getpj")
+axial_tilt_deg = 55.0
+azimuth_offset_deg = 180.0
 show_timeinfo = false
 world_environment = NodePath("../WorldEnvironment")
 
