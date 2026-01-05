@@ -17,7 +17,6 @@ var state: State:
 var mouse_sensitivity := 0.2
 var yaw := 0.0
 var pitch := 0.0
-@export var controller: BoidController3D
 @export var vellum_spawner: VellumSpawner
 var gravity := Vector3(0, -9.8/2, 0)
 var gravity_enabled := true

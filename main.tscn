@@ -180,8 +180,7 @@ enable_y = false
 
 [node name="Stage" parent="." instance=ExtResource("13_2cqfq")]
 
-[node name="Player" parent="." node_paths=PackedStringArray("controller", "vellum_spawner") instance=ExtResource("3_h2yge")]
-controller = NodePath("../BoidController3D")
+[node name="Player" parent="." node_paths=PackedStringArray("vellum_spawner") instance=ExtResource("3_h2yge")]
 vellum_spawner = NodePath("../VellumController/VellumSpawner")
 
 [node name="Marker3D" type="Marker3D" parent="Player/Camera3D" index="1"]
