@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://b3h706jeebmug"]
+
+[ext_resource type="Script" uid="uid://b1mjctue7lvv2" path="res://notifications/notification_board.gd" id="1_agpvm"]
+[ext_resource type="PackedScene" uid="uid://bmx7nqtfmu111" path="res://notifications/notification_poster.tscn" id="2_ixyy7"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3dyuj"]
+size = Vector3(2.1230469, 1, 0)
+
+[node name="NotificationBoard" type="Node3D"]
+script = ExtResource("1_agpvm")
+poster_template = ExtResource("2_ixyy7")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_3dyuj")
