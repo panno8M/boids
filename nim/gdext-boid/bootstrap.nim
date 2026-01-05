@@ -14,6 +14,7 @@ import classes/gdBoidRuleFollowNode3D
 import classes/gdBoidRulePostureLookAt3D
 import classes/gdTerminal
 import nabula/archives
+import notifications/gdNotificationServer
 
 proc set_formatters {.execon: EntryPoint.} =
   defaultPropertyFormatter = toSnakeCase

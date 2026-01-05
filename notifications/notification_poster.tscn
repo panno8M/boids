@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bmx7nqtfmu111"]
+[gd_scene load_steps=6 format=3 uid="uid://bmx7nqtfmu111"]
 
 [ext_resource type="Script" uid="uid://bfncabu14oiug" path="res://notifications/notification_poster.gd" id="1_j4abl"]
 [ext_resource type="Material" uid="uid://1j1ssackxy4b" path="res://page/page_material.tres" id="1_q4wy3"]
@@ -8,6 +8,10 @@ material = ExtResource("1_q4wy3")
 
 [sub_resource type="LabelSettings" id="LabelSettings_j4abl"]
 font_size = 32
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_66wnf"]
+font_size = 24
 font_color = Color(0, 0, 0, 1)
 
 [node name="NotificationPoster" type="Node3D"]
@@ -21,14 +25,27 @@ mesh = SubResource("QuadMesh_i4alw")
 unique_name_in_owner = true
 disable_3d = true
 transparent_bg = true
-size = Vector2i(256, 512)
-render_target_update_mode = 1
+size = Vector2i(384, 512)
 
-[node name="Label" type="Label" parent="SubViewport"]
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST "
+
+[node name="Summary" type="Label" parent="SubViewport/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+text = "Summary"
 label_settings = SubResource("LabelSettings_j4abl")
+autowrap_mode = 1
+
+[node name="Body" type="Label" parent="SubViewport/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+text = "Body"
+label_settings = SubResource("LabelSettings_66wnf")
+autowrap_mode = 1

@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 Input2="*res://input2.gd"
 PageProvider="*res://page/page_provider.gd"
+NotificationServerProxy="*res://notifications/notification_server_proxy.gd"
 
 [display]
 

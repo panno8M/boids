@@ -6,9 +6,13 @@ class_name NotificationBoard
 var posters: Array[NotificationPoster]
 
 func _ready() -> void:
-	for i in range(10):
-		var poster = poster_template.instantiate()
-		add_poster(poster)
+	get_node("/root/NotificationServerProxy").notification_recieved.connect(_on_notification_server_notification_recieved)
+
+func _on_notification_server_notification_recieved(n: Notification) -> void:
+	print(n)
+	var poster = poster_template.instantiate()
+	poster.initialize(n)
+	add_poster(poster)
 
 func pick_random_from_shape(shape: Shape3D) -> Vector3:
 	if not shape:

@@ -12,11 +12,10 @@ func _ready() -> void:
 	%SubViewport.size_changed.connect(_on_sub_viewport_size_changed)
 	_on_sub_viewport_size_changed()
 
-var i: int
-func _process(delta: float) -> void:
+func initialize(n: Notification) -> void:
+	%Summary.text = n.summary
+	%Body.text = n.body
 	%SubViewport.render_target_update_mode = SubViewport.UpdateMode.UPDATE_ONCE
-	%SubViewport.get_node("Label").text = str(i)
-	i += 1
 
 func _on_sub_viewport_size_changed() -> void:
 	%Quad.scale = xy1(%SubViewport.size) * POSTER_DEFAULT_SCALE
