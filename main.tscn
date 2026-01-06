@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://bpwugrpfc2agh"]
+[gd_scene load_steps=30 format=3 uid="uid://bpwugrpfc2agh"]
 
 [ext_resource type="PackedScene" uid="uid://dhanldu7wrbo0" path="res://UI/bookmenu.tscn" id="2_w48qg"]
 [ext_resource type="PackedScene" uid="uid://cuxresj1risim" path="res://player.tscn" id="3_h2yge"]
@@ -17,6 +17,7 @@
 [ext_resource type="Script" path="res://book_spawner.gd" id="11_vivmo"]
 [ext_resource type="PackedScene" uid="uid://blk14chws8q28" path="res://book/vellum/vellum.tscn" id="12_w48qg"]
 [ext_resource type="PackedScene" uid="uid://uwxrrv56cra3" path="res://stage.tscn" id="13_2cqfq"]
+[ext_resource type="PackedScene" uid="uid://dpg0td5khilho" path="res://assets-dev/Sundial.blend" id="15_d13ii"]
 [ext_resource type="Environment" uid="uid://dptnq4x4nhko" path="res://water_environment.tres" id="17_074og"]
 [ext_resource type="CameraAttributesPractical" uid="uid://b2vxwwvedde8t" path="res://water_camera_attributes_practical.tres" id="18_cegan"]
 [ext_resource type="PackedScene" uid="uid://bny4ocs5w73s3" path="res://sundial/sun_light.tscn" id="18_getpj"]
@@ -181,6 +182,12 @@ enable_y = false
 
 [node name="Stage" parent="." instance=ExtResource("13_2cqfq")]
 
+[node name="Sundial" parent="Stage" instance=ExtResource("15_d13ii")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -31.747786, 10.19763, -41.233284)
+
+[node name="NotificationBoard" parent="Stage" instance=ExtResource("20_ryguw")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -43.185387, 2.5181456, -17.274458)
+
 [node name="Player" parent="." node_paths=PackedStringArray("vellum_spawner") instance=ExtResource("3_h2yge")]
 vellum_spawner = NodePath("../VellumController/VellumSpawner")
 
@@ -188,7 +195,8 @@ vellum_spawner = NodePath("../VellumController/VellumSpawner")
 transform = Transform3D(0.998645, 0, -0.052039653, 0, 1, 0, 0.052039653, 0, 0.998645, 0.46139026, 0.29351425, -0.5085567)
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="Player/Camera3D" index="2"]
-amount = 1000
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.80987346, 0)
+amount = 250
 lifetime = 8.0
 preprocess = 8.0
 randomness = 1.0
@@ -203,11 +211,6 @@ azimuth_offset_deg = 180.0
 show_timeinfo = false
 world_environment = NodePath("../WorldEnvironment")
 
-[node name="NotificationBoard" parent="." instance=ExtResource("20_ryguw")]
-
-[node name="CollisionShape3D" parent="NotificationBoard/Area3D" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.56152344, 1.0553997, -2.1582656)
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.84945095, -0.021700742, 0.5272212, -0.52766764, -0.03493433, 0.8487323, 0, -0.999154, -0.041125778, 0, 0, 0)
 light_energy = 0.1
@@ -219,4 +222,3 @@ environment = ExtResource("17_074og")
 camera_attributes = ExtResource("18_cegan")
 
 [editable path="Player"]
-[editable path="NotificationBoard"]

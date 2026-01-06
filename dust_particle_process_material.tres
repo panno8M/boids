@@ -22,8 +22,12 @@ point_count = 2
 curve = SubResource("Curve_272bh")
 
 [resource]
-emission_shape = 1
-emission_sphere_radius = 20.0
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 1.0
+emission_ring_radius = 5.0
+emission_ring_inner_radius = 2.0
+emission_ring_cone_angle = 90.0
 angle_min = -720.0
 angle_max = 720.0
 direction = Vector3(0, -0.1, 0)
