@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://bpwugrpfc2agh"]
+[gd_scene load_steps=31 format=3 uid="uid://bpwugrpfc2agh"]
 
 [ext_resource type="PackedScene" uid="uid://dhanldu7wrbo0" path="res://UI/bookmenu.tscn" id="2_w48qg"]
 [ext_resource type="PackedScene" uid="uid://cuxresj1risim" path="res://player.tscn" id="3_h2yge"]
@@ -50,6 +50,9 @@ blueprints = Dictionary[int, PackedScene]({
 4: ExtResource("10_cegan")
 })
 metadata/_custom_type_script = "uid://c1p6pbisg4ulf"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_d13ii"]
+size = Vector3(8.200363, 2.8548813, 8.255187)
 
 [sub_resource type="Resource" id="Resource_getpj"]
 script = ExtResource("19_d13ii")
@@ -143,11 +146,6 @@ range = 2
 [node name="BoidRuleAlignment3D" type="BoidRuleAlignment3D" parent="BoidController3D"]
 factor = 0.005
 
-[node name="BoidRuleStayInBounds3D" type="BoidRuleStayInBounds3D" parent="BoidController3D"]
-factor = 1.0
-bounds = AABB(-2, 0.5, -2, 4, 4, 4)
-threshold = 0.5
-
 [node name="BoidRuleInteractNode3D" type="BoidRuleInteractNode3D" parent="BoidController3D" node_paths=PackedStringArray("target")]
 factor = 0.2
 range = 1.0
@@ -156,9 +154,13 @@ target = NodePath("../../Player")
 [node name="BoidRulePostureLookAt3D" type="BoidRulePostureLookAt3D" parent="BoidController3D"]
 enable_y = false
 
-[node name="BoidRuleAvoidGrid3D" type="BoidRuleAvoidGrid3D" parent="BoidController3D"]
-factor = 40.0
-range = 3
+[node name="BoidRuleStayInArea3D" type="BoidRuleStayInArea3D" parent="BoidController3D"]
+
+[node name="Area3D" type="Area3D" parent="BoidController3D/BoidRuleStayInArea3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BoidController3D/BoidRuleStayInArea3D/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.8029404, 3.7513347, -2.6966186)
+shape = SubResource("BoxShape3D_d13ii")
 
 [node name="VellumController" type="BoidController3D" parent="." node_paths=PackedStringArray("cell_map")]
 cell_map = NodePath("../Stage")
