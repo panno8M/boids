@@ -1,0 +1,18 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://ctoprsg51phxv"]
+
+[ext_resource type="Shader" uid="uid://076gvlkex1fc" path="res://glass.gdshader" id="1_6epva"]
+
+[resource]
+render_priority = -1
+shader = ExtResource("1_6epva")
+shader_parameter/blur_enable = true
+shader_parameter/glass_color = Color(0.6052743, 0.6052743, 0.6052743, 0)
+shader_parameter/blur_radius = 7
+shader_parameter/blur_strength = 0.41800001659512
+shader_parameter/bright = 0.10000000149012
+shader_parameter/shaded = true
+shader_parameter/metallic = 0.2
+shader_parameter/roughness = 0.5
+shader_parameter/specular = 0.0
+shader_parameter/normal_enable = false
+shader_parameter/normal_map_strength = 1.0

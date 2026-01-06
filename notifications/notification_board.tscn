@@ -1,10 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://b3h706jeebmug"]
+[gd_scene load_steps=7 format=3 uid="uid://b3h706jeebmug"]
 
 [ext_resource type="Script" uid="uid://b1mjctue7lvv2" path="res://notifications/notification_board.gd" id="1_agpvm"]
 [ext_resource type="PackedScene" uid="uid://bmx7nqtfmu111" path="res://notifications/notification_poster.tscn" id="2_ixyy7"]
+[ext_resource type="PackedScene" uid="uid://jranh0ken7wp" path="res://assets-dev/BulletinBoard.blend" id="3_lv20a"]
+[ext_resource type="Material" uid="uid://ctoprsg51phxv" path="res://notifications/board_glass.tres" id="4_wrxqh"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_3dyuj"]
-size = Vector3(2.1230469, 1, 0)
+size = Vector3(11, 3, 0)
+
+[sub_resource type="QuadMesh" id="QuadMesh_l1igo"]
+size = Vector2(12, 4)
 
 [node name="NotificationBoard" type="Node3D"]
 script = ExtResource("1_agpvm")
@@ -14,3 +19,11 @@ poster_template = ExtResource("2_ixyy7")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 shape = SubResource("BoxShape3D_3dyuj")
+
+[node name="BulletinBoard" parent="." instance=ExtResource("3_lv20a")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.15233123)
+mesh = SubResource("QuadMesh_l1igo")
+surface_material_override/0 = ExtResource("4_wrxqh")
