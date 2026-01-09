@@ -1,7 +1,6 @@
 import gdext
 import gdext/classes/gdNode
 import gdext/classes/gdEngine
-import gdext/classes/gdGodotThread
 import gdext/classes/gdResource
 
 const NotificationServerEnabled = hostOS == "linux"
@@ -24,7 +23,7 @@ when NotificationServerEnabled:
 
   type
     NotificationServer* {.gdsync.} = ptr object of Node
-      dbusthread: gdref GodotThread
+      dbusthread: Thread[NotificationServer]
 
     Context = object
       self: NotificationServer
@@ -93,7 +92,7 @@ when NotificationServerEnabled:
       )
       true
 
-  proc serve(self: NotificationServer) {.gdsync.} =
+  proc serve(self: NotificationServer) {.thread.} = {.gcsafe.}:
     dbus.loadAPI()
     let context = create(Context)
     defer: dealloc context
@@ -123,7 +122,6 @@ method ready*(self: NotificationServer) {.gdsync.} =
   if Engine.isEditorHint: return
   when NotificationServerEnabled:
     echo "Initialize NotificationServer..."
-    self.dbusthread = instantiate(GodotThread)
-    discard self.dbusthread[].start(self.callable"serve")
+    createThread(self.dbusthread, serve, self)
   else:
     print "NotificationServer Disabled"
