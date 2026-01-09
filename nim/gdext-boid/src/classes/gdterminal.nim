@@ -7,8 +7,6 @@ import gdext/classes/gdInputEventKey
 
 import shell
 
-const FlushSpeed = 5
-
 type Caret = object
   line: int32
   column: int32
@@ -40,7 +38,7 @@ type Terminal* {.gdsync.} = ptr object of CodeEdit
   resultBuffer* {.gdexport.}: CodeEdit
   env: Shell
   prevdir: string
-  front: tuple[process: Process; thread: Thread[Process]]
+  front: tuple[process: Process; thread: Thread[(Process, Callable)]]
   promptStartAt: Caret
   caret_prev: Caret
   shouldExecute: bool
@@ -73,22 +71,15 @@ method ready(self: Terminal) {.gdsync.} =
   self.env.pwd = expandFileName(".")
   self.insertPrompt
 
-method process(self: Terminal; delta: float64) {.gdsync.} =
-  var buffer {.global.}: string = newStringOfCap(512)
+proc callback(self: Terminal; kind: LogKind; pid: Int; line: String) {.gdsync.} =
   if self.front.process != nil:
-    buffer.setLen(0)
-    for i in 0..<FlushSpeed:
-      let (available, msg) = channel.tryRecv()
-      if available:
-        case msg.stream:
-        of "stdout", "stderr":
-          buffer.add msg.line & "\n"
-        of "done":
-          self.front.process = nil
-      else:
-        break
-    if buffer.len != 0:
-      self.resultBuffer.insertTextAtCaret buffer
+    case kind:
+    of LogKind.stdout, LogKind.stderr:
+      self.resultBuffer.insertTextAtCaret line + String("\n")
+    of LogKind.done:
+      self.front.process = nil
+    else:
+      discard
     if self.front.process == nil:
       self.insertPrompt
 
@@ -150,7 +141,7 @@ proc onTextChanged(self: Terminal) {.gdsync, rename: toGodotInternalFuncCase.} =
       self.insertPrompt
     elif findExe(cmd).len != 0:
       if self.front.process == nil:
-        self.front.process = self.env.runProcess(cmd, args, self.front.thread)
+        self.front.process = self.env.runProcess(cmd, args, self.front.thread, self.callable("callback"))
       else:
         self.resultBuffer.insertTextAtCaret "Another process is already running.\n"
         self.insertPrompt
