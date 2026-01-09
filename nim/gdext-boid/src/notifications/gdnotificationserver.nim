@@ -2,11 +2,12 @@ import gdext
 import gdext/classes/gdNode
 import gdext/classes/gdEngine
 import gdext/classes/gdGodotThread
+import gdext/classes/gdResource
 
 const NotificationServerEnabled = hostOS == "linux"
 
 type
-  Notification* {.gdsync.} = ptr object of Object
+  Notification* {.gdsync.} = ptr object of Resource
     appName* {.gdexport.}: String
     replacesId* {.gdexport.}: Int
     # appIcon*: string
@@ -38,11 +39,11 @@ when NotificationServerEnabled:
     echo "[Notify] received notification"
     var args = incoming.unpackValueSeq
     let n = instantiate Notification
-    n.appName = String(args[0].asNative string)
-    n.replacesId = Int(args[1].asNative uint32)
-    n.summary = String(args[3].asNative string)
-    n.body = String(args[4].asNative string)
-    n.expireTimeout = Int(args[7].asNative int32)
+    n[].appName = String(args[0].asNative string)
+    n[].replacesId = Int(args[1].asNative uint32)
+    n[].summary = String(args[3].asNative string)
+    n[].body = String(args[4].asNative string)
+    n[].expireTimeout = Int(args[7].asNative int32)
     context.self.callable"publish_notification".callDeferred(n)
     inc context.lastNotificationID
     context.bus.sendReply(incoming, @[context.lastNotificationID.asDbusValue])

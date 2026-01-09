@@ -5,10 +5,6 @@ var loaded: bool
 var current_page_index: int
 var pages: Array[PagePair]
 
-func _exit_tree() -> void:
-	for page in pages:
-		page.free()
-
 func initialize_callback() -> void:
 	pass
 func open_callback() -> void:
