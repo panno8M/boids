@@ -1,6 +1,7 @@
 import gdext
 import gdext/classes/gdNode
 import gdext/classes/gdEngine
+import gdext/classes/gdGodotThread
 
 const NotificationServerEnabled = hostOS == "linux"
 
@@ -21,46 +22,28 @@ when NotificationServerEnabled:
     BUS_NAME = "org.freedesktop.Notifications"
 
   type
-    NotificationMessage = object
-      appName*: string
-      replacesId*: uint32
-      appIcon*: string
-      summary*: string
-      body*: string
-      expireTimeout*: int32
-
-    Request = enum
-      quit
-
     NotificationServer* {.gdsync.} = ptr object of Node
-      dbusthread: Thread[void]
+      dbusthread: gdref GodotThread
 
     Context = object
+      self: NotificationServer
       lastNotificationID: uint32
       bus: Bus
 
-  var cNotify: Channel[NotificationMessage]
-  var cRequest: Channel[Request]
-
-  proc toNotification(msg: NotificationMessage): Notification =
-    result = instantiate Notification
-    result.appName = msg.appName
-    result.replacesId = Int(msg.replacesId)
-    result.summary = msg.summary
-    result.body = msg.body
-    result.expireTimeout = msg.expireTimeout
+  proc notificationRecieved*(self: NotificationServer; notification: Notification): Error {.gdsync, signal.}
+  proc publishNotification*(self: NotificationServer; notification: Notification) {.gdsync.} =
+    discard self.notificationRecieved(notification)
 
   proc notify(context: ptr Context; incoming: IncomingMessage): bool =
     echo "[Notify] received notification"
     var args = incoming.unpackValueSeq
-    cNotify.send NotificationMessage(
-      appName: args[0].asNative(string),
-      replacesId: args[1].asNative(uint32),
-      appIcon: args[2].asNative(string),
-      summary: args[3].asNative(string),
-      body: args[4].asNative(string),
-      expireTimeout: args[7].asNative(int32),
-    )
+    let n = instantiate Notification
+    n.appName = String(args[0].asNative string)
+    n.replacesId = Int(args[1].asNative uint32)
+    n.summary = String(args[3].asNative string)
+    n.body = String(args[4].asNative string)
+    n.expireTimeout = Int(args[7].asNative int32)
+    context.self.callable"publish_notification".callDeferred(n)
     inc context.lastNotificationID
     context.bus.sendReply(incoming, @[context.lastNotificationID.asDbusValue])
     true
@@ -109,10 +92,12 @@ when NotificationServerEnabled:
       )
       true
 
-  proc serve() {.thread.} =
+  proc serve(self: NotificationServer) {.gdsync.} =
+    dbus.loadAPI()
     let context = create(Context)
     defer: dealloc context
 
+    context.self = self
     context.bus = getBus(DBUS_BUS_SESSION)
     context.bus.requestName(BUS_NAME)
 
@@ -131,20 +116,13 @@ else:
   type
     NotificationServer* {.gdsync.} = ptr object of Node
 
-proc notificationRecieved*(self: NotificationServer; notification: Notification): Error {.gdsync, signal.}
+  proc notificationRecieved*(self: NotificationServer; notification: Notification): Error {.gdsync, signal.}
 
 method ready*(self: NotificationServer) {.gdsync.} =
   if Engine.isEditorHint: return
   when NotificationServerEnabled:
     echo "Initialize NotificationServer..."
-    cNotify.open()
-    cRequest.open()
-    createThread(self.dbusthread, serve)
+    self.dbusthread = instantiate(GodotThread)
+    discard self.dbusthread[].start(self.callable"serve")
   else:
     print "NotificationServer Disabled"
-
-when NotificationServerEnabled:
-  method process*(self: NotificationServer; delta: float64) {.gdsync.} =
-    let (available, notification) = cNotify.tryRecv()
-    if available:
-      discard self.notificationRecieved(notification.toNotification)
