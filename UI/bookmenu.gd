@@ -46,7 +46,7 @@ func _on_player_state_changed(_old_state: Player.State, new_state: Player.State)
 
 
 func get_closest_book(distance: float = 1000.0, mask: int = 0xFFFFFFFF) -> BoidAgent3D:
-	var screen_center = get_viewport().size / 2
+	var screen_center = camera.get_viewport().size / 2
 
 	var from = camera.project_ray_origin(screen_center)
 	var to = from + camera.project_ray_normal(screen_center) * distance
@@ -55,7 +55,7 @@ func get_closest_book(distance: float = 1000.0, mask: int = 0xFFFFFFFF) -> BoidA
 	query.collision_mask = mask
 	query.collide_with_areas = true
 
-	var result = get_viewport().get_world_3d().direct_space_state.intersect_ray(query)
+	var result = camera.get_world_3d().direct_space_state.intersect_ray(query)
 	if result:
 		return result.collider.get_parent() as BookBase
 	return null

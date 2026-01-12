@@ -1,0 +1,45 @@
+[gd_scene load_steps=8 format=3 uid="uid://iteuktc1q5g1"]
+
+[ext_resource type="Shader" uid="uid://brydlaes3lf3l" path="res://viewport-effect/wakeup.gdshader" id="1_x1eh4"]
+[ext_resource type="Script" uid="uid://cpn347m7a3uiv" path="res://viewport-effect/viewport_effect.gd" id="2_ecddl"]
+[ext_resource type="PackedScene" uid="uid://bpwugrpfc2agh" path="res://main.tscn" id="3_kd3lk"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1u8w0"]
+noise_type = 4
+frequency = 0.0923
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0odxb"]
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_1u8w0")
+as_normal_map = true
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ce50g"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lnuxy"]
+resource_local_to_scene = true
+shader = ExtResource("1_x1eh4")
+shader_parameter/viewport_texture = SubResource("ViewportTexture_ce50g")
+shader_parameter/normal = SubResource("NoiseTexture2D_0odxb")
+shader_parameter/distortion_size = 0.025
+shader_parameter/distortion = 1.0
+shader_parameter/saturation = 0.0
+shader_parameter/gray_color = Color(0.7645802, 0.5912692, 0.43338257, 1)
+
+[node name="ViewportEffect" type="SubViewportContainer"]
+material = SubResource("ShaderMaterial_lnuxy")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+mouse_target = true
+script = ExtResource("2_ecddl")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="Main" parent="SubViewport" instance=ExtResource("3_kd3lk")]
