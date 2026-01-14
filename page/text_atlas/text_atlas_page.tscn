@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bpmd0tu5vriyh"]
+[gd_scene load_steps=4 format=3 uid="uid://bpmd0tu5vriyh"]
 
 [ext_resource type="PackedScene" uid="uid://de7x47uthejdn" path="res://page/empty/empty_page.tscn" id="1_x4p3d"]
 [ext_resource type="Script" uid="uid://btmgasnv4f1rv" path="res://page/text_atlas/text_atlas_page.gd" id="2_lte1f"]
