@@ -2,18 +2,17 @@
 
 [ext_resource type="Script" uid="uid://cycf3mrgmhkxq" path="res://UI/bookmenu.gd" id="1_mn4p0"]
 
-[node name="BookMenu" type="Label"]
+[node name="BookMenu" type="Control"]
 visible = false
+layout_mode = 3
+anchors_preset = 0
 offset_right = 256.0
 offset_bottom = 69.0
-text = "Book Command"
-horizontal_alignment = 1
-text_overrun_behavior = 3
+size_flags_vertical = 4
+mouse_filter = 2
 script = ExtResource("1_mn4p0")
 presets = {
-&"Global": {
-"Vellum": &"vellum",
-},
+&"Global": {},
 &"Hold": {
 "Execute": &"execute",
 "Release": &"release",
@@ -30,3 +29,4 @@ presets = {
 }
 }
 default_preset = &"Idle"
+metadata/_custom_type_script = "uid://cycf3mrgmhkxq"

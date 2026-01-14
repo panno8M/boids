@@ -95,10 +95,11 @@ label_settings = SubResource("LabelSettings_lquwl")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BookMenu" parent="UI" node_paths=PackedStringArray("player", "camera") instance=ExtResource("2_w48qg")]
+[node name="BookMenu" parent="UI" node_paths=PackedStringArray("player", "camera", "status") instance=ExtResource("2_w48qg")]
 layout_mode = 0
 player = NodePath("../../Player")
 camera = NodePath("../../Player/Camera3D")
+status = NodePath("../MousePointer/Status")
 
 [node name="BookTitle" type="Label" parent="UI" node_paths=PackedStringArray("player")]
 visible = false
@@ -116,11 +117,25 @@ player = NodePath("../../Player")
 
 [node name="MousePointer" type="Control" parent="UI"]
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-mouse_filter = 1
+mouse_filter = 2
 script = ExtResource("6_kek77")
 metadata/_custom_type_script = "uid://cr8iggt0n7pg"
+
+[node name="Status" type="Label" parent="UI/MousePointer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -960.0
+offset_top = 20.0
+offset_right = 960.0
+offset_bottom = 24.25
+grow_horizontal = 2
+grow_vertical = 2
+text = "Oneline Status"
+horizontal_alignment = 1
 
 [node name="Debug UI" parent="." node_paths=PackedStringArray("controller", "book_menu", "uv_picking_viewport") instance=ExtResource("4_7mycd")]
 mouse_filter = 2

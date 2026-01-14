@@ -3,6 +3,7 @@ class_name BookMenu
 
 @export var player: Player
 @export var camera: Camera3D
+@export var status: Label
 
 var closest_book: BookBase
 var latest_book: BookBase
@@ -14,7 +15,11 @@ func _ready():
 func _process(_delta: float) -> void:
 	closest_book = get_closest_book()
 	if closest_book:
+		status.text = closest_book.path.get_file()
 		latest_book = closest_book
+	else:
+		if not visible:
+			status.text = ""
 	if player.state == Player.State.IDLE and not visible:
 		item_list = presets["Idle" if closest_book else "Global"]
 
@@ -23,10 +28,8 @@ func _unhandled_input(event):
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
 				if closest_book:
-					title = closest_book.path.get_file()
 					begin(closest_book)
 				else:
-					title = "Global Menu"
 					begin(null)
 			else:
 				var item = confirm()
@@ -39,14 +42,16 @@ func _on_player_state_changed(_old_state: Player.State, new_state: Player.State)
 	match new_state:
 		Player.State.IDLE:
 			set_item_list_from_presets("Idle")
+			status.visible = true
 		Player.State.HOLD:
 			set_item_list_from_presets("Hold")
+			status.visible = false
 		Player.State.VIEW:
 			set_item_list_from_presets("View")
+			status.visible = false
 
-
-func get_closest_book(distance: float = 1000.0, mask: int = 0xFFFFFFFF) -> BoidAgent3D:
-	var screen_center = camera.get_viewport().size / 2
+func get_closest_book(distance: float = 10000.0, mask: int = 0xFFFFFFFF) -> BoidAgent3D:
+	var screen_center = get_global_mouse_position()
 
 	var from = camera.project_ray_origin(screen_center)
 	var to = from + camera.project_ray_normal(screen_center) * distance

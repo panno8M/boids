@@ -1,4 +1,4 @@
-extends Label
+extends Control
 class_name PieMenu
 
 @export var presets: Dictionary
@@ -11,10 +11,6 @@ var labels: Array[Label] = []
 var mouse_begin: Vector2
 var user_data
 
-var title: String:
-	get: return text
-	set(value): text = value
-
 signal item_selected(item: Variant)
 
 func _ready():
@@ -24,6 +20,7 @@ func _ready():
 func _draw():
 	if not visible: return
 	var count = item_list.size()
+	if count == 0: return
 	var angle_step = TAU / count
 	var center = size / 2
 	var selecting = get_selecting_item()
@@ -56,6 +53,7 @@ func _input(event):
 			confirm()
 
 func initialize() -> void:
+	if item_list.size() == 0: return
 	var keys = item_list.keys()
 	for i in range(keys.size()):
 		var item = keys[i]
@@ -76,14 +74,16 @@ func initialize() -> void:
 func set_item_list_from_presets(key):
 	item_list = presets[key]
 
-func begin(data = null):
-	if visible: return
+func begin(data = null) -> bool:
+	if visible: return false
+	if item_list.size() == 0: return false
 	user_data = data
 	Input2.mouse_mode_override = Input2.MouseMode.HIDDEN
 	mouse_begin = get_global_mouse_position()
 	position = mouse_begin - size/2
 	initialize()
 	visible = true
+	return true
 
 func confirm() -> Dictionary:
 	var result = {
@@ -104,6 +104,8 @@ func confirm() -> Dictionary:
 
 func get_selecting_item() -> int:
 	if mouse_begin == Vector2.ZERO:
+		return -1
+	if item_list.size() == 0:
 		return -1
 	var mouse_pos = get_global_mouse_position()
 	var delta = mouse_pos - mouse_begin
