@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bmx7nqtfmu111"]
+[gd_scene load_steps=9 format=3 uid="uid://bmx7nqtfmu111"]
 
 [ext_resource type="Script" uid="uid://bfncabu14oiug" path="res://notifications/notification_poster.gd" id="1_j4abl"]
 [ext_resource type="Material" uid="uid://1j1ssackxy4b" path="res://page/page_material.tres" id="1_q4wy3"]
@@ -7,11 +7,22 @@
 material = ExtResource("1_q4wy3")
 
 [sub_resource type="LabelSettings" id="LabelSettings_j4abl"]
-font_size = 32
+font_size = 48
 font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Gradient" id="Gradient_j4abl"]
+offsets = PackedFloat32Array(0.1, 0.25, 0.75, 0.9)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_66wnf"]
+gradient = SubResource("Gradient_j4abl")
 
 [sub_resource type="LabelSettings" id="LabelSettings_66wnf"]
 font_size = 24
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_ufl2p"]
+font_size = 32
 font_color = Color(0, 0, 0, 1)
 
 [node name="NotificationPoster" type="Node3D"]
@@ -25,27 +36,63 @@ mesh = SubResource("QuadMesh_i4alw")
 unique_name_in_owner = true
 disable_3d = true
 transparent_bg = true
-size = Vector2i(384, 512)
+size = Vector2i(512, 384)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport"]
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
 
-[node name="Summary" type="Label" parent="SubViewport/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/MarginContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-text = "Summary"
-label_settings = SubResource("LabelSettings_j4abl")
-autowrap_mode = 1
 
-[node name="Body" type="Label" parent="SubViewport/VBoxContainer"]
+[node name="Summary" type="Label" parent="SubViewport/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+text = "Summary
+Summary
+Summary
+Summary"
+label_settings = SubResource("LabelSettings_j4abl")
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 2.5)
+layout_mode = 2
+size_flags_vertical = 4
+texture = SubResource("GradientTexture1D_66wnf")
+
+[node name="Body" type="Label" parent="SubViewport/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
-text = "Body"
+text = "Body
+Body
+Body
+Body
+Body
+Body
+Body"
 label_settings = SubResource("LabelSettings_66wnf")
-autowrap_mode = 1
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="AppName" type="Label" parent="SubViewport/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_vertical = 0
+text = "App Name
+App Name"
+label_settings = SubResource("LabelSettings_ufl2p")
+horizontal_alignment = 1
+autowrap_mode = 3
