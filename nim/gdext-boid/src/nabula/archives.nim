@@ -179,6 +179,7 @@ method process(self: VellumSpawner; delta: float64) {.gdsync.} =
     self.vellum.a = Vector3.Zero
     self.vellum.cell = self.controller.cellMapStatus.localToMap(self.vellum.p)
     self.vellum.position = self.vellum.p
+    self.vellum.path = "Vellum"
     self.controller.boids.add self.vellum
     self.controller.cellMap.addBoid(self.vellum.cell, self.vellum)
     init self.vellum
