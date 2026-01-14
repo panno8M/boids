@@ -205,7 +205,7 @@ enable_y = false
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -31.747786, 10.19763, -41.233284)
 
 [node name="NotificationBoard" parent="Stage" instance=ExtResource("20_ryguw")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -43.185387, 2.5181456, -17.274458)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -43.05073, 2.5181456, -17.274458)
 
 [node name="Player" parent="." node_paths=PackedStringArray("vellum_spawner") instance=ExtResource("3_h2yge")]
 vellum_spawner = NodePath("../VellumController/VellumSpawner")
