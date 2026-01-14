@@ -172,6 +172,8 @@ enable_y = false
 [node name="BoidRuleStayInArea3D" type="BoidRuleStayInArea3D" parent="BoidController3D"]
 
 [node name="Area3D" type="Area3D" parent="BoidController3D/BoidRuleStayInArea3D"]
+collision_layer = 0
+collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BoidController3D/BoidRuleStayInArea3D/Area3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.8029404, 3.7513347, -2.6966186)
