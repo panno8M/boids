@@ -151,7 +151,7 @@ controlMaxSpeed = 0.5
 [node name="BookSpawner" type="BookSpawner" parent="BoidController3D"]
 factory = SubResource("BookFactory_4c57u")
 range = 1.0
-root_directory = "/home/panno/Documents/godot-projects/boids"
+root_directory = "/home/panno/Documents/godot-projects/nabula/test-files"
 script = ExtResource("11_vivmo")
 
 [node name="BoidRuleSeparation3D" type="BoidRuleSeparation3D" parent="BoidController3D"]
