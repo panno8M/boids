@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode cull_back, diffuse_burley, specular_schlick_ggx;
+render_mode depth_draw_always, cull_back, diffuse_burley, specular_schlick_ggx;
 
 uniform sampler2D paper_tex : source_color;       // 紙のベーステクスチャ
 uniform sampler2D overlay_tex : source_color;     // オーバーレイ（UIや絵など）
