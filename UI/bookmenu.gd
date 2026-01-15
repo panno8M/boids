@@ -13,15 +13,15 @@ func _ready():
 	player.state_changed.connect(_on_player_state_changed)
 
 func _process(_delta: float) -> void:
-	closest_book = get_closest_book()
-	if closest_book:
-		status.text = closest_book.path.get_file()
-		latest_book = closest_book
-	else:
-		if not selecting:
+	if not selecting:
+		closest_book = get_closest_book()
+		if closest_book:
+			status.text = closest_book.path.get_file()
+			latest_book = closest_book
+		else:
 			status.text = ""
-	if player.state == Player.State.IDLE and not selecting:
-		item_list = presets["Idle" if closest_book else "Global"]
+		if player.state == Player.State.IDLE:
+			item_list = presets["Idle" if closest_book else "Global"]
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
