@@ -3,9 +3,9 @@ extends Marker3D
 class_name SunLight
 
 @onready var pivot: Node3D = $Pivot
-@onready var sun_light: DirectionalLight3D = $Pivot/DirectionalLight3D
 
 @export var time_source: TimeSource
+@export_range(0, 1) var time_offset: float
 @export var axial_tilt_deg: float = 23.4
 @export var azimuth_offset_deg: float = 0.0
 @export var show_timeinfo: bool = true:
@@ -25,10 +25,8 @@ class_name SunLight
 @export var ambient_energy_curve: Curve
 @export var ambient_max_energy: float = 1.0
 
-@export_group("Sun", "sun")
-@export var sun_gradient: Gradient
-@export var sun_energy_curve: Curve
-@export var sun_max_energy: float = 1.0
+@export var sun_settings: LightSettings
+@export var moon_settings: LightSettings
 
 func _ready():
 	# デフォルト注入（未設定時）
@@ -45,7 +43,7 @@ func get_day_factor(time: float) -> float:
 	return clamp(1.0 - x, 0.0, 1.0)
 	
 func update_sun():
-	var time := time_source.get_time()
+	var time := fmod(time_source.get_time() + time_offset, 1.0)
 	%TimeInfo.text = "Time: " + str(time)
 
 	# 正午 = 0°
@@ -58,18 +56,26 @@ func update_sun():
 	var day_factor := get_day_factor(time)
 
 	update_sun_light(day_factor)
+	update_moon_light(day_factor)
 	update_environment(day_factor)
 
-func update_sun_light(day_factor: float):
-	if sun_gradient:
-		var c := sun_gradient.sample(day_factor)
-		sun_light.light_color = c
+func update_light(day_factor: float, light: DirectionalLight3D, settings: LightSettings):
+	if not settings: return
 
-	if sun_energy_curve:
-		var energy_factor := sun_energy_curve.sample(day_factor)
-		var energy := energy_factor * sun_max_energy
-		sun_light.light_energy = energy
-		sun_light.visible = energy > 0.0
+	if settings.gradient:
+		var c := settings.gradient.sample(day_factor)
+		light.light_color = c
+
+	if settings.energy_curve:
+		var energy_factor := settings.energy_curve.sample(day_factor)
+		var energy := energy_factor * settings.max_energy
+		light.light_energy = energy
+		light.visible = energy > 0.0
+
+func update_sun_light(day_factor: float):
+	update_light(day_factor, %Sun, sun_settings)
+func update_moon_light(day_factor: float):
+	update_light(day_factor, %Moon, moon_settings)
 
 func update_environment(day_factor: float):
 	if not world_environment:

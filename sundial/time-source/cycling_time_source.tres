@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CyclingTimeSource" load_steps=2 format=3 uid="uid://chbsxhmy602f3"]
+
+[ext_resource type="Script" uid="uid://04h67tcsmeue" path="res://sundial/time-source/cycling_time_source.gd" id="1_305fe"]
+
+[resource]
+script = ExtResource("1_305fe")
+time = 0.9214000000000229
+hour = 22
+metadata/_custom_type_script = "uid://04h67tcsmeue"

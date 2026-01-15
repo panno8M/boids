@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="LightSettings" load_steps=4 format=3 uid="uid://do612wkasilsp"]
+
+[ext_resource type="Curve" uid="uid://dyrp2ebokoa5d" path="res://sundial/light-settings/moon_energy_curve.tres" id="1_lfcfd"]
+[ext_resource type="Gradient" uid="uid://byhmrrg7wmc0o" path="res://sundial/light-settings/moon_gradient.tres" id="2_yohkl"]
+[ext_resource type="Script" uid="uid://dhej5n5um4cuu" path="res://sundial/light-settings/light_settings.gd" id="3_dlglx"]
+
+[resource]
+script = ExtResource("3_dlglx")
+gradient = ExtResource("2_yohkl")
+energy_curve = ExtResource("1_lfcfd")
+metadata/_custom_type_script = "uid://dhej5n5um4cuu"

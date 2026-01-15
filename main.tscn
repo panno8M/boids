@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://bpwugrpfc2agh"]
+[gd_scene load_steps=32 format=3 uid="uid://bpwugrpfc2agh"]
 
 [ext_resource type="PackedScene" uid="uid://dhanldu7wrbo0" path="res://UI/bookmenu.tscn" id="2_w48qg"]
 [ext_resource type="PackedScene" uid="uid://cuxresj1risim" path="res://player.tscn" id="3_h2yge"]
@@ -21,8 +21,10 @@
 [ext_resource type="Environment" uid="uid://dptnq4x4nhko" path="res://water_environment.tres" id="17_074og"]
 [ext_resource type="CameraAttributesPractical" uid="uid://b2vxwwvedde8t" path="res://water_camera_attributes_practical.tres" id="18_cegan"]
 [ext_resource type="PackedScene" uid="uid://bny4ocs5w73s3" path="res://sundial/sun_light.tscn" id="18_getpj"]
-[ext_resource type="Script" uid="uid://b3gescc47oh7s" path="res://sundial/system_time_source.gd" id="19_d13ii"]
 [ext_resource type="PackedScene" uid="uid://b3h706jeebmug" path="res://notifications/notification_board.tscn" id="20_ryguw"]
+[ext_resource type="Resource" uid="uid://dj4sxnjnwcucx" path="res://sundial/time-source/system_time_source.tres" id="21_0odxb"]
+[ext_resource type="Resource" uid="uid://c543m1ron7p56" path="res://sundial/light-settings/sun_settings.tres" id="22_0odxb"]
+[ext_resource type="Resource" uid="uid://do612wkasilsp" path="res://sundial/light-settings/moon_settings.tres" id="23_lswn8"]
 
 [sub_resource type="Gradient" id="Gradient_272bh"]
 offsets = PackedFloat32Array(0, 0.05, 0.95, 1)
@@ -53,10 +55,6 @@ metadata/_custom_type_script = "uid://c1p6pbisg4ulf"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_d13ii"]
 size = Vector3(8.200363, 2.8548813, 8.255187)
-
-[sub_resource type="Resource" id="Resource_getpj"]
-script = ExtResource("19_d13ii")
-metadata/_custom_type_script = "uid://b3gescc47oh7s"
 
 [node name="Main" type="Node"]
 
@@ -224,17 +222,13 @@ draw_pass_1 = ExtResource("6_272bh")
 
 [node name="SunLight" parent="." node_paths=PackedStringArray("world_environment") instance=ExtResource("18_getpj")]
 transform = Transform3D(-0.5735763, 0.81915206, -8.742274e-08, 0.81915176, 0.57357645, 0, 5.014363e-08, -7.161255e-08, -0.9999996, 0, 0, 0)
-time_source = SubResource("Resource_getpj")
+time_source = ExtResource("21_0odxb")
 axial_tilt_deg = 55.0
 azimuth_offset_deg = 180.0
 show_timeinfo = false
 world_environment = NodePath("../WorldEnvironment")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.84945095, -0.021700742, 0.5272212, -0.52766764, -0.03493433, 0.8487323, 0, -0.999154, -0.041125778, 0, 0, 0)
-light_energy = 0.1
-light_bake_mode = 1
-sky_mode = 1
+sun_settings = ExtResource("22_0odxb")
+moon_settings = ExtResource("23_lswn8")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("17_074og")

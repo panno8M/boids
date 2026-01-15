@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="SystemTimeSource" load_steps=2 format=3 uid="uid://dj4sxnjnwcucx"]
+
+[ext_resource type="Script" uid="uid://b3gescc47oh7s" path="res://sundial/time-source/system_time_source.gd" id="1_txe2y"]
+
+[resource]
+script = ExtResource("1_txe2y")
+metadata/_custom_type_script = "uid://b3gescc47oh7s"
