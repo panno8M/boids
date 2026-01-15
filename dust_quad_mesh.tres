@@ -6,11 +6,11 @@ colors = PackedColorArray(1.1377786, 1.1377786, 1.1377786, 0, 1, 1, 1, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_kek77"]
 noise_type = 0
-seed = 105
+seed = 181
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4c57u"]
-width = 256
-height = 256
+width = 32
+height = 32
 noise = SubResource("FastNoiseLite_kek77")
 color_ramp = SubResource("Gradient_5vw27")
 
@@ -23,4 +23,4 @@ albedo_texture = SubResource("NoiseTexture2D_4c57u")
 [resource]
 lightmap_size_hint = Vector2i(7, 7)
 material = SubResource("StandardMaterial3D_efxa6")
-size = Vector2(0.5, 0.5)
+size = Vector2(0.1, 0.1)

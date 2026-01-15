@@ -213,10 +213,11 @@ transform = Transform3D(0.998645, 0, -0.052039653, 0, 1, 0, 0.052039653, 0, 0.99
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="Player/Camera3D" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.80987346, 0)
-amount = 250
+amount = 100
 lifetime = 8.0
 preprocess = 8.0
 randomness = 1.0
+transform_align = 1
 process_material = ExtResource("5_7mycd")
 draw_pass_1 = ExtResource("6_272bh")
 
