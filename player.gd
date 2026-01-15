@@ -61,7 +61,7 @@ func execute(book: BookBase):
 func take(book: BookBase):
 	if book and not holding:
 		holding = book
-		holding.play_hold($Camera3D)
+		holding.hold($Camera3D)
 		state = State.HOLD
 
 func release(_book: BookBase):

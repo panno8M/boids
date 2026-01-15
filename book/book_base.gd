@@ -4,6 +4,7 @@ class_name BookBase
 var loaded: bool
 var current_page_index: int
 var pages: Array[PagePair]
+@onready var particle = $GPUParticles3D
 
 func initialize_callback() -> void:
 	pass
@@ -49,10 +50,15 @@ func close() -> void:
 		close_callback()
 		play_close()
 
+func hold(new_parent: Node3D) -> void:
+	play_hold(new_parent)
+	particle.visible = false
+
 func release() -> void:
 	if loaded:
 		close_callback()
 	play_release()
+	particle.visible = true
 
 func navigate(dst: PagePair, new_index: int) -> void:
 	if loaded:
