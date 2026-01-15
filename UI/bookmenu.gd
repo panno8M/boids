@@ -18,9 +18,9 @@ func _process(_delta: float) -> void:
 		status.text = closest_book.path.get_file()
 		latest_book = closest_book
 	else:
-		if not visible:
+		if not selecting:
 			status.text = ""
-	if player.state == Player.State.IDLE and not visible:
+	if player.state == Player.State.IDLE and not selecting:
 		item_list = presets["Idle" if closest_book else "Global"]
 
 func _unhandled_input(event):

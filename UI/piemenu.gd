@@ -11,19 +11,25 @@ var labels: Array[Label] = []
 var mouse_begin: Vector2
 var user_data
 
+var selecting: bool:
+	get:
+		return visible
+	set(value):
+		visible = value
+
 signal item_selected(item: Variant)
 
 func _ready():
 	item_list = presets.get(default_preset, presets.values()[0])
-	visible = false
+	selecting = false
 
 func _draw():
-	if not visible: return
+	if not selecting: return
 	var count = item_list.size()
 	if count == 0: return
 	var angle_step = TAU / count
 	var center = size / 2
-	var selecting = get_selecting_item()
+	var selection = get_selecting_item()
 	var r: float = radius
 	var w: float = 60
 	draw_circle(center, threshold, Color(0.06, 0.06, 0.06, 0.15))
@@ -32,12 +38,12 @@ func _draw():
 		var start_angle = item_angle - angle_step/2
 		var end_angle = start_angle + angle_step
 		var color: Color
-		if i == selecting: 
+		if i == selection: 
 			color = Color(1, 0.5, 0, 0.4)
 		else:
 			color = Color(0.06, 0.06, 0.06, 0.3)
 		draw_arc(center, r, start_angle, end_angle, 32, color, w)
-	if selecting != -1:
+	if selection != -1:
 		var mouse_normalized = (get_local_mouse_position() - center).normalized()
 		var start = center + mouse_normalized * threshold
 		var end = center + mouse_normalized * (r - w/2)
@@ -45,7 +51,7 @@ func _draw():
 
 func _input(event):
 	if event is InputEventMouseMotion:
-		if visible:
+		if selecting:
 			queue_redraw()
 	if event is InputEventKey:
 		if event.pressed and event.keycode == KEY_ESCAPE:
@@ -75,14 +81,14 @@ func set_item_list_from_presets(key):
 	item_list = presets[key]
 
 func begin(data = null) -> bool:
-	if visible: return false
+	if selecting: return false
 	if item_list.size() == 0: return false
 	user_data = data
 	Input2.mouse_mode_override = Input2.MouseMode.HIDDEN
 	mouse_begin = get_global_mouse_position()
 	position = mouse_begin - size/2
 	initialize()
-	visible = true
+	selecting = true
 	return true
 
 func confirm() -> Dictionary:
@@ -90,9 +96,9 @@ func confirm() -> Dictionary:
 		data = user_data,
 		selection = null,
 	}
-	if not visible: return result
+	if not selecting: return result
 	var choice = get_selecting_item()
-	visible = false	
+	selecting = false	
 	Input2.mouse_mode_override = Input2.MouseMode.INHERIT
 
 	if choice == -1:
