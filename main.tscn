@@ -185,11 +185,6 @@ controlMaxSpeed = 5.0
 [node name="VellumSpawner" type="VellumSpawner" parent="VellumController"]
 blueprint = ExtResource("12_w48qg")
 
-[node name="BoidRuleStayInBounds3D" type="BoidRuleStayInBounds3D" parent="VellumController"]
-factor = 1.0
-bounds = AABB(-2, 0, -2, 4, 4.5, 4)
-threshold = 0.5
-
 [node name="BoidRuleFollowNode3D" type="BoidRuleFollowNode3D" parent="VellumController" node_paths=PackedStringArray("target")]
 factor = 0.5
 target = NodePath("../../Player/Camera3D/Marker3D")
