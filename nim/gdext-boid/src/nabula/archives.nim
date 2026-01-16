@@ -231,10 +231,13 @@ proc playPageLeft*(self: Bookfly; rightPage, leftPage: gdref Material) {.gdsync.
   self.freePage.material[1] = rightPage
   self.leftPage.material[0] = leftPage
 
+method preAnimationFinished*(self: Bookfly; anim_name: StringName) {.gdsync, base.} =
+  discard
 method postAnimationFinished*(self: Bookfly; anim_name: StringName) {.gdsync, base.} =
   discard
 
 proc animationFinished*(self: Bookfly; anim_name: StringName) {.gdsync, rename: toGodotInternalFuncCase.} =
+  self.preAnimationFinished(anim_name)
   if anim_name == self.pageRightName:
     self.animationPlayer.play(self.openName)
     let l = self.animationPlayer.getCurrentAnimationLength

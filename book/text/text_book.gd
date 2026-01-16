@@ -6,17 +6,31 @@ class_name TextBook
 var curr: PagePair
 const page_lines = 35
 
+func  swap_reference():
+	var tmp: SubViewportReferenceData
+	tmp = pages[0].left.reference.data
+	pages[0].left.reference.change_data(pages[1].left.reference.data)
+	pages[1].left.reference.change_data(tmp)
+	tmp = pages[0].right.reference.data
+	pages[0].right.reference.change_data(pages[1].right.reference.data)
+	pages[1].right.reference.change_data(tmp)
+
+func max_page() -> int:
+	return (text_edit.get_total_visible_line_count() + 1) / (page_lines * 2)
+
 func prev_page() -> PagePair:
 	if current_page_index == 0:
 		return null
 	else:
-		return pages[0]
+		curr = pages[(current_page_index + 1) % 2]
+		return curr
 
 func next_page() -> PagePair:
-	if current_page_index == (text_edit.get_total_visible_line_count() + 1) / 70:
+	if current_page_index == max_page():
 		return null
 	else:
-		return pages[1]
+		curr = pages[(current_page_index + 1) % 2]
+		return curr
 
 func curr_page() -> PagePair:
 	return curr
@@ -50,11 +64,13 @@ var scroll_vertical: float
 
 func page_left_callback() -> void:
 	scroll_vertical = (current_page_index-1) * page_lines * 2
-	set_page_material(pages[1].left.material, pages[1].right.material)
+	text_edit.scroll_vertical = scroll_vertical
+	swap_reference()
 
 func page_right_end_callback() -> void:
 	scroll_vertical = current_page_index * page_lines * 2
-	set_page_material(pages[0].left.material, pages[0].right.material)
+	text_edit.scroll_vertical = scroll_vertical
+	swap_reference()
 
 
 func _process(_delta: float) -> void:

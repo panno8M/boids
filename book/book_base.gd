@@ -84,9 +84,9 @@ func page_left() -> void:
 			navigate(prev, current_page_index - 1)
 			play_page_left(prev.right.material, prev.left.material)
 
-func _post_animation_finished(anim_name: StringName) -> void:
+func _pre_animation_finished(anim_name: StringName) -> void:
 	match anim_name:
 		page_right_name:
-			call_deferred("page_right_end_callback")
+			call("page_right_end_callback")
 		page_left_name:
-			call_deferred("page_left_end_callback")
+			call("page_left_end_callback")
