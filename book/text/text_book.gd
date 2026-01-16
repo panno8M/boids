@@ -33,10 +33,12 @@ func initialize_callback() -> void:
 			PageProvider.add_preset_at_once("TextAtlasPage", file_name + ".3")
 		),
 	]
-	pages[0].left.reference.initialize($SubViewport, 0)
-	pages[0].right.reference.initialize($SubViewport, 1)
-	pages[1].left.reference.initialize($SubViewport, 2)
-	pages[1].right.reference.initialize($SubViewport, 3)
+	var sub = $SubViewport
+	var page_size = Vector2i(sub.size.x, sub.size.y / 4)
+	pages[0].left.reference.initialize(sub, page_size, Vector2i(0, 0))
+	pages[0].right.reference.initialize(sub, page_size, Vector2i(0, 1))
+	pages[1].left.reference.initialize(sub, page_size, Vector2i(0, 2))
+	pages[1].right.reference.initialize(sub, page_size, Vector2i(0, 3))
 	curr = pages[0]
 
 	text_edit.get_v_scroll_bar().add_theme_stylebox_override("scroll", StyleBoxEmpty.new())

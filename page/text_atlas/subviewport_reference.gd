@@ -1,27 +1,24 @@
 extends TextureRect
 class_name SubViewportReference
 
-@export var sub_viewport: SubViewport
+var data: SubViewportReferenceData
 
 func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	size = Vector2(636, 944)
 
 func _input(input_event: InputEvent) -> void:
 	stash_input(input_event)
 	modify_input(input_event)
-	sub_viewport.push_input(input_event)
+	data.sub_viewport.push_input(input_event)
 	restore_input(input_event)
-	
-var offset: int
 
-func initialize(viewport: SubViewport, page_offset: int) -> void:
-	offset = page_offset
-	var tex := AtlasTexture.new()
-	tex.region = Rect2(Vector2(0, size.y * offset), size)
-	tex.atlas = viewport.get_texture()
-	texture = tex
-	sub_viewport = viewport
+func change_data(new_data: SubViewportReferenceData) -> void:
+	data = new_data
+	texture = data.texture
+	size = Vector2(data.size)
+
+func initialize(viewport: SubViewport, page_size: Vector2i, page_offset: Vector2i) -> void:
+	change_data(SubViewportReferenceData.initialize(viewport, page_size, page_offset))
 
 func is_mouse_event(input_event: InputEvent) -> bool:
 	return input_event is InputEventMouse or input_event is InputEventScreenDrag or input_event is InputEventScreenTouch
@@ -52,7 +49,7 @@ func stash_input(input_event: InputEvent) -> void:
 func modify_input(input_event: InputEvent) -> void:
 	for mouse_event in [InputEventMouse, InputEventScreenDrag, InputEventScreenTouch]:
 		if is_instance_of(input_event, mouse_event):
-			input_event.position = input_event.position - position + Vector2(0, size.y * offset)
+			input_event.position = input_event.position - position + Vector2(data.size * data.offset)
 	if input_event is InputEventMouse:
 		input_event.global_position = input_event.position
 	for move_event in [InputEventMouseMotion, InputEventScreenDrag]:
