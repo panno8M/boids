@@ -191,7 +191,7 @@ proc playHold*(self: Bookfly; newParent: Node3D) {.gdsync.} =
   self.enabled = false
   self.getParent.removeChild(self)
   newParent.addChild(self)
-  self.p = vector3(0, 0, -0.18)
+  self.p = vector3(0, 0, -0.14)
   self.transform = Transform3D(origin: self.p)
   self.animationPlayer.pause(self.openName)
 
@@ -236,13 +236,15 @@ method postAnimationFinished*(self: Bookfly; anim_name: StringName) {.gdsync, ba
 
 proc animationFinished*(self: Bookfly; anim_name: StringName) {.gdsync, rename: toGodotInternalFuncCase.} =
   if anim_name == self.pageRightName:
-    self.animationPlayer.playBackwards(self.openName)
-    self.animationPlayer.seek(0)
+    self.animationPlayer.play(self.openName)
+    let l = self.animationPlayer.getCurrentAnimationLength
+    self.animationPlayer.seek(l, true)
     self.animationPlayer.pause()
     self.leftPage.material[0] = self.freePage.material[0]
   if anim_name == self.pageLeftName:
-    self.animationPlayer.playBackwards(self.openName)
-    self.animationPlayer.seek(0)
+    self.animationPlayer.play(self.openName)
+    let l = self.animationPlayer.getCurrentAnimationLength
+    self.animationPlayer.seek(l, true)
     self.animationPlayer.pause()
     self.rightPage.material[0] = self.freePage.material[1]
   self.postAnimationFinished(anim_name)

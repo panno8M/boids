@@ -7,7 +7,7 @@
 render_priority = 0
 shader = ExtResource("1_rrbgv")
 shader_parameter/paper_tex = ExtResource("2_ltl6i")
-shader_parameter/overlay_strength = 0.8
+shader_parameter/overlay_strength = 0.950000045125
 shader_parameter/paper_brightness = 1.0
 shader_parameter/paper_roughness = 1.0
 shader_parameter/paper_metallic = 0.0
