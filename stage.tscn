@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://uwxrrv56cra3"]
+[gd_scene load_steps=10 format=3 uid="uid://uwxrrv56cra3"]
 
 [ext_resource type="PackedScene" uid="uid://cbdqw3syu25ym" path="res://assets-dev/Piano.blend" id="1_6eo5e"]
 [ext_resource type="Script" uid="uid://cn8nthavd2elb" path="res://piano/piano.gd" id="2_aees8"]
@@ -11,11 +11,23 @@ item/0/shapes = []
 item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/0/navigation_layers = 1
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_aees8"]
+size = Vector3(28.4538, 5.675293, 1.2716064)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_yaehf"]
-size = Vector3(39.02704, 2.9979248, 1)
+size = Vector3(0.52016604, 3, 5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rnkuw"]
+size = Vector3(0.52016604, 5.6845703, 30.339539)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gx6sy"]
+size = Vector3(0.52, 3, 0.52)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_16g40"]
+size = Vector3(0.52, 3.57, 5.487)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2cqfq"]
-size = Vector3(40.143578, 0.32052612, 32.276703)
+size = Vector3(40.143578, 0.32052612, 34.057457)
 
 [node name="Stage" type="GridMap"]
 mesh_library = SubResource("MeshLibrary_1bvp3")
@@ -35,8 +47,14 @@ cast_shadow = 0
 [node name="Bridge" parent="Piano" index="2"]
 cast_shadow = 0
 
+[node name="Cube_007" parent="Piano" index="10"]
+transform = Transform3D(19.405094, 0, 0, 0, 1, 0, 0, 0, 0.51872194, 1.1174452, 22.637411, -7.5272584)
+
 [node name="Bridge_Deco" parent="Piano" index="11"]
 cast_shadow = 0
+
+[node name="Cube_014" parent="Piano" index="15"]
+transform = Transform3D(0, 0, 0.3, 0, 0.3, 0, -0.3, 0, 0, -17.603985, 19.809364, -8.415187)
 
 [node name="Bone_001" parent="Piano/Armature/Bone" index="0"]
 transform = Transform3D(0.86529624, -0.5012608, 4.291534e-06, 0.5012608, 0.86529624, -6.312805e-07, -3.397012e-06, 2.6974224e-06, 1, 0, 8.338397, -1.653018e-08)
@@ -47,13 +65,73 @@ transform = Transform3D(1, 4.291534e-06, 1.875889e-13, 0, -4.371139e-08, 1, 4.29
 [node name="Wall" type="StaticBody3D" parent="Piano"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Piano/Wall"]
-transform = Transform3D(0.99828815, 0, -0.058487497, 0, 1, 0, 0.058487497, 0, 0.99828815, 0.6445129, 21.150063, -7.601973)
+transform = Transform3D(0.999989, 0, -0.0046949266, 0, 1, 0, 0.0046949266, 0, 0.999989, -3.487273, 22.462807, -7.658656)
+shape = SubResource("BoxShape3D_aees8")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Piano/Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.705721, 21.150063, -10.754928)
 shape = SubResource("BoxShape3D_yaehf")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Piano/Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.6974564, 21.150063, -10.754928)
+shape = SubResource("BoxShape3D_yaehf")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Piano/Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.695723, 21.150063, -10.754928)
+shape = SubResource("BoxShape3D_yaehf")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="Piano/Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.634956, 22.492348, -23.424704)
+shape = SubResource("BoxShape3D_rnkuw")
+
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="Piano/Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.705721, 21.150063, -18.022976)
+shape = SubResource("BoxShape3D_gx6sy")
+
+[node name="CollisionShape3D7" type="CollisionShape3D" parent="Piano/Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.6929064, 21.150063, -18.022976)
+shape = SubResource("BoxShape3D_gx6sy")
+
+[node name="CollisionShape3D8" type="CollisionShape3D" parent="Piano/Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.693515, 21.150063, -18.022976)
+shape = SubResource("BoxShape3D_gx6sy")
+
+[node name="CollisionShape3D10" type="CollisionShape3D" parent="Piano/Wall"]
+transform = Transform3D(-4.3711392e-08, 0, 1.0000002, 0, 1, 0, -1.0000002, 0, -4.3711392e-08, -16.02137, 21.150063, -36.158875)
+shape = SubResource("BoxShape3D_16g40")
+
+[node name="CollisionShape3D11" type="CollisionShape3D" parent="Piano/Wall"]
+transform = Transform3D(0.67980003, 0, 0.73339796, 0, 1, 0, -0.73339796, 0, 0.67980003, -13.088031, 21.150063, -34.265682)
+shape = SubResource("BoxShape3D_16g40")
+
+[node name="CollisionShape3D12" type="CollisionShape3D" parent="Piano/Wall"]
+transform = Transform3D(0.8888976, 0, 0.45810685, 0, 1, 0, -0.45810685, 0, 0.8888976, -9.809072, 21.150063, -29.961374)
+shape = SubResource("BoxShape3D_16g40")
+
+[node name="CollisionShape3D13" type="CollisionShape3D" parent="Piano/Wall"]
+transform = Transform3D(0.84365433, 0, 0.53688765, 0, 1, 0, -0.53688765, 0, 0.84365433, -7.111618, 21.150066, -25.295462)
+shape = SubResource("BoxShape3D_16g40")
+
+[node name="CollisionShape3D14" type="CollisionShape3D" parent="Piano/Wall"]
+transform = Transform3D(0.8184611, 0, 0.5745629, 0, 1, 0, -0.5745629, 0, 0.8184611, -4.0882487, 21.150066, -20.776228)
+shape = SubResource("BoxShape3D_16g40")
+
+[node name="CollisionShape3D15" type="CollisionShape3D" parent="Piano/Wall"]
+transform = Transform3D(0.7632555, 0, 0.6460978, 0, 1, 0, -0.6460978, 0, 0.7632555, -0.7627182, 21.150066, -16.465033)
+shape = SubResource("BoxShape3D_16g40")
+
+[node name="CollisionShape3D16" type="CollisionShape3D" parent="Piano/Wall"]
+transform = Transform3D(0.64681685, 0, 0.7626464, 0, 1, 0, -0.7626464, 0, 0.64681685, 3.0685208, 21.150066, -12.618284)
+shape = SubResource("BoxShape3D_16g40")
+
+[node name="CollisionShape3D17" type="CollisionShape3D" parent="Piano/Wall"]
+transform = Transform3D(0.5493587, 0, 0.8355877, 0, 1, 0, -0.8355877, 0, 0.5493587, 7.4218807, 21.150066, -9.35437)
+shape = SubResource("BoxShape3D_16g40")
 
 [node name="Floor" type="StaticBody3D" parent="Piano"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Piano/Floor"]
-transform = Transform3D(0.99828815, 0, -0.058487497, 0, 1, 0, 0.058487497, 0, 0.99828815, 0.08878875, 19.50311, -24.28788)
+transform = Transform3D(0.99828815, 0, -0.058487497, 0, 1, 0, 0.058487497, 0, 0.99828815, 0.036712646, 19.50311, -23.399029)
 shape = SubResource("BoxShape3D_2cqfq")
 
 [editable path="Piano"]
