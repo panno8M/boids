@@ -27,10 +27,9 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		position = event.position
 		prev_position = position - event.relative
-		if debug_enabled:
-			queue_redraw()
+		queue_redraw()
 
 func _draw() -> void:
-	if point:
+	if debug_enabled and point:
 		draw_circle(prev_position - position, debug_radius, prev_color)
 		draw_circle(Vector2.ZERO, debug_radius, debug_color)
