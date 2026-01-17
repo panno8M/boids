@@ -89,15 +89,16 @@ func vellum(_data):
 func _physics_process(delta):
 	var input_dir = Vector3.ZERO
 	
-	if Input2.is_action_double_pressed(&"character_move_upward"):
-		gravity_enabled = not gravity_enabled
+	if state != State.VIEW:
+		if Input2.is_action_double_pressed(&"character_move_upward"):
+			gravity_enabled = not gravity_enabled
 
-	if Input2.is_action_pressed(&"character_move_forward"):  input_dir.z -= 1
-	if Input2.is_action_pressed(&"character_move_backward"): input_dir.z += 1
-	if Input2.is_action_pressed(&"character_move_left"):     input_dir.x -= 1
-	if Input2.is_action_pressed(&"character_move_right"):    input_dir.x += 1
-	if Input2.is_action_pressed(&"character_move_upward"):   input_dir.y += 1
-	if Input2.is_action_pressed(&"character_move_downward"): input_dir.y -= 1
+		if Input2.is_action_pressed(&"character_move_forward"):  input_dir.z -= 1
+		if Input2.is_action_pressed(&"character_move_backward"): input_dir.z += 1
+		if Input2.is_action_pressed(&"character_move_left"):     input_dir.x -= 1
+		if Input2.is_action_pressed(&"character_move_right"):    input_dir.x += 1
+		if Input2.is_action_pressed(&"character_move_upward"):   input_dir.y += 1
+		if Input2.is_action_pressed(&"character_move_downward"): input_dir.y -= 1
 
 	if input_dir != Vector3.ZERO:
 		input_dir = input_dir.normalized()
