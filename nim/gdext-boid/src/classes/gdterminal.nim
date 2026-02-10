@@ -139,15 +139,12 @@ proc onTextChanged(self: Terminal) {.gdsync, rename: toGodotInternalFuncCase.} =
       self.insertPrompt
     elif self.embeddedProcess(cmd, args):
       self.insertPrompt
-    elif findExe(cmd).len != 0:
+    else:
       if self.front.process == nil:
         self.front.process = self.env.runProcess(cmd, args, self.front.thread, self.callable("callback"))
       else:
         self.resultBuffer.insertTextAtCaret "Another process is already running.\n"
         self.insertPrompt
-    else:
-      self.resultBuffer.insertTextAtCaret "Unknown command: " & cmd & "\n"
-      self.insertPrompt
 
 method guiInput(self: Terminal; event: gdref InputEvent) {.gdsync.} =
   let keyevent = event as gdref InputEventKey
