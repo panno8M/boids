@@ -54,5 +54,8 @@ proc processWorker(arg: tuple[process: Process; callback: Callable]) {.thread.} 
       arg.callback.callDeferred(LogKind.done, pid, $exitCode)
 
 proc runProcess*(shell: Shell; cmd: string; args: openArray[string]; thread: var Thread[(Process, Callable)]; callback: Callable): Process =
-  result = shell.startProcess(cmd, args, options = {poUsePath})
+  when hostOS == "windows":
+    result = shell.startProcess("CMD.exe", @["/C", cmd] & @args, options = {poUsePath})
+  else:
+    result = shell.startProcess(cmd, args, options = {poUsePath})
   createThread(thread, processWorker, (result, callback))
