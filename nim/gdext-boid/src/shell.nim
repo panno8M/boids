@@ -1,5 +1,5 @@
 import gdext
-import std/[osproc, strtabs]
+import std/[osproc {.all.}, strtabs, streams]
 
 type
   LogKind* = enum
@@ -30,12 +30,19 @@ proc startProcess*(shell: Shell; command: string;
 
 proc readStream(ps: ThreadStream) {.thread.} =
   var line: string
-  var file: File
-  if file.open(ps.handle):
-    while file.readLine(line):
+  when hostOS == "windows":
+    let stream = newFileHandleStream(ps.handle)
+    while stream.readLine(line):
       {.gcsafe.}:
         if ps.callback != nil:
           ps.callback.callDeferred(ps.kind, ps.pid, line)
+  else:
+    var file: File
+    if file.open(ps.handle):
+      while file.readLine(line):
+        {.gcsafe.}:
+          if ps.callback != nil:
+            ps.callback.callDeferred(ps.kind, ps.pid, line)
 
 proc processWorker(arg: tuple[process: Process; callback: Callable]) {.thread.} =
   let pid = arg.process.processID
