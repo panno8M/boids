@@ -117,6 +117,7 @@ player = NodePath("../../Player")
 anchors_preset = 0
 mouse_filter = 2
 script = ExtResource("6_kek77")
+debug_enabled = false
 metadata/_custom_type_script = "uid://cr8iggt0n7pg"
 
 [node name="Status" type="Label" parent="UI/MousePointer"]
@@ -136,6 +137,7 @@ text = "Oneline Status"
 horizontal_alignment = 1
 
 [node name="Debug UI" parent="." node_paths=PackedStringArray("controller", "book_menu", "uv_picking_viewport") instance=ExtResource("4_7mycd")]
+visible = false
 mouse_filter = 2
 controller = NodePath("../BoidController3D")
 book_menu = NodePath("../UI/BookMenu")
